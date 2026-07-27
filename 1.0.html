@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'self' data: blob:; base-uri 'none'; form-action 'none'" />
+<title>MellorsOS</title>
+<style>
+:root{
+  --accent:#6d7cff;--accent2:#a96cff;--bg:#0c1020;--panel:rgba(21,27,49,.86);
+  --panel2:rgba(34,42,70,.8);--text:#f7f8ff;--muted:#aab1ce;--danger:#ff5d78;
+  --ok:#46d7a3;--radius:24px;--fontScale:1;--iconSize:58px;--gridCols:4;--iconRadius:28%;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:#070913;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden;font-size:calc(16px * var(--fontScale))}
+button,input,textarea,select{font:inherit}
+body{display:grid;place-items:center;background:radial-gradient(circle at 20% 0%,#202a66 0,transparent 36%),radial-gradient(circle at 90% 90%,#4c1f66 0,transparent 34%),#070913}
+#device{width:min(100vw,430px);height:min(100vh,900px);position:relative;overflow:hidden;background:var(--bg);box-shadow:0 30px 100px rgba(0,0,0,.6);border-radius:34px;border:1px solid rgba(255,255,255,.12);isolation:isolate}
+@media(max-width:520px){#device{width:100vw;height:100vh;border-radius:0;border:0}}
+#wallpaper{position:absolute;inset:0;background:linear-gradient(145deg,#172c68 0%,#39265e 48%,#10192f 100%);transition:.3s;z-index:-2}
+#wallpaper:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 25% 20%,rgba(255,255,255,.18),transparent 25%),radial-gradient(circle at 80% 75%,rgba(90,220,255,.12),transparent 28%)}
+#statusbar{height:34px;padding:8px 16px 0;display:flex;justify-content:space-between;align-items:flex-start;font-weight:700;font-size:.78rem;position:relative;z-index:40;text-shadow:0 1px 3px #000}
+#statusIcons{display:flex;gap:8px;align-items:center}
+#appRoot{position:absolute;inset:34px 0 70px;overflow:hidden}
+.screen{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;padding:16px 16px 26px;animation:screenIn .2s ease;background:linear-gradient(180deg,rgba(8,12,26,.18),rgba(8,12,26,.38))}
+@keyframes screenIn{from{opacity:.2;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+#home{padding:14px 14px 28px}
+.home-header{display:flex;align-items:center;justify-content:space-between;margin:4px 4px 18px}
+.home-title{font-size:1.65rem;font-weight:850;letter-spacing:-.03em}.home-sub{font-size:.78rem;color:rgba(255,255,255,.72);margin-top:2px}
+.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.16);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.2);font-weight:850}
+#appGrid{display:grid;grid-template-columns:repeat(var(--gridCols),1fr);gap:18px 10px;align-items:start}
+.app-icon-wrap{appearance:none;border:0;background:none;color:white;padding:0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer}
+.app-icon{width:var(--iconSize);height:var(--iconSize);border-radius:var(--iconRadius);display:grid;place-items:center;font-size:calc(var(--iconSize)*.48);box-shadow:0 8px 22px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.25);transition:.13s;position:relative;overflow:hidden}
+.app-icon:after{content:"";position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.24),transparent 45%);pointer-events:none}
+.app-icon-wrap:active .app-icon{transform:scale(.9)}
+.hide-app-labels .app-label{display:none}.app-label{font-size:.72rem;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:84px;text-shadow:0 1px 4px #000}
+#nav{position:absolute;bottom:0;left:0;right:0;height:70px;display:flex;align-items:center;justify-content:space-around;background:rgba(8,10,22,.78);backdrop-filter:blur(22px);border-top:1px solid rgba(255,255,255,.1);z-index:50}
+.navbtn{width:72px;height:48px;border:0;background:none;color:white;font-size:1.4rem;border-radius:18px;cursor:pointer}.navbtn:active{background:rgba(255,255,255,.12)}
+#toast{position:absolute;left:50%;bottom:82px;transform:translate(-50%,20px);padding:10px 16px;background:rgba(20,24,40,.96);border:1px solid rgba(255,255,255,.13);border-radius:999px;opacity:0;pointer-events:none;transition:.22s;z-index:100;font-size:.84rem;white-space:nowrap;max-width:88%;overflow:hidden;text-overflow:ellipsis}.show-toast{opacity:1!important;transform:translate(-50%,0)!important}
+#notificationShade{position:absolute;inset:0 0 70px;background:rgba(7,9,19,.96);backdrop-filter:blur(30px);z-index:70;padding:46px 16px 20px;transform:translateY(-105%);transition:.25s;overflow:auto}.shade-open{transform:translateY(0)!important}
+.shade-handle{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:42px;height:5px;border-radius:99px;background:rgba(255,255,255,.4)}
+.notif{padding:14px;border-radius:18px;background:var(--panel2);margin:10px 0;border:1px solid rgba(255,255,255,.08)}.notif-title{font-weight:800}.notif-time{font-size:.72rem;color:var(--muted);float:right}.notif-body{margin-top:4px;color:#dfe3f7;font-size:.88rem}
+.app-page{min-height:100%;background:rgba(8,11,23,.88);backdrop-filter:blur(20px);border-radius:26px 26px 0 0;padding:14px 14px 32px;box-shadow:0 -12px 35px rgba(0,0,0,.2)}
+.app-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;position:sticky;top:-14px;padding:14px 0 10px;background:linear-gradient(rgba(8,11,23,.96),rgba(8,11,23,.9),transparent);z-index:4}.app-header-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:1.35rem}.app-header-title{font-size:1.35rem;font-weight:850;letter-spacing:-.02em}.app-header-sub{font-size:.75rem;color:var(--muted)}
+.section-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:800;margin:24px 4px 8px}
+.card{background:var(--panel);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:14px;margin:10px 0;box-shadow:0 10px 25px rgba(0,0,0,.14)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.row+.row{border-top:1px solid rgba(255,255,255,.08);margin-top:12px;padding-top:12px}.row-main{min-width:0}.row-title{font-weight:750}.row-sub{color:var(--muted);font-size:.78rem;margin-top:3px}.value{color:var(--muted);font-size:.82rem;text-align:right}
+.primary,.secondary,.danger,.ghost{border:0;border-radius:14px;padding:11px 14px;font-weight:780;cursor:pointer;margin:5px 4px 5px 0}.primary{background:var(--accent);color:white}.secondary{background:rgba(255,255,255,.11);color:white}.danger{background:rgba(255,93,120,.16);color:#ff9aad}.ghost{background:transparent;color:var(--accent);padding:7px}
+.input,textarea.input,select.input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.11);border-radius:14px;color:white;padding:12px 13px;outline:none;margin:6px 0}.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}textarea.input{min-height:180px;resize:vertical;line-height:1.5}select.input option{background:#161a2d}
+.toggle{width:50px;height:29px;border-radius:99px;background:#474d65;position:relative;cursor:pointer;flex:0 0 auto;transition:.2s}.toggle:after{content:"";position:absolute;top:3px;left:3px;width:23px;height:23px;border-radius:50%;background:white;transition:.2s}.toggle.on{background:var(--accent)}.toggle.on:after{left:24px}
+.range{width:130px;accent-color:var(--accent)}
+.code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:.76rem;white-space:pre-wrap;overflow:auto;background:#080b16;border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:12px;color:#d5dcff;line-height:1.5;margin:8px 0}.code-editor{min-height:310px;font-family:"SFMono-Regular",Consolas,monospace;font-size:.76rem;tab-size:2}
+.badge{display:inline-flex;padding:4px 8px;border-radius:999px;background:rgba(109,124,255,.18);color:#bac2ff;font-weight:750;font-size:.7rem;margin:2px}.small{font-size:.78rem;color:var(--muted);line-height:1.5}.big-number{font-size:2.4rem;font-weight:900;letter-spacing:-.05em}.center{text-align:center}.spacer{height:10px}
+#recents{background:rgba(7,9,18,.94);backdrop-filter:blur(30px)}.recent-card{background:var(--panel);border-radius:24px;padding:12px;margin:12px 0;border:1px solid rgba(255,255,255,.09)}.recent-preview{height:160px;border-radius:17px;background:linear-gradient(145deg,rgba(109,124,255,.28),rgba(169,108,255,.13));display:grid;place-items:center;font-size:3rem}.recent-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:800}.close-x{border:0;background:rgba(255,255,255,.1);color:white;width:32px;height:32px;border-radius:50%;cursor:pointer}
+.file-item{display:flex;gap:10px;align-items:center;padding:12px 0;cursor:pointer}.file-item+.file-item{border-top:1px solid rgba(255,255,255,.08)}.file-icon{font-size:1.35rem}.file-name{font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis}.file-meta{font-size:.72rem;color:var(--muted)}
+.calc-display{font-size:2.1rem;text-align:right;min-height:76px;word-break:break-all;padding:12px}.keypad{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.key{height:58px;border:0;border-radius:18px;background:rgba(255,255,255,.09);color:white;font-size:1.1rem;font-weight:800}.key.op{background:rgba(109,124,255,.24);color:#cfd4ff}.key.eq{background:var(--accent)}
+.wallpaper-swatch{width:48px;height:48px;border-radius:15px;border:2px solid rgba(255,255,255,.25);display:inline-block;margin:5px;cursor:pointer}.wallpaper-swatch.selected{outline:3px solid var(--accent);outline-offset:2px}
+.accent-swatch{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,.6);display:inline-block;margin:5px;cursor:pointer}
+.log{font-family:monospace;font-size:.72rem;max-height:180px;overflow:auto;background:#080b15;border-radius:14px;padding:10px;color:#aef0cc}
+.progress{height:9px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}.progress>i{display:block;height:100%;background:var(--accent);border-radius:inherit}
+.hidden{display:none!important}
+.high-contrast{--panel:rgba(0,0,0,.94);--panel2:rgba(0,0,0,.94);--text:#fff;--muted:#fff} .high-contrast .card,.high-contrast .input{border-color:white}
+.reduce-motion *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+.compact .card{padding:10px;margin:6px 0}.compact .row+.row{margin-top:8px;padding-top:8px}
+.large-targets button,.large-targets .toggle{min-height:48px}.bold-text{font-weight:600}.bold-text .row-title,.bold-text .app-header-title,.bold-text .home-title{font-weight:950}.reduce-transparency #nav,.reduce-transparency .app-page,.reduce-transparency .card,.reduce-transparency #notificationShade{backdrop-filter:none!important;background-color:#11162a!important}.nav-compact #nav{height:56px}.nav-compact #appRoot{bottom:56px}.nav-compact #notificationShade{bottom:56px}.nav-compact .navbtn{height:40px}
+#osModalHost{position:absolute;inset:0;z-index:140;display:none;align-items:flex-end;justify-content:center;background:rgba(2,4,10,.66);backdrop-filter:blur(10px);padding:14px}#osModalHost.open{display:flex}.os-modal{width:100%;max-height:86%;overflow:auto;background:linear-gradient(180deg,#171c31,#0d1121);border:1px solid rgba(255,255,255,.14);border-radius:26px;padding:18px;box-shadow:0 24px 70px rgba(0,0,0,.55);animation:modalIn .18s ease}.os-modal-icon{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;background:rgba(109,124,255,.18);font-size:1.65rem;margin-bottom:12px}.os-modal-title{font-size:1.28rem;font-weight:900;letter-spacing:-.02em}.os-modal-body{color:#e2e6f7;line-height:1.5;margin-top:8px}.os-modal-detail{color:var(--muted);font-size:.78rem;line-height:1.5;margin-top:10px}.os-modal-actions{display:grid;gap:8px;margin-top:16px}.os-modal-actions button{width:100%;margin:0;min-height:46px}.disabled-control{opacity:.42;pointer-events:none}.permission-inherited{opacity:.48;pointer-events:none}.app-manager-card .manager-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.status-pill{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.08);font-size:.7rem;color:var(--muted);font-weight:800}.status-pill.superuser{background:rgba(255,93,120,.16);color:#ffabb9}.status-pill.system{background:rgba(70,215,163,.13);color:#8eecc8}@keyframes modalIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+
+.menu-entry{width:100%;border:0;background:var(--panel);color:var(--text);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:14px;margin:8px 0;display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer}.menu-entry:active{transform:scale(.985)}.menu-icon{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.09);display:grid;place-items:center;font-size:1.3rem;flex:0 0 auto}.menu-copy{min-width:0;flex:1}.menu-value{color:var(--muted);font-size:.78rem;max-width:34%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.menu-chevron{color:var(--muted);font-size:1.35rem}.alert{border-left:4px solid var(--accent)}.alert.warning{border-left-color:#f0a33b}.alert.danger{border-left-color:var(--danger)}.alert.success{border-left-color:var(--ok)}.ui-divider{height:1px;background:rgba(255,255,255,.09);margin:12px 2px}.segmented{display:flex;gap:5px;padding:4px;background:rgba(255,255,255,.06);border-radius:14px}.segment{flex:1;border:0;background:transparent;color:var(--muted);padding:9px 7px;border-radius:11px;font-size:.76rem;font-weight:800}.segment.selected{background:var(--accent);color:white}.chip-wrap{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:var(--text);border-radius:999px;padding:7px 11px;font-size:.76rem}.chip.selected{background:var(--accent);border-color:var(--accent)}.ui-stat{display:inline-flex;flex-direction:column;min-width:92px;padding:12px;border-radius:16px;background:rgba(255,255,255,.06);margin:4px}.ui-stat strong{font-size:1.2rem}.ui-hidden{display:none!important}.ui-disabled{opacity:.42!important;pointer-events:none!important}.ms-html-frame{display:block;width:100%;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:#fff;margin:8px 0 0}.terminal-output{font-family:"SFMono-Regular",Consolas,monospace;white-space:pre-wrap;word-break:break-word;background:#080b16;border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:12px;min-height:90px;color:#d5dcff}
+</style>
+</head>
+<body>
+<div id="device">
+  <div id="wallpaper"></div>
+  <div id="statusbar"><span id="clockMini">9:41</span><span id="statusIcons"><span id="devDot" class="hidden">● DEV</span><span>◉</span><span>⌁</span><span id="battery">100%</span></span></div>
+  <main id="appRoot"></main>
+  <nav id="nav"><button class="navbtn" id="navBack" aria-label="Back">‹</button><button class="navbtn" id="navHome" aria-label="Home">●</button><button class="navbtn" id="navRecents" aria-label="Recent apps">▢</button></nav>
+  <div id="toast"></div>
+  <section id="notificationShade"><div class="shade-handle"></div><div class="row"><div><div class="big-number" id="shadeTime">9:41</div><div class="small" id="shadeDate"></div></div><button class="secondary" id="clearNotifications">Clear</button></div><div id="shadeNotifications"></div></section>
+  <div id="osModalHost" role="dialog" aria-modal="true" aria-live="assertive"></div>
+</div>
+<script>
+(() => {
+"use strict";
+
+/* ================================================================
+   MellorsOS Kernel
+   UI shell + MScript runtime. Every built-in app below is MScript.
+   ================================================================ */
+const $ = s => document.querySelector(s);
+const root = $('#appRoot');
+const device = $('#device');
+const STORAGE_PREFIX = 'mellorsos.';
+const state = {
+  current:null, history:[], recents:[], notifications:[], appInstances:new Map(),
+  background:new Map(), eventBus:new Map(), logs:[], developer:false
+};
+const defaults = {
+  accent:'#6d7cff', accent2:'#a96cff', wallpaper:'aurora', gridCols:4, iconSize:58, iconShape:'squircle',
+  showAppLabels:true, homeTitle:'MellorsOS', homeSubtitle:'Programmable by design', username:'Owner',
+  fontScale:1, compact:false, highContrast:false, reduceMotion:false, reduceTransparency:false, largeTargets:false, boldText:false,
+  haptics:true, showSeconds:false, clock24h:false, showBattery:true, showStatusIcons:true, navCompact:false,
+  notificationToasts:true, notificationPreview:true, notificationLimit:50, developerMode:false, showFPS:false
+};
+const memoryStorage = new Map();
+function storageKeys(){ try{return Object.keys(localStorage);}catch{return [...memoryStorage.keys()];} }
+const store = {
+  rawGet(k, fallback=null){
+    const key=STORAGE_PREFIX+k;
+    try{const v=localStorage.getItem(key);if(v!==null)return JSON.parse(v);}catch{}
+    try{return memoryStorage.has(key)?JSON.parse(memoryStorage.get(key)):fallback;}catch{return fallback;}
+  },
+  rawSet(k,v){const key=STORAGE_PREFIX+k, encoded=JSON.stringify(v);try{localStorage.setItem(key,encoded);}catch{memoryStorage.set(key,encoded);}return v;},
+  rawDelete(k){const key=STORAGE_PREFIX+k;try{localStorage.removeItem(key);}catch{}memoryStorage.delete(key);},
+  keys(prefix=''){return storageKeys().filter(k=>k.startsWith(STORAGE_PREFIX+prefix)).map(k=>k.slice(STORAGE_PREFIX.length));},
+  clearAll(){storageKeys().filter(k=>k.startsWith(STORAGE_PREFIX)).forEach(k=>{try{localStorage.removeItem(k);}catch{}memoryStorage.delete(k);});}
+};
+const PERMISSIONS = Object.freeze({
+  settings:'Modify system settings',
+  notifications:'Notifications',
+  installApps:'Install apps',
+  modifyPermissions:'Modify permissions',
+  superuser:'Superuser',
+  background:'Run background processes'
+});
+function permissionRecords(){return store.rawGet('permissions',{})||{};}
+function permissionRecord(appId){return permissionRecords()[appId]||{};}
+function savePermissionRecord(appId,record){const all=permissionRecords();all[appId]=record;store.rawSet('permissions',all);return record;}
+function migrateLegacyPermissions(){
+  const all=permissionRecords();let changed=false;let holder=null;
+  for(const id of Object.keys(all).sort()){
+    const rec=all[id]||{};
+    if(rec.mdm===true||rec.superuser===true){
+      if(holder===null){rec.superuser=true;holder=id;}else if(rec.superuser===true){delete rec.superuser;}
+      changed=true;
+    }
+    if(Object.prototype.hasOwnProperty.call(rec,'mdm')){delete rec.mdm;changed=true;}
+    all[id]=rec;
+  }
+  if(changed)store.rawSet('permissions',all);
+}
+
+migrateLegacyPermissions();
+function validPermission(permission){return Object.prototype.hasOwnProperty.call(PERMISSIONS,String(permission));}
+function superuserHolder(){const all=permissionRecords();for(const [id,rec] of Object.entries(all))if(rec?.superuser===true)return id;return null;}
+function hasPermission(app,permission){
+  if(!app)return false;
+  if(app.system)return true;
+  permission=String(permission);
+  if(!validPermission(permission))return false;
+  const rec=permissionRecord(app.meta.id);
+  return rec.superuser===true || rec[permission]===true;
+}
+function stopAppBackground(appId){for(const key of [...state.background.keys()])if(key.startsWith(appId+':')){const id=state.background.get(key);clearInterval(id);state.background.delete(key);}}
+function setAppPermission(appId,permission,value){
+  permission=String(permission);if(!validPermission(permission)||permission==='superuser')return false;
+  const target=getApp(appId);if(target?.system)return false;
+  const rec=permissionRecord(appId);rec[permission]=!!value;savePermissionRecord(appId,rec);
+  if(permission==='background'&&!value)stopAppBackground(appId);
+  return true;
+}
+function grantSuperuserFromRequest(appId){
+  const app=getApp(appId);if(!app||app.system)return false;
+  const holder=superuserHolder();if(holder&&holder!==appId)return false;
+  const rec=permissionRecord(appId);rec.superuser=true;savePermissionRecord(appId,rec);return true;
+}
+function disableOwnSuperuser(appId){
+  if(superuserHolder()!==appId)return false;
+  const rec=permissionRecord(appId);delete rec.superuser;savePermissionRecord(appId,rec);return true;
+}
+function permissionLabel(permission){return PERMISSIONS[String(permission)]||String(permission);}
+class PermissionDeniedError extends Error{constructor(permission,line=0){super(`Ungranted permission: ${permissionLabel(permission)}`);this.line=line;this.permission=String(permission);this.isPermissionDenied=true;}}
+class PermissionPromptRequest extends Error{constructor(permission){super(`Permission prompt: ${permission}`);this.permission=String(permission);this.isPermissionPrompt=true;}}
+class DialogPromptRequest extends Error{constructor(key,options){super(`Dialog prompt: ${key}`);this.key=String(key);this.options=options;this.isDialogPrompt=true;}}
+function requirePermission(rt,permission){if(!hasPermission(rt.app,permission))throw new PermissionDeniedError(permission);return true;}
+function requestPermission(rt,permission){
+  permission=String(permission);
+  if(!validPermission(permission))throw new MScriptError(`Unknown permission ${permission}`);
+  if(rt.permissionResume.has(permission)){const answer=rt.permissionResume.get(permission);rt.permissionResume.delete(permission);return !!answer;}
+  if(hasPermission(rt.app,permission))return true;
+  throw new PermissionPromptRequest(permission);
+}
+function requestDialog(rt,kind,title,message,detail='',yesLabel='OK',noLabel='Cancel'){
+  const key=[kind,title,message,detail,yesLabel,noLabel].join('\u241f');
+  if(rt.dialogResume.has(key)){const answer=rt.dialogResume.get(key);rt.dialogResume.delete(key);return answer;}
+  throw new DialogPromptRequest(key,{kind:String(kind),title:String(title),message:String(message),detail:String(detail),yesLabel:String(yesLabel),noLabel:String(noLabel)});
+}
+async function handleDialogPrompt(req){
+  const o=req.options||{};
+  if(o.kind==='alert'){await showOSDialog({icon:'ℹ️',title:o.title,message:o.message,detail:o.detail,buttons:[{label:o.yesLabel||'OK',value:true,kind:'primary'}]});return true;}
+  return await showOSDialog({icon:o.kind==='danger'?'⚠️':'◆',title:o.title,message:o.message,detail:o.detail,buttons:[{label:o.noLabel||'Cancel',value:false,kind:'secondary'},{label:o.yesLabel||'OK',value:true,kind:o.kind==='danger'?'danger':'primary'}]});
+}
+let settings = {...defaults, ...(store.rawGet('settings',{})||{})};
+function saveSettings(){ store.rawSet('settings', settings); applySettings(); }
+function log(msg){ const line=`${new Date().toLocaleTimeString()}  ${msg}`; state.logs.unshift(line); state.logs=state.logs.slice(0,120); if(settings.developerMode) console.log('[MellorsOS]',msg); }
+function toast(msg){ const el=$('#toast'); el.textContent=String(msg); el.classList.add('show-toast'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('show-toast'),1800); }
+function vibrate(ms=12){ if(settings.haptics && navigator.vibrate) navigator.vibrate(ms); }
+function escapeHTML(v){ return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+function showOSDialog({icon='◆',title,message='',detail='',buttons=[{label:'OK',value:true,kind:'primary'}]}){
+  const host=$('#osModalHost');
+  return new Promise(resolve=>{
+    host.innerHTML=`<div class="os-modal"><div class="os-modal-icon">${escapeHTML(icon)}</div><div class="os-modal-title">${escapeHTML(title)}</div>${message?`<div class="os-modal-body">${escapeHTML(message)}</div>`:''}${detail?`<div class="os-modal-detail">${escapeHTML(detail)}</div>`:''}<div class="os-modal-actions">${buttons.map((b,i)=>`<button class="${escapeHTML(b.kind||'secondary')}" data-os-dialog="${i}">${escapeHTML(b.label)}</button>`).join('')}</div></div>`;
+    host.classList.add('open');
+    const finish=value=>{host.classList.remove('open');host.innerHTML='';resolve(value);};
+    host.querySelectorAll('[data-os-dialog]').forEach((el,i)=>el.onclick=()=>{vibrate();finish(buttons[i].value);});
+  });
+}
+async function handlePermissionPrompt(rt,permission){
+  const app=rt.app;permission=String(permission);
+  if(permission==='superuser'){
+    const holder=superuserHolder();
+    if(holder&&holder!==app.meta.id){
+      const holderApp=getApp(holder);
+      await showOSDialog({icon:'🔒',title:'Superuser unavailable',message:`Only one app can have Superuser. ${holderApp?.meta.name||holder} already has it.`,detail:'The existing Superuser app must disable its own Superuser access, or the device must be factory reset, before another app can request it.',buttons:[{label:'OK',value:false,kind:'primary'}]});
+      return false;
+    }
+    const first=await showOSDialog({icon:'⚠️',title:'Superuser request',message:`${app.meta.name} is asking for absolute control of MellorsOS.`,detail:'Superuser bypasses every protected permission and gives this app access to system settings, notifications, app installation, permission changes, background processes, protected storage, and device reset.',buttons:[{label:'Do not allow',value:false,kind:'secondary'},{label:'Continue',value:true,kind:'danger'}]});
+    if(!first)return false;
+    const second=await showOSDialog({icon:'🔐',title:'This is difficult to undo',message:'Only one installed app can hold Superuser at a time.',detail:'After granting it, Settings cannot turn Superuser off and no other MScript app can disable or uninstall the Superuser app. The app must disable Superuser itself, or you must factory reset MellorsOS.',buttons:[{label:'Cancel',value:false,kind:'secondary'},{label:'I understand',value:true,kind:'danger'}]});
+    if(!second)return false;
+    const third=await showOSDialog({icon:'‼️',title:'Final confirmation',message:`Grant Superuser to ${app.meta.name}?`,detail:'Only approve code you completely trust. This app will have unrestricted MellorsOS control.',buttons:[{label:'Cancel',value:false,kind:'secondary'},{label:'Grant Superuser',value:true,kind:'danger'}]});
+    if(!third)return false;
+    const granted=grantSuperuserFromRequest(app.meta.id);
+    if(granted)log(`${app.meta.name} was granted Superuser`);
+    return granted;
+  }
+  const granted=await showOSDialog({icon:'🛡️',title:'Allow this permission?',message:`${app.meta.name} wants: ${permissionLabel(permission)}`,detail:'You can change ordinary app permissions later in Settings → App Manager.',buttons:[{label:'Decline',value:false,kind:'secondary'},{label:'Allow',value:true,kind:'primary'}]});
+  if(granted)setAppPermission(app.meta.id,permission,true);else setAppPermission(app.meta.id,permission,false);
+  log(`${app.meta.name} permission ${permission}: ${granted?'granted':'declined'}`);
+  return !!granted;
+}
+function requestFactoryReset(){
+  showOSDialog({icon:'⚠️',title:'Factory reset MellorsOS?',message:'This permanently erases installed apps, app data, notes, settings, permissions, notifications, and all other MellorsOS browser data.',detail:'Superuser is also removed. This cannot be undone.',buttons:[{label:'Cancel',value:false,kind:'secondary'},{label:'Continue',value:true,kind:'danger'}]}).then(first=>{
+    if(!first)return;
+    return showOSDialog({icon:'🗑️',title:'Erase everything?',message:'This is the final confirmation.',detail:'MellorsOS will immediately clear its local browser storage and reboot to factory defaults.',buttons:[{label:'Keep my data',value:false,kind:'secondary'},{label:'Erase MellorsOS',value:true,kind:'danger'}]});
+  }).then(final=>{if(final){store.clearAll();location.reload();}});
+  return true;
+}
+function applySettings(){
+  document.documentElement.style.setProperty('--accent',settings.accent);
+  document.documentElement.style.setProperty('--accent2',settings.accent2);
+  document.documentElement.style.setProperty('--gridCols',settings.gridCols);
+  document.documentElement.style.setProperty('--iconSize',settings.iconSize+'px');
+  document.documentElement.style.setProperty('--fontScale',settings.fontScale);
+  const radii={square:'12%',squircle:'28%',round:'42%',circle:'50%'};
+  document.documentElement.style.setProperty('--iconRadius',radii[settings.iconShape]||radii.squircle);
+  device.classList.toggle('compact',!!settings.compact);
+  device.classList.toggle('high-contrast',!!settings.highContrast);
+  device.classList.toggle('reduce-motion',!!settings.reduceMotion);
+  device.classList.toggle('reduce-transparency',!!settings.reduceTransparency);
+  device.classList.toggle('large-targets',!!settings.largeTargets);
+  device.classList.toggle('bold-text',!!settings.boldText);
+  device.classList.toggle('hide-app-labels',settings.showAppLabels===false);
+  device.classList.toggle('nav-compact',!!settings.navCompact);
+  $('#devDot').classList.toggle('hidden',!settings.developerMode);
+  $('#battery').classList.toggle('hidden',!settings.showBattery);
+  $('#statusIcons').style.opacity=settings.showStatusIcons?'1':'0';
+  const maps={
+    aurora:'linear-gradient(145deg,#172c68 0%,#39265e 48%,#10192f 100%)',
+    ocean:'linear-gradient(150deg,#0b566c,#123b75 46%,#151b42)',
+    sunset:'linear-gradient(145deg,#873b56,#ca6651 48%,#392b69)',
+    forest:'linear-gradient(145deg,#153d3a,#1f5b48 48%,#17233d)',
+    mono:'linear-gradient(145deg,#1f2330,#11131b 55%,#2b2e38)'
+  };
+  $('#wallpaper').style.background=maps[settings.wallpaper]||maps.aurora;
+}
+applySettings();
+
+function updateClock(){ const d=new Date(); const opts={hour:'numeric',minute:'2-digit',hour12:!settings.clock24h}; if(settings.showSeconds) opts.second='2-digit'; $('#clockMini').textContent=d.toLocaleTimeString([],opts); $('#shadeTime').textContent=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit',hour12:!settings.clock24h}); $('#shadeDate').textContent=d.toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'}); }
+setInterval(updateClock,1000);updateClock();
+let battery=100; setInterval(()=>{battery=Math.max(18,battery-.02);$('#battery').textContent=Math.round(battery)+'%';},30000);
+
+function notify(title,body,appId='system'){
+  const n={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),title:String(title),body:String(body),appId,time:Date.now()};
+  state.notifications.unshift(n); state.notifications=state.notifications.slice(0,Math.max(5,Number(settings.notificationLimit)||50)); store.rawSet('notifications',state.notifications); renderNotifications(); if(settings.notificationToasts!==false)toast(title+': '+body); return n.id;
+}
+state.notifications=store.rawGet('notifications',[])||[];
+function renderNotifications(){ const box=$('#shadeNotifications'); if(!state.notifications.length){box.innerHTML='<div class="card center"><div style="font-size:2rem">✓</div><div class="row-title">All caught up</div><div class="small">No notifications</div></div>';return;} box.innerHTML=state.notifications.map(n=>`<div class="notif" data-notif="${n.id}"><span class="notif-time">${new Date(n.time).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}</span><div class="notif-title">${escapeHTML(n.title)}</div><div class="notif-body">${settings.notificationPreview===false?'Preview hidden':escapeHTML(n.body)}</div></div>`).join(''); }
+renderNotifications();
+$('#clearNotifications').onclick=()=>{state.notifications=[];store.rawSet('notifications',[]);renderNotifications();};
+let shadeStart=0;
+$('#statusbar').addEventListener('click',()=>$('#notificationShade').classList.toggle('shade-open'));
+$('#notificationShade').addEventListener('touchstart',e=>shadeStart=e.touches[0].clientY,{passive:true});
+$('#notificationShade').addEventListener('touchend',e=>{if(e.changedTouches[0].clientY-shadeStart<-60) $('#notificationShade').classList.remove('shade-open')},{passive:true});
+
+/* --------------------------- MScript --------------------------- */
+class MScriptError extends Error { constructor(message,line=0){super(message);this.line=line;} }
+function splitLines(source){
+  return source.replace(/\r/g,'').split('\n').map((raw,i)=>({raw,line:i+1,text:raw.trim()})).filter(x=>x.text && !x.text.startsWith('#'));
+}
+function tokenize(expr){
+  const out=[]; let i=0;
+  while(i<expr.length){
+    const c=expr[i]; if(/\s/.test(c)){i++;continue;}
+    if(c==='"'||c==="'"){ const q=c; i++; let s=''; while(i<expr.length && expr[i]!==q){ if(expr[i]==='\\'){i++; const m={n:'\n',t:'\t',r:'\r'}; s+=m[expr[i]]??expr[i]; i++;} else s+=expr[i++]; } if(expr[i]!==q) throw new MScriptError('Unterminated string'); i++; out.push({t:'lit',v:s});continue; }
+    if(/[0-9]/.test(c)|| (c==='.'&&/[0-9]/.test(expr[i+1]))){ let s='';while(i<expr.length&&/[0-9.]/.test(expr[i]))s+=expr[i++];out.push({t:'lit',v:Number(s)});continue; }
+    if(/[A-Za-z_$]/.test(c)){ let s='';while(i<expr.length&&/[A-Za-z0-9_$\.]/.test(expr[i]))s+=expr[i++]; if(s==='true')out.push({t:'lit',v:true});else if(s==='false')out.push({t:'lit',v:false});else if(s==='null')out.push({t:'lit',v:null});else out.push({t:'id',v:s});continue; }
+    const two=expr.slice(i,i+2); if(['==','!=','<=','>=','&&','||'].includes(two)){out.push({t:'op',v:two});i+=2;continue;}
+    if('+-*/%<>()!,'.includes(c)){out.push({t:c==='('? 'lp':c===')'?'rp':c===','?'comma':'op',v:c});i++;continue;}
+    throw new MScriptError(`Unexpected token ${c}`);
+  }
+  return out;
+}
+function evalExpression(expr,env,runtime){
+  const t=tokenize(expr);let p=0;
+  const prec={'||':1,'&&':2,'==':3,'!=':3,'<':4,'>':4,'<=':4,'>=':4,'+':5,'-':5,'*':6,'/':6,'%':6};
+  function valPath(path){
+    if(Object.prototype.hasOwnProperty.call(env,path)) return env[path];
+    const parts=path.split('.'); let obj;
+    if(Object.prototype.hasOwnProperty.call(env,parts[0])) obj=env[parts.shift()];
+    else obj=runtime.api[parts.shift()];
+    for(const k of parts){ if(obj==null) return undefined; obj=obj[k]; }
+    return obj;
+  }
+  function primary(){
+    const x=t[p++]; if(!x) throw new MScriptError('Expected expression');
+    if(x.t==='lit') return x.v;
+    if(x.t==='op'&&['!','-','+'].includes(x.v)){ const v=primary();return x.v==='!'?!v:x.v==='-'?-Number(v):Number(v); }
+    if(x.t==='lp'){const v=parse(0);if(t[p]?.t!=='rp')throw new MScriptError('Expected )');p++;return v;}
+    if(x.t==='id'){
+      if(t[p]?.t==='lp'){
+        p++; const args=[];
+        const path=x.v;
+        const bareIdFirstArg=new Set(['ui.menu','ui.label','ui.button','ui.input','ui.numberInput','ui.password','ui.search','ui.colorInput','ui.dateInput','ui.timeInput','ui.textarea','ui.codeEditor','ui.toggle','ui.slider','ui.select','ui.segmented','ui.chips','ui.value','ui.setValue','ui.clearValue','ui.setText','ui.setVisible','ui.setEnabled','ui.remove','ui.exists','ui.focus']);
+        if(t[p]?.t!=='rp'){while(true){
+          const argStart=p;let value=parse(0);
+          if(args.length===0&&bareIdFirstArg.has(path)&&p===argStart+1&&t[argStart]?.t==='id'&&value===undefined)value=t[argStart].v;
+          args.push(value);
+          if(t[p]?.t==='comma'){p++;continue;}break;
+        }}
+        if(t[p]?.t!=='rp')throw new MScriptError('Expected )');p++;
+        const parts=path.split('.'), method=parts.pop(); let owner;
+        if(parts.length){ owner=valPath(parts.join('.')); } else owner=runtime.api;
+        let fn;
+        if(parts.length) fn=owner?.[method]; else fn=runtime.functions[method]||runtime.api[method];
+        if(typeof fn!=='function') throw new MScriptError(`Unknown function ${path}`);
+        return fn.apply(owner,args);
+      }
+      return valPath(x.v);
+    }
+    throw new MScriptError('Invalid expression');
+  }
+  function apply(a,op,b){switch(op){case'+':return typeof a==='string'||typeof b==='string'?String(a)+String(b):Number(a)+Number(b);case'-':return Number(a)-Number(b);case'*':return Number(a)*Number(b);case'/':return Number(a)/Number(b);case'%':return Number(a)%Number(b);case'==':return a==b;case'!=':return a!=b;case'<':return a<b;case'>':return a>b;case'<=':return a<=b;case'>=':return a>=b;case'&&':return a&&b;case'||':return a||b;}}
+  function parse(min){let left=primary();while(t[p]?.t==='op'&&prec[t[p].v]>=min){const op=t[p++].v;const right=parse(prec[op]+1);left=apply(left,op,right);}return left;}
+  const result=parse(0);if(p<t.length)throw new MScriptError('Unexpected expression content');return result;
+}
+function parseMScript(source){
+  const lines=splitLines(source); const app={meta:{id:'app'+Date.now(),name:'Untitled',icon:'◆',color:'#6d7cff',version:'1.0 Release'},events:{},functions:{},source}; let i=0;
+  function parseBlock(stopWords=[]){ const stmts=[]; while(i<lines.length){ const x=lines[i], s=x.text, head=s.split(/\s+/)[0]; if(stopWords.includes(head))break;
+      if(head==='let'||head==='set'){const m=s.match(/^(?:let|set)\s+([A-Za-z_$][\w$]*)\s*=\s*(.+)$/);if(!m)throw new MScriptError('Invalid assignment',x.line);stmts.push({k:'set',name:m[1],expr:m[2],line:x.line});i++;continue;}
+      if(head==='if'){const expr=s.slice(3);i++;const yes=parseBlock(['else','end']);let no=[];if(lines[i]?.text==='else'){i++;no=parseBlock(['end']);}if(lines[i]?.text!=='end')throw new MScriptError('Missing end',x.line);i++;stmts.push({k:'if',expr,yes,no,line:x.line});continue;}
+      if(head==='while'){const expr=s.slice(6);i++;const body=parseBlock(['end']);if(lines[i]?.text!=='end')throw new MScriptError('Missing end',x.line);i++;stmts.push({k:'while',expr,body,line:x.line});continue;}
+      if(head==='repeat'){const expr=s.slice(6).trim();i++;const body=parseBlock(['end']);if(lines[i]?.text!=='end')throw new MScriptError('Missing end',x.line);i++;stmts.push({k:'repeat',expr,body,line:x.line});continue;}
+      if(head==='for'){const m=s.match(/^for\s+([A-Za-z_$][\w$]*)\s+from\s+(.+?)\s+to\s+(.+)$/);if(!m)throw new MScriptError('Invalid for loop',x.line);i++;const body=parseBlock(['end']);if(lines[i]?.text!=='end')throw new MScriptError('Missing end',x.line);i++;stmts.push({k:'for',name:m[1],start:m[2],end:m[3],body,line:x.line});continue;}
+      if(head==='break'){stmts.push({k:'break',line:x.line});i++;continue;}
+      if(head==='continue'){stmts.push({k:'continue',line:x.line});i++;continue;}
+      if(head==='return'){stmts.push({k:'return',expr:s.slice(6).trim()||'null',line:x.line});i++;continue;}
+      stmts.push({k:'expr',expr:s,line:x.line});i++;
+    } return stmts; }
+  while(i<lines.length){ const x=lines[i],s=x.text;
+    if(s.startsWith('app ')){app.meta.name=evalExpression(s.slice(4),{}, {api:{},functions:{}});i++;continue;}
+    if(s.startsWith('meta ')){const m=s.match(/^meta\s+(\w+)\s+(.+)$/);if(!m)throw new MScriptError('Invalid meta',x.line);app.meta[m[1]]=evalExpression(m[2],{}, {api:{},functions:{}});i++;continue;}
+    if(s.startsWith('on ')){ const key=s.slice(3).trim(); if(app.events[key])throw new MScriptError(`Duplicate event handler: ${key}`,x.line); i++; app.events[key]=parseBlock(['end']); if(lines[i]?.text!=='end')throw new MScriptError('Missing end for event',x.line);i++;continue; }
+    if(s.startsWith('function ')){ const m=s.match(/^function\s+(\w+)\s*\(([^)]*)\)$/);if(!m)throw new MScriptError('Invalid function',x.line); const name=m[1],args=m[2].split(',').map(v=>v.trim()).filter(Boolean);if(app.functions[name])throw new MScriptError(`Duplicate function: ${name}`,x.line);for(const arg of args)if(!/^[A-Za-z_$][\w$]*$/.test(arg))throw new MScriptError(`Invalid function parameter: ${arg}`,x.line);if(new Set(args).size!==args.length)throw new MScriptError(`Duplicate function parameter in ${name}`,x.line);i++;const body=parseBlock(['end']);if(lines[i]?.text!=='end')throw new MScriptError('Missing function end',x.line);i++;app.functions[name]={args,body};continue; }
+    throw new MScriptError('Unknown top-level statement',x.line);
+  }
+  return app;
+}
+function validateMScriptForInstall(source){
+  const raw=String(source??'');
+  if(!raw.trim())throw new MScriptError('App source is empty. Add MScript code before installing.',1);
+
+  const sourceLines=splitLines(raw);
+  const appDeclarations=sourceLines.filter(x=>x.text.startsWith('app '));
+  const idDeclarations=sourceLines.filter(x=>/^meta\s+id\s+/.test(x.text));
+  if(appDeclarations.length===0)throw new MScriptError('Missing app declaration. Start the app with: app "App Name"',sourceLines[0]?.line||1);
+  if(appDeclarations.length>1)throw new MScriptError('Only one app declaration is allowed.',appDeclarations[1].line);
+  if(idDeclarations.length===0)throw new MScriptError('Missing app id. Add: meta id "yourAppId"',appDeclarations[0]?.line||1);
+  if(idDeclarations.length>1)throw new MScriptError('Only one meta id declaration is allowed.',idDeclarations[1].line);
+
+  const app=parseMScript(raw);
+  const name=String(app.meta.name??'').trim();
+  const id=String(app.meta.id??'').trim();
+  if(!name)throw new MScriptError('App name cannot be empty.',appDeclarations[0].line);
+  if(!id)throw new MScriptError('meta id cannot be empty.',idDeclarations[0].line);
+  if(!/^[A-Za-z][A-Za-z0-9._-]{0,63}$/.test(id))throw new MScriptError('Invalid meta id. Use 1-64 characters: letters first, then letters, numbers, dot, underscore, or hyphen.',idDeclarations[0].line);
+
+  // Build the API without opening the app. This lets validation confirm every
+  // function call exists while avoiding any side effects from executing code.
+  const runtime=new MRuntime(app);
+  function knownFunction(path){
+    const parts=String(path).split('.');
+    if(parts.length===1)return typeof runtime.functions[path]==='function'||typeof runtime.api[path]==='function';
+    let obj=runtime.api[parts.shift()];
+    for(const part of parts){if(obj==null)return false;obj=obj[part];}
+    return typeof obj==='function';
+  }
+  function validateExpr(expr,line){
+    try{
+      const tokens=tokenize(String(expr));let pos=0;
+      const prec={'||':1,'&&':2,'==':3,'!=':3,'<':4,'>':4,'<=':4,'>=':4,'+':5,'-':5,'*':6,'/':6,'%':6};
+      function primary(){
+        const x=tokens[pos++];if(!x)throw new MScriptError('Expected expression',line);
+        if(x.t==='lit')return;
+        if(x.t==='op'&&['!','-','+'].includes(x.v)){primary();return;}
+        if(x.t==='lp'){parse(0);if(tokens[pos]?.t!=='rp')throw new MScriptError('Expected )',line);pos++;return;}
+        if(x.t==='id'){
+          if(tokens[pos]?.t==='lp'){
+            const path=x.v;pos++;
+            if(tokens[pos]?.t!=='rp'){
+              while(true){parse(0);if(tokens[pos]?.t==='comma'){pos++;continue;}break;}
+            }
+            if(tokens[pos]?.t!=='rp')throw new MScriptError('Expected )',line);pos++;
+            if(!knownFunction(path))throw new MScriptError(`Unknown function ${path}`,line);
+          }
+          return;
+        }
+        throw new MScriptError('Invalid expression',line);
+      }
+      function parse(min){primary();while(tokens[pos]?.t==='op'&&prec[tokens[pos].v]>=min){const op=tokens[pos++].v;parse(prec[op]+1);}}
+      parse(0);if(pos<tokens.length)throw new MScriptError('Unexpected expression content',line);
+    }catch(e){if(!e.line)e.line=line;throw e;}
+  }
+  function validateBlock(stmts,inLoop=false){
+    for(const st of stmts){
+      if(st.k==='set'||st.k==='expr'||st.k==='return')validateExpr(st.expr,st.line);
+      else if(st.k==='if'){validateExpr(st.expr,st.line);validateBlock(st.yes,inLoop);validateBlock(st.no,inLoop);}
+      else if(st.k==='while'){validateExpr(st.expr,st.line);validateBlock(st.body,true);}
+      else if(st.k==='repeat'){validateExpr(st.expr,st.line);validateBlock(st.body,true);}
+      else if(st.k==='for'){validateExpr(st.start,st.line);validateExpr(st.end,st.line);validateBlock(st.body,true);}
+      else if((st.k==='break'||st.k==='continue')&&!inLoop)throw new MScriptError(`${st.k} can only be used inside a loop`,st.line);
+    }
+  }
+  for(const body of Object.values(app.events))validateBlock(body,false);
+  for(const fn of Object.values(app.functions))validateBlock(fn.body,false);
+  return app;
+}
+
+function apiParamType(path,param){
+  const p=String(param).split('=')[0].trim();
+  if(['id','appId','key','name','eventName','permission','title','subtitle','body','message','detail','label','style','kind','type','icon','text','source','htmlFile','prefix','placeholder','separator','query','q','old','new','yesLabel','noLabel','optionsCSV','selected','expression','expr'].includes(p))return 'text';
+  if(['value','fallback','jsonOrObject'].includes(p))return 'any';
+  if(['enabled','visible','hidden','on'].includes(p))return 'boolean';
+  if(['ms','milliseconds','amount','min','max','step','start','end','index','count','decimals','d','power','p','px','v','a','b'].includes(p))return 'number / value';
+  return 'value';
+}
+function apiParamDescription(path,param){
+  const p=String(param).split('=')[0].trim();
+  const uiId=path.startsWith('ui.')&&p==='id';
+  if(uiId)return 'Unique control identifier used later by on click/on input/on change handlers and ui.value/ui.set* calls. It may be written as a quoted string ("save") or as a bare identifier (save).';
+  if(path.startsWith('app.')&&p==='id')return 'The target app’s meta id, such as "notes" or "my.app".';
+  if(path==='system.setAppHidden'&&p==='id')return 'The target app’s meta id whose Home-screen visibility will change.';
+  if(path==='notify.remove'&&p==='id')return 'Notification identifier returned by notify.send().';
+  if(p==='appId')return 'The target app’s meta id. When permission.set is called with two arguments, appId is omitted and the current app is targeted.';
+  if(p==='permission')return 'Permission id: settings, notifications, installApps, modifyPermissions, background, or superuser. Superuser cannot be changed with permission.set().';
+  if(p==='source')return 'Complete MScript source code text for the app being previewed or installed.';
+  if(p==='htmlFile')return 'Complete HTML document/source to render inside the current app. CSS and JavaScript run inside an isolated sandboxed iframe; the MellorsOS status/navigation bars remain outside it.';
+  if(p==='key'&&path.startsWith('settings.'))return 'Settings record name. Use settings.keys() to discover the currently available keys.';
+  if(p==='key'&&path.startsWith('data.'))return 'Storage key. Private data functions automatically scope it to the current app; global functions use the shared/global storage rules.';
+  if(p==='key'&&path==='system.info')return 'Information field to read: name, version, engine, platform, language, online, apps, systemApps, userApps, storageKeys, userAgent, or superuser.';
+  if(p==='key'&&path.startsWith('json.'))return 'Object property name to read or write.';
+  if(p==='fallback')return 'Value returned when the requested key/property does not exist or cannot be read.';
+  if(p==='value'){
+    if(path==='events.emit')return 'Payload placed in event.value for the custom event handler.';
+    if(path.startsWith('ui.set')||path==='ui.progress'||path==='ui.stat')return 'Value displayed or assigned to the target UI element.';
+    if(path.startsWith('data.'))return 'Value to store or append. Numbers, text, booleans, null, and JSON-compatible values are accepted.';
+    if(path==='json.set')return 'New value assigned to the specified object property.';
+    return 'Input value used by this function.';
+  }
+  if(p==='title')return path.startsWith('ui.')?'Visible heading/title shown by the UI element.':'Primary title shown to the user.';
+  if(p==='subtitle')return 'Optional secondary explanatory text shown below the main title.';
+  if(p==='body')return 'Main body text displayed inside the UI element or notification.';
+  if(p==='message')return 'Main explanatory message displayed in the MellorsOS dialog.';
+  if(p==='detail')return 'Optional smaller detail text shown beneath the dialog message.';
+  if(p==='label')return 'User-visible label for the control or statistic.';
+  if(p==='icon')return 'Text or emoji used as the visual icon.';
+  if(p==='style')return 'Optional presentation style. For ui.text/ui.label, "small" uses smaller muted text.';
+  if(p==='kind')return path==='ui.button'?'Button style: primary, secondary, danger, or ghost.':'Visual style/category for the element; supported values depend on the function.';
+  if(p==='type')return 'Input type, such as text, password, search, color, date, time, or another supported HTML input type.';
+  if(p==='on')return 'Initial boolean state of the toggle: true is on and false is off.';
+  if(p==='enabled')return 'true enables interaction; false disables the control.';
+  if(p==='visible')return 'true shows the element; false hides it without deleting it.';
+  if(p==='hidden')return 'true hides the app from Home; false shows it again.';
+  if(p==='min')return 'Minimum allowed numeric value or lower bound.';
+  if(p==='max')return 'Maximum allowed numeric value or upper bound.';
+  if(p==='step')return 'Increment used when a numeric input or slider changes.';
+  if(p==='px')return 'Spacer height in pixels; MellorsOS clamps it to a safe range.';
+  if(p==='optionsCSV')return 'Pipe-separated choices. Use value:Label pairs such as "dark:Dark|light:Light"; the value is delivered to change events.';
+  if(p==='selected')return 'Currently selected option value.';
+  if(p==='placeholder')return 'Hint text displayed when the field is empty.';
+  if(p==='prefix')return 'Optional key/name prefix used to filter the returned or displayed records.';
+  if(p==='separator')return 'Text delimiter used when joining, splitting, appending, or counting values.';
+  if(p==='amount')return 'Numeric amount added to the stored number; defaults to 1.';
+  if(p==='name'){
+    if(path.startsWith('timer.')||path.startsWith('background.'))return 'Developer-chosen identifier for this timer/background process. Reusing the same name replaces the existing one.';
+    if(path==='events.emit')return 'Custom event name handled with on <name>.';
+    return 'Developer-chosen name used by this function.';
+  }
+  if(p==='ms'||p==='milliseconds')return 'Delay or interval in milliseconds. Foreground repeating timers enforce at least 50 ms; background work has a kernel-enforced minimum interval.';
+  if(p==='eventName')return 'MScript event handler name to trigger when the timer/background interval fires.';
+  if(p==='yesLabel')return 'Text displayed on the affirmative dialog button.';
+  if(p==='noLabel')return 'Text displayed on the cancel/negative dialog button.';
+  if(p==='expression'||p==='expr')return path==='system.execute'?'One complete MScript expression to evaluate, for example math.random(1, 10) or system.info("version").':'Arithmetic expression text. math.eval accepts digits, arithmetic operators, decimal points, parentheses, and whitespace only.';
+  if(p==='decimals'||p==='d')return 'Number of decimal places to retain when rounding.';
+  if(p==='power'||p==='p')return 'Exponent applied to the base value.';
+  if(p==='query'||p==='q')return 'Text to search for inside the source value.';
+  if(p==='old')return 'Text to search for and replace.';
+  if(p==='new')return 'Replacement text inserted wherever the old text occurs.';
+  if(p==='start')return path==='text.slice'?'Zero-based starting character index.':'Starting numeric value.';
+  if(p==='end')return path==='text.slice'?'Optional zero-based ending character index; the character at end is not included.':'Ending numeric value.';
+  if(p==='index')return 'Zero-based position to retrieve from the separated text.';
+  if(p==='count')return 'Number of repetitions. Runtime safety caps may apply.';
+  if(p==='a')return path==='text.replace'?'Text to find.':'First numeric/input operand.';
+  if(p==='b')return path==='text.replace'?'Replacement text.':'Second numeric/input operand.';
+  if(p==='v')return 'Value converted or processed by the function.';
+  if(p==='text')return 'Text content to display, copy, parse, or transform.';
+  return 'Input consumed by this function.';
+}
+function apiParamQuoteRule(path,param){
+  const p=String(param).split('=')[0].trim();
+  if(path.startsWith('ui.')&&p==='id')return 'Quotes optional for a literal control ID: save and "save" are equivalent. Use no quotes when passing a variable or function result.';
+  if(p==='htmlFile')return 'A literal HTML document must be inside quotes (escape internal quotes/newlines), but a variable or function result containing HTML is passed without quotes. For large documents, storing the HTML in app data and passing that value is recommended.';
+  const type=apiParamType(path,p);
+  if(type==='text')return 'Literal text requires single or double quotes. Variables and function results are written without quotes.';
+  if(type==='boolean')return 'Do not quote boolean literals: use true or false. Variables and function results are also unquoted.';
+  if(type==='number / value')return 'Do not quote numeric literals. Variables and numeric function results are unquoted; quoting a number turns it into text.';
+  if(type==='any')return 'Depends on the value: quote literal text; do not quote numbers, true, false, or null. Variables/function results are unquoted.';
+  return 'Use quotes only when the value you are supplying is literal text. Numbers, booleans, null, variables, and function results are unquoted.';
+}
+function apiFunctionSummary(path){
+  const summaries={
+    'permission.disableSuperuser':'Relinquishes Superuser only when called by the current Superuser holder itself. It takes no parameters and returns true on success.',
+    'permission.ask':'Shows a MellorsOS permission sheet when needed and returns true when permission is available, false when declined/unavailable.',
+    'permission.set':'Changes an ordinary permission. Requires Modify permissions; it can never grant, revoke, or transfer Superuser.',
+    'app.install':'Validates complete MScript source, then installs it when authorized. Returns true on success or false when validation/installation fails.',
+    'app.remove':'Uninstalls a user app; the current Superuser holder can also remove built-in system apps.',
+    'ui.html':'Runs a complete HTML/CSS/JavaScript document inside an isolated in-app iframe while MellorsOS continues running around it.',
+    'math.random':'Returns a random numeric value between min (inclusive) and max (exclusive).',
+    'system.execute':'Evaluates one MScript expression directly in the current runtime. Restricted to built-in system apps or the actual Superuser holder.',
+    'dialog.alert':'Shows a native MellorsOS alert and resumes MScript after dismissal.',
+    'dialog.confirm':'Shows a native confirmation and returns true for Confirm or false for Cancel.',
+    'dialog.danger':'Shows a danger-styled confirmation and returns true or false.',
+    'dialog.choose':'Shows a native two-choice dialog with custom button labels and returns true or false.',
+    'events.emit':'Queues a custom event in the current app.',
+    'toast':'Top-level shorthand for system.toast().' 
+  };
+  if(summaries[path])return summaries[path];
+  const [ns,name]=path.includes('.')?path.split('.'):[null,path];
+  const verbs={get:'Reads',set:'Writes',has:'Checks',clear:'Clears',count:'Counts',list:'Lists',open:'Opens',close:'Closes',remove:'Removes',exists:'Checks whether',isRunning:'Checks whether',stop:'Stops',start:'Starts',reset:'Resets',toggle:'Toggles',name:'Returns a display name for',version:'Returns the version of',current:'Returns the current app id.',source:'Returns source code for',preview:'Runs a non-installed preview of',send:'Creates',install:'Installs',ask:'Requests',holder:'Returns the current Superuser holder id.',isSuperuser:'Returns whether this app is the actual Superuser holder.',after:'Schedules a one-shot timer.',every:'Schedules a repeating foreground timer.',emit:'Emits',info:'Returns system information selected by key.',time:'Returns the formatted local time.',date:'Returns the formatted local date.',now:'Returns the current epoch time in milliseconds.',uptime:'Returns emulator uptime in seconds.',random:'Returns a random integer between the supplied bounds.',storageBytes:'Returns estimated MellorsOS browser-storage use in bytes.',screenWidth:'Returns the emulator viewport width.',screenHeight:'Returns the emulator viewport height.',vibrate:'Requests device vibration when the browser supports it.',clipboard:'Copies text to the clipboard when browser permission allows it.'};
+  if(verbs[name])return verbs[name]+(verbs[name].endsWith('.')?'':` ${ns||'the requested value'}.`);
+  return `MScript ${path} API function.`;
+}
+function sandboxHTMLDocument(source){
+  const html=String(source??'');
+  const csp=`<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' blob:; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'; media-src data: blob:; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">`;
+  const charset='<meta charset="UTF-8">';
+  if(/<head(?:\s[^>]*)?>/i.test(html))return html.replace(/<head(?:\s[^>]*)?>/i,m=>m+charset+csp);
+  if(/<html(?:\s[^>]*)?>/i.test(html))return html.replace(/<html(?:\s[^>]*)?>/i,m=>m+`<head>${charset}${csp}</head>`);
+  return `<!doctype html><html><head>${charset}${csp}</head><body>${html}</body></html>`;
+}
+
+function apiReferenceHTML(rt){
+  const groups=[];
+  for(const [ns,obj] of Object.entries(rt.api)){
+    if(typeof obj==='function'){groups.push({name:'Top-level',items:[[ns,obj]]});continue;}
+    if(!obj||typeof obj!=='object')continue;
+    const items=Object.entries(obj).filter(([,fn])=>typeof fn==='function').map(([name,fn])=>[`${ns}.${name}`,fn]);
+    if(items.length)groups.push({name:ns,items});
+  }
+  groups.sort((a,b)=>a.name.localeCompare(b.name));
+  return groups.map(group=>{
+    const cards=group.items.sort((a,b)=>a[0].localeCompare(b[0])).map(([path,fn])=>{
+      const src=Function.prototype.toString.call(fn);const m=src.match(/^[^(]*\(([^)]*)\)/);const params=(m?m[1]:'').split(',').map(x=>x.trim()).filter(Boolean);
+      const paramRows=params.length?params.map(raw=>{const name=raw.split('=')[0].trim(),def=raw.includes('=')?raw.slice(raw.indexOf('=')+1).trim():'';return `<div class="row" style="align-items:flex-start"><div class="row-main"><div class="row-title">${escapeHTML(name)} <span class="small">· ${escapeHTML(apiParamType(path,name))}</span></div><div class="row-sub">${escapeHTML(apiParamDescription(path,name))}${def?` Default: ${escapeHTML(def)}.`:''}</div><div class="row-sub" style="margin-top:4px"><strong>Quotes:</strong> ${escapeHTML(apiParamQuoteRule(path,name))}</div></div></div>`;}).join(''):'<div class="row-sub"><strong>Parameters:</strong> none. Nothing goes inside the parentheses.</div>';
+      return `<div class="card"><pre class="code" style="margin-top:0">${escapeHTML(path+'('+params.join(', ')+')')}</pre><div class="row-sub" style="margin:8px 0 10px">${escapeHTML(apiFunctionSummary(path))}</div>${paramRows}</div>`;
+    }).join('');
+    return `<div class="section-title">${escapeHTML(group.name)} parameters</div>${cards}`;
+  }).join('');
+}
+
+class MRuntime{
+  constructor(app){this.app=app;this.vars={};this.dom={};this.timerNames=new Set();this.foregroundTimers=new Map();this.permissionResume=new Map();this.permissionPromptPending=false;this.dialogResume=new Map();this.dialogPromptPending=false;this.destroying=false;this.startedAt=Date.now();this.functions={};this.api=this.makeAPI();for(const [name,fn] of Object.entries(app.functions)){this.functions[name]=(...args)=>{const local={...this.vars};fn.args.forEach((a,i)=>local[a]=args[i]);const r=this.exec(fn.body,local);return r?.returned?r.value:null;};}}
+  exec(stmts,env=this.vars){let guard=0;for(const st of stmts){if(++guard>5000)throw new MScriptError('Execution limit exceeded',st.line);try{if(st.k==='set'){env[st.name]=evalExpression(st.expr,env,this);this.vars[st.name]=env[st.name];}
+      else if(st.k==='expr')evalExpression(st.expr,env,this);
+      else if(st.k==='if'){const r=this.exec(evalExpression(st.expr,env,this)?st.yes:st.no,env);if(r?.returned||r?.broken||r?.continued)return r;}
+      else if(st.k==='while'){let loops=0;while(evalExpression(st.expr,env,this)){if(++loops>1000)throw new MScriptError('Loop limit exceeded',st.line);const r=this.exec(st.body,env);if(r?.returned)return r;if(r?.broken)break;if(r?.continued)continue;}}
+      else if(st.k==='repeat'){const count=Math.max(0,Math.floor(Number(evalExpression(st.expr,env,this))||0));if(count>1000)throw new MScriptError('Loop limit exceeded',st.line);for(let index=0;index<count;index++){env.index=index;this.vars.index=index;const r=this.exec(st.body,env);if(r?.returned)return r;if(r?.broken)break;if(r?.continued)continue;}}
+      else if(st.k==='for'){const from=Number(evalExpression(st.start,env,this)),to=Number(evalExpression(st.end,env,this));if(!Number.isFinite(from)||!Number.isFinite(to))throw new MScriptError('For loop bounds must be numbers',st.line);const step=from<=to?1:-1;if(Math.abs(to-from)>1000)throw new MScriptError('Loop limit exceeded',st.line);for(let value=from;step>0?value<=to:value>=to;value+=step){env[st.name]=value;this.vars[st.name]=value;const r=this.exec(st.body,env);if(r?.returned)return r;if(r?.broken)break;if(r?.continued)continue;}}
+      else if(st.k==='break')return{broken:true};
+      else if(st.k==='continue')return{continued:true};
+      else if(st.k==='return')return{returned:true,value:evalExpression(st.expr,env,this)};
+    }catch(e){if(!e.line)e.line=st.line;throw e;}}}
+  trigger(name,event={}){const exact=this.app.events[name]||this.app.events[name.split(' ')[0]];if(!exact)return;this.vars.event=event;try{const r=this.exec(exact,this.vars);return r?.value;}catch(e){if(e?.isPermissionPrompt){if(this.permissionPromptPending)return false;this.permissionPromptPending=true;handlePermissionPrompt(this,e.permission).then(answer=>{this.permissionPromptPending=false;this.permissionResume.set(e.permission,!!answer);if(state.appInstances.get(this.app.meta.id)===this)this.trigger(name,event);});return false;}if(e?.isDialogPrompt){if(this.dialogPromptPending)return false;this.dialogPromptPending=true;handleDialogPrompt(e).then(answer=>{this.dialogPromptPending=false;this.dialogResume.set(e.key,answer);if(state.appInstances.get(this.app.meta.id)===this)this.trigger(name,event);});return false;}if(e?.isPermissionDenied){crashForPermission(this,e);return false;}showRuntimeError(this.app,e);return false;}}
+  mount(){this.api.ui.clear();this.trigger('start',{type:'start'});this.trigger('resume',{type:'resume',reason:'open'});}
+  destroy(reason='close'){if(this.destroying)return;this.destroying=true;try{this.trigger('close',{type:'close',reason});}catch{}for(const n of this.timerNames) backgroundStop(this.app.meta.id,n);for(const h of this.foregroundTimers.values()){if(h.kind==='interval')clearInterval(h.id);else clearTimeout(h.id);}this.foregroundTimers.clear();}
+  makeAPI(){ const rt=this;
+    const append=html=>{const page=root.querySelector('.app-page'); if(page) page.insertAdjacentHTML('beforeend',html);};
+    const bind=(id,type,handler)=>{queueMicrotask(()=>{const el=document.getElementById(rt.uid(id));if(el)el.addEventListener(type,handler);});};
+    return {
+      ui:{
+        clear(){root.innerHTML=`<section class="screen"><div class="app-page"></div></section>`;rt.dom={};},
+        header(title,subtitle=''){
+          const page=root.querySelector('.app-page');if(!page)return;
+          let header=page.querySelector('.app-header');
+          if(!header){
+            header=document.createElement('div');
+            header.className='app-header';
+            header.innerHTML=`<div class="app-header-icon" style="background:${escapeHTML(rt.app.meta.color)}">${escapeHTML(rt.app.meta.icon)}</div><div><div class="app-header-title"></div><div class="app-header-sub"></div></div>`;
+            page.prepend(header);
+          }
+          const h=header.querySelector('.app-header-title'),s=header.querySelector('.app-header-sub');
+          if(h)h.textContent=title;
+          if(s)s.textContent=subtitle;
+        },
+        section(title){append(`<div class="section-title">${escapeHTML(title)}</div>`);},
+        text(text,style=''){append(`<div class="${style==='small'?'small':''}" style="margin:8px 3px;line-height:1.55">${escapeHTML(text)}</div>`);},
+        rich(title,body,icon='◆'){append(`<div class="card"><div class="row"><div style="font-size:1.5rem">${escapeHTML(icon)}</div><div class="row-main"><div class="row-title">${escapeHTML(title)}</div><div class="row-sub">${escapeHTML(body)}</div></div></div></div>`);},
+        card(title,body=''){append(`<div class="card"><div class="row-title">${escapeHTML(title)}</div>${body?`<div class="row-sub">${escapeHTML(body)}</div>`:''}</div>`);},
+        menu(id,title,subtitle='',icon='◆',value=''){append(`<button id="${rt.uid(id)}" class="menu-entry"><span class="menu-icon">${escapeHTML(icon)}</span><span class="menu-copy"><span class="row-title">${escapeHTML(title)}</span>${subtitle?`<span class="row-sub" style="display:block">${escapeHTML(subtitle)}</span>`:''}</span>${value?`<span class="menu-value">${escapeHTML(value)}</span>`:''}<span class="menu-chevron">›</span></button>`);bind(id,'click',()=>{vibrate();rt.trigger(`click ${id}`,{type:'click',id});rt.trigger('click',{type:'click',id});});},
+        alert(title,body='',kind='info'){const k=['info','warning','danger','success'].includes(String(kind))?String(kind):'info';append(`<div class="card alert ${k}"><div class="row-title">${escapeHTML(title)}</div>${body?`<div class="row-sub">${escapeHTML(body)}</div>`:''}</div>`);},
+        divider(){append('<div class="ui-divider"></div>');},
+        spacer(px=10){append(`<div style="height:${Math.max(0,Math.min(100,Number(px)||10))}px"></div>`);},
+        badge(text,kind='default'){append(`<span class="badge" data-kind="${escapeHTML(kind)}">${escapeHTML(text)}</span>`);},
+        stat(label,value){append(`<span class="ui-stat"><strong>${escapeHTML(value)}</strong><span class="small">${escapeHTML(label)}</span></span>`);},
+        progress(title,value,max=100){const pct=Math.max(0,Math.min(100,(Number(value)/(Number(max)||100))*100));append(`<div class="card"><div class="row"><div class="row-title">${escapeHTML(title)}</div><div class="value">${escapeHTML(value)} / ${escapeHTML(max)}</div></div><div class="progress" style="margin-top:10px"><i style="width:${pct}%"></i></div></div>`);},
+        label(id,text,style=''){append(`<div id="${rt.uid(id)}" class="${style==='small'?'small':''}" style="margin:8px 3px;line-height:1.5">${escapeHTML(text)}</div>`);},
+        infoRow(title,value,subtitle=''){append(`<div class="card"><div class="row"><div class="row-main"><div class="row-title">${escapeHTML(title)}</div>${subtitle?`<div class="row-sub">${escapeHTML(subtitle)}</div>`:''}</div><div class="value">${escapeHTML(value)}</div></div></div>`);},
+        button(id,label,kind='primary'){append(`<button id="${rt.uid(id)}" class="${['primary','secondary','danger','ghost'].includes(kind)?kind:'primary'}">${escapeHTML(label)}</button>`);bind(id,'click',()=>{vibrate();rt.trigger(`click ${id}`,{type:'click',id});rt.trigger('click',{type:'click',id});});},
+        input(id,label,value='',type='text'){append(`<label class="small">${escapeHTML(label)}</label><input id="${rt.uid(id)}" class="input" type="${escapeHTML(type)}" value="${escapeHTML(value)}" />`);bind(id,'input',e=>{rt.trigger(`input ${id}`,{type:'input',id,value:e.target.value});rt.trigger('input',{type:'input',id,value:e.target.value});});},
+        numberInput(id,label,value=0,min='',max='',step=1){append(`<label class="small">${escapeHTML(label)}</label><input id="${rt.uid(id)}" class="input" type="number" value="${escapeHTML(value)}" min="${escapeHTML(min)}" max="${escapeHTML(max)}" step="${escapeHTML(step)}" />`);bind(id,'input',e=>{const value=Number(e.target.value);rt.trigger(`input ${id}`,{type:'input',id,value});rt.trigger('input',{type:'input',id,value});});},
+        password(id,label,value=''){return rt.api.ui.input(id,label,value,'password');},
+        search(id,label,value=''){return rt.api.ui.input(id,label,value,'search');},
+        colorInput(id,label,value='#6d7cff'){return rt.api.ui.input(id,label,value,'color');},
+        dateInput(id,label,value=''){return rt.api.ui.input(id,label,value,'date');},
+        timeInput(id,label,value=''){return rt.api.ui.input(id,label,value,'time');},
+        textarea(id,label,value='',placeholder=''){append(`<label class="small">${escapeHTML(label)}</label><textarea id="${rt.uid(id)}" class="input" placeholder="${escapeHTML(placeholder)}">${escapeHTML(value)}</textarea>`);bind(id,'input',e=>rt.trigger(`input ${id}`,{type:'input',id,value:e.target.value}));},
+        codeEditor(id,value=''){append(`<textarea id="${rt.uid(id)}" class="input code-editor" spellcheck="false">${escapeHTML(value)}</textarea>`);},
+        code(text){append(`<pre class="code">${escapeHTML(text)}</pre>`);},
+        toggle(id,title,on=false,subtitle=''){append(`<div class="card"><div class="row"><div class="row-main"><div class="row-title">${escapeHTML(title)}</div>${subtitle?`<div class="row-sub">${escapeHTML(subtitle)}</div>`:''}</div><div id="${rt.uid(id)}" class="toggle ${on?'on':''}" role="switch" aria-checked="${on}"></div></div></div>`);bind(id,'click',e=>{e.currentTarget.classList.toggle('on');const value=e.currentTarget.classList.contains('on');e.currentTarget.setAttribute('aria-checked',value);vibrate();rt.trigger(`change ${id}`,{type:'change',id,value});rt.trigger('change',{type:'change',id,value});});},
+        slider(id,title,value,min,max,step=1){append(`<div class="card"><div class="row"><div class="row-main"><div class="row-title">${escapeHTML(title)}</div><div class="row-sub" id="${rt.uid(id+'Value')}">${escapeHTML(value)}</div></div><input id="${rt.uid(id)}" class="range" type="range" min="${min}" max="${max}" step="${step}" value="${value}"></div></div>`);bind(id,'input',e=>{$('#'+CSS.escape(rt.uid(id+'Value'))).textContent=e.target.value;rt.trigger(`change ${id}`,{type:'change',id,value:Number(e.target.value)});rt.trigger('change',{type:'change',id,value:Number(e.target.value)});});},
+        select(id,title,value,optionsCSV){const opts=String(optionsCSV).split('|').map(x=>{const [v,l]=x.includes(':')?x.split(':'):[x,x];return`<option value="${escapeHTML(v)}" ${String(v)===String(value)?'selected':''}>${escapeHTML(l)}</option>`}).join('');append(`<div class="card"><div class="row-title">${escapeHTML(title)}</div><select id="${rt.uid(id)}" class="input">${opts}</select></div>`);bind(id,'change',e=>{rt.trigger(`change ${id}`,{type:'change',id,value:e.target.value});rt.trigger('change',{type:'change',id,value:e.target.value});});},
+        segmented(id,title,value,optionsCSV){const opts=String(optionsCSV).split('|').filter(Boolean);append(`<div class="card"><div class="row-title" style="margin-bottom:9px">${escapeHTML(title)}</div><div id="${rt.uid(id)}" class="segmented">${opts.map(x=>{const [v,l]=x.includes(':')?x.split(':'):[x,x];return`<button class="segment ${String(v)===String(value)?'selected':''}" data-seg-value="${escapeHTML(v)}">${escapeHTML(l)}</button>`}).join('')}</div></div>`);queueMicrotask(()=>{const host=document.getElementById(rt.uid(id));host?.querySelectorAll('[data-seg-value]').forEach(el=>el.onclick=()=>{host.querySelectorAll('.segment').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');rt.trigger(`change ${id}`,{type:'change',id,value:el.dataset.segValue});rt.trigger('change',{type:'change',id,value:el.dataset.segValue});});});},
+        chips(id,title,selected,optionsCSV){const opts=String(optionsCSV).split('|').filter(Boolean);append(`<div class="card"><div class="row-title" style="margin-bottom:9px">${escapeHTML(title)}</div><div id="${rt.uid(id)}" class="chip-wrap">${opts.map(x=>{const [v,l]=x.includes(':')?x.split(':'):[x,x];return`<button class="chip ${String(v)===String(selected)?'selected':''}" data-chip-value="${escapeHTML(v)}">${escapeHTML(l)}</button>`}).join('')}</div></div>`);queueMicrotask(()=>{const host=document.getElementById(rt.uid(id));host?.querySelectorAll('[data-chip-value]').forEach(el=>el.onclick=()=>{host.querySelectorAll('.chip').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');rt.trigger(`change ${id}`,{type:'change',id,value:el.dataset.chipValue});rt.trigger('change',{type:'change',id,value:el.dataset.chipValue});});});},
+        value(id){const el=document.getElementById(rt.uid(id));if(!el)return'';if(el.classList.contains('toggle'))return el.classList.contains('on');return el.value;},
+        setValue(id,value){const el=document.getElementById(rt.uid(id));if(el)el.value=value;return value;},
+        clearValue(id){const el=document.getElementById(rt.uid(id));if(el)el.value='';},
+        setText(id,text){const el=document.getElementById(rt.uid(id));if(el)el.textContent=String(text);return !!el;},
+        setVisible(id,visible){const el=document.getElementById(rt.uid(id));if(el)el.classList.toggle('ui-hidden',!visible);return !!el;},
+        setEnabled(id,enabled){const el=document.getElementById(rt.uid(id));if(el){el.disabled=!enabled;el.classList.toggle('ui-disabled',!enabled);}return !!el;},
+        remove(id){const el=document.getElementById(rt.uid(id));if(el)el.remove();return !!el;},
+        exists(id){return !!document.getElementById(rt.uid(id));},
+        focus(id){const el=document.getElementById(rt.uid(id));el?.focus();return !!el;},
+        scrollTop(){root.querySelector('.screen')?.scrollTo({top:0,behavior:settings.reduceMotion?'auto':'smooth'});return true;},
+        noteList(prefix='notes.file.'){const keys=store.keys(prefix).sort();append(`<div class="card" id="${rt.uid('noteList')}">${keys.length?keys.map(k=>{const name=k.slice(prefix.length);const val=store.rawGet(k,'');return`<div class="file-item" data-note="${escapeHTML(name)}"><div class="file-icon">📄</div><div class="file-name">${escapeHTML(name)}</div><div class="file-meta">${String(val).length} chars</div></div>`}).join(''):'<div class="small center">No saved notes yet.</div>'}</div>`);queueMicrotask(()=>document.querySelectorAll(`#${CSS.escape(rt.uid('noteList'))} [data-note]`).forEach(el=>el.onclick=()=>rt.trigger('openNote',{type:'openNote',value:el.dataset.note})));},
+        appList(){const apps=getAllApps().sort((a,b)=>a.meta.name.localeCompare(b.meta.name));append(`<div class="card">${apps.map(a=>`<div class="file-item" data-app="${a.meta.id}"><div class="file-icon">${escapeHTML(a.meta.icon)}</div><div class="file-name">${escapeHTML(a.meta.name)}</div><div class="file-meta">${a.system?'System':'Installed'}</div></div>`).join('')}</div>`);queueMicrotask(()=>document.querySelectorAll('[data-app]').forEach(el=>el.onclick=()=>openApp(el.dataset.app)));},
+        storageView(){const keys=store.keys().sort();const size=new Blob(storageKeys().map(k=>{try{return localStorage.getItem(k)||memoryStorage.get(k)||'';}catch{return memoryStorage.get(k)||'';}})).size;append(`<div class="card"><div class="big-number">${(size/1024).toFixed(1)} KB</div><div class="small">Local browser storage used by MellorsOS</div><div class="progress" style="margin-top:12px"><i style="width:${Math.min(100,size/1024/2)}%"></i></div></div><div class="card">${keys.map(k=>`<div class="file-item"><div class="file-icon">▣</div><div class="file-name">${escapeHTML(k)}</div><div class="file-meta">${JSON.stringify(store.rawGet(k,'')).length} B</div></div>`).join('')||'<div class="small">Storage is empty.</div>'}</div>`);},
+        notificationList(){const ns=state.notifications;append(`<div class="card">${ns.length?ns.map(n=>`<div class="notif"><span class="notif-time">${new Date(n.time).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}</span><div class="notif-title">${escapeHTML(n.title)}</div><div class="notif-body">${settings.notificationPreview===false?'Preview hidden':escapeHTML(n.body)}</div></div>`).join(''):'<div class="small center">No notifications.</div>'}</div>`);},
+        calculator(){append(`<div class="card calc-display" id="${rt.uid('calcDisplay')}">0</div><div class="keypad">${['C','(',')','÷','7','8','9','×','4','5','6','−','1','2','3','+','0','.','⌫','='].map(k=>`<button class="key ${['÷','×','−','+'].includes(k)?'op':''} ${k==='='?'eq':''}" data-key="${k}">${k}</button>`).join('')}</div>`);queueMicrotask(()=>document.querySelectorAll('.key').forEach(b=>b.onclick=()=>rt.trigger('key',{type:'key',value:b.dataset.key})));},
+        calcSet(v){const el=document.getElementById(rt.uid('calcDisplay'));if(el)el.textContent=v;},
+        wallpaperPicker(){const names=['aurora','ocean','sunset','forest','mono'];const bg={aurora:'linear-gradient(145deg,#172c68,#39265e)',ocean:'linear-gradient(145deg,#0b566c,#123b75)',sunset:'linear-gradient(145deg,#873b56,#ca6651)',forest:'linear-gradient(145deg,#153d3a,#1f5b48)',mono:'linear-gradient(145deg,#1f2330,#11131b)'};append(`<div class="card">${names.map(n=>`<button aria-label="${n}" data-wall="${n}" class="wallpaper-swatch ${settings.wallpaper===n?'selected':''}" style="background:${bg[n]}"></button>`).join('')}</div>`);queueMicrotask(()=>document.querySelectorAll('[data-wall]').forEach(el=>el.onclick=()=>rt.trigger('wallpaper',{type:'wallpaper',value:el.dataset.wall})));},
+        accentPicker(){const colors=['#6d7cff','#f0528a','#21b8a6','#ff914d','#9a64ff','#3c94ff','#e6b63c'];append(`<div class="card">${colors.map(c=>`<button aria-label="${c}" data-accent="${c}" class="accent-swatch" style="background:${c}"></button>`).join('')}</div>`);queueMicrotask(()=>document.querySelectorAll('[data-accent]').forEach(el=>el.onclick=()=>rt.trigger('accent',{type:'accent',value:el.dataset.accent})));},
+        logView(){append(`<div class="log">${state.logs.map(escapeHTML).join('<br>')||'No runtime messages.'}</div>`);},
+        appManager(){
+          requirePermission(rt,'modifyPermissions');
+          const containerId=rt.uid('appManager');append(`<div id="${containerId}"></div>`);
+          const render=()=>{
+            const container=document.getElementById(containerId);if(!container)return;
+            const apps=getAllApps().sort((a,b)=>a.meta.name.localeCompare(b.meta.name));const hidden=getHiddenApps();const holder=superuserHolder();const managerOwnsSuperuser=holder===rt.app.meta.id;
+            container.innerHTML=apps.map(a=>{
+              const rec=permissionRecord(a.meta.id),isHolder=!a.system&&holder===a.meta.id,isHidden=hidden.includes(a.meta.id);
+              const permissions=Object.entries(PERMISSIONS).map(([key,label])=>{
+                if(a.system)return `<div class="row"><div class="row-main"><div class="row-title">${escapeHTML(label)}</div><div class="row-sub">Built-in system permission</div></div><div class="toggle on permission-inherited" role="switch" aria-checked="true"></div></div>`;
+                if(key==='superuser')return `<div class="row"><div class="row-main"><div class="row-title">${escapeHTML(label)}</div><div class="row-sub">${isHolder?'Enabled. Only this app can disable it with permission.disableSuperuser(), or factory reset can remove it.':'Can only be enabled when this app requests it with permission.ask("superuser").'}</div></div><div class="toggle ${isHolder?'on':''} disabled-control" role="switch" aria-checked="${isHolder}"></div></div>`;
+                return `<div class="row"><div class="row-main"><div class="row-title">${escapeHTML(label)}</div>${isHolder?'<div class="row-sub">Inherited through Superuser</div>':''}</div><div class="toggle ${(isHolder||rec[key]===true)?'on':''} ${isHolder?'permission-inherited':''}" data-manager-perm-app="${escapeHTML(a.meta.id)}" data-manager-perm="${key}" role="switch" aria-checked="${isHolder||rec[key]===true}"></div></div>`;
+              }).join('');
+              return `<div class="card app-manager-card"><div class="row"><div class="row-main"><div class="row-title">${escapeHTML(a.meta.icon)} ${escapeHTML(a.meta.name)}</div><div class="row-sub">${escapeHTML(a.meta.id)}</div></div><div>${a.system?'<span class="status-pill system">SYSTEM</span>':isHolder?'<span class="status-pill superuser">SUPERUSER</span>':'<span class="status-pill">USER APP</span>'}</div></div>${permissions}<div class="row"><div class="row-main"><div class="row-title">Shown on Home screen</div><div class="row-sub">${a.meta.id==='settings'?'Settings stays visible to prevent management lockout.':'Hidden apps remain available from App Library.'}</div></div><div class="toggle ${isHidden?'':'on'} ${a.meta.id==='settings'?'disabled-control':''}" data-manager-visible-app="${escapeHTML(a.meta.id)}" role="switch" aria-checked="${!isHidden}"></div></div><div class="manager-actions">${a.system?(managerOwnsSuperuser?`<button class="danger" data-manager-uninstall="${escapeHTML(a.meta.id)}">Remove built-in system app</button>`:'<button class="secondary disabled-control">Built-in app · Superuser required to remove</button>'):isHolder?'<button class="danger disabled-control">Disable Superuser inside the app before uninstalling</button>':`<button class="danger" data-manager-uninstall="${escapeHTML(a.meta.id)}">Uninstall & erase app data</button>`}</div></div>`;
+            }).join('');
+            container.querySelectorAll('[data-manager-perm-app]').forEach(el=>el.onclick=()=>{const value=!el.classList.contains('on');el.classList.toggle('on',value);el.setAttribute('aria-checked',value);rt.trigger('permissionChange',{type:'permissionChange',appId:el.dataset.managerPermApp,permission:el.dataset.managerPerm,value});});
+            container.querySelectorAll('[data-manager-visible-app]').forEach(el=>{if(el.classList.contains('disabled-control'))return;el.onclick=()=>{const newShown=!el.classList.contains('on');el.classList.toggle('on',newShown);el.setAttribute('aria-checked',newShown);rt.trigger('appVisibility',{type:'appVisibility',appId:el.dataset.managerVisibleApp,hidden:!newShown});};});
+            container.querySelectorAll('[data-manager-uninstall]').forEach(el=>el.onclick=()=>{const appId=el.dataset.managerUninstall,target=getApp(appId);showOSDialog({icon:'🗑️',title:'Uninstall app?',message:`Uninstall ${target?.meta.name||appId}?`,detail:target?.system?'Superuser will disable this embedded built-in app and erase its app data. The original can later be restored with app.restoreSystem().':'Its installed MScript code, private app data, permission record, background processes, and Home-screen state will be erased.',buttons:[{label:'Cancel',value:false,kind:'secondary'},{label:'Uninstall & erase data',value:true,kind:'danger'}]}).then(ok=>{if(ok)rt.trigger('uninstallManagedApp',{type:'uninstallManagedApp',appId});});});
+          };
+          rt.dom.appManagerRender=render;queueMicrotask(render);
+        },
+        refreshAppManager(){if(typeof rt.dom.appManagerRender==='function')rt.dom.appManagerRender();return true;},
+        apiReference(){append(apiReferenceHTML(rt));return true;},
+        html(htmlFile){
+          const page=root.querySelector('.app-page');if(!page)return false;
+          const frame=document.createElement('iframe');
+          frame.className='ms-html-frame';
+          frame.setAttribute('sandbox','allow-scripts');
+          frame.setAttribute('referrerpolicy','no-referrer');
+          frame.setAttribute('title',`${rt.app.meta.name} HTML surface`);
+          const header=page.querySelector('.app-header');
+          frame.style.height=Math.max(260,root.clientHeight-(header?header.offsetHeight:0)-70)+'px';
+          frame.srcdoc=sandboxHTMLDocument(htmlFile);
+          page.appendChild(frame);
+          return true;
+        },
+        htmlSafe(text){append(`<div class="card">${escapeHTML(text)}</div>`);} 
+      },
+      data:{
+        get(key,fallback=''){return store.rawGet(`app.${rt.app.meta.id}.${key}`,fallback);},
+        set(key,value){store.rawSet(`app.${rt.app.meta.id}.${key}`,value);rt.trigger('dataChange',{type:'dataChange',key:String(key),value});return value;},
+        delete(key){store.rawDelete(`app.${rt.app.meta.id}.${key}`);rt.trigger('dataChange',{type:'dataChange',key:String(key),deleted:true});return true;},
+        keys(prefix=''){return store.keys(`app.${rt.app.meta.id}.${prefix}`).map(k=>k.slice(`app.${rt.app.meta.id}.`.length)).join('|');},
+        has(key){return store.keys(`app.${rt.app.meta.id}.`).includes(`app.${rt.app.meta.id}.${key}`);},
+        clear(){for(const k of store.keys(`app.${rt.app.meta.id}.`))store.rawDelete(k);rt.trigger('dataChange',{type:'dataChange',clear:true});return true;},
+        count(prefix=''){return store.keys(`app.${rt.app.meta.id}.${prefix}`).length;},
+        append(key,value,separator=''){const next=String(store.rawGet(`app.${rt.app.meta.id}.${key}`,'')??'')+String(separator)+String(value);store.rawSet(`app.${rt.app.meta.id}.${key}`,next);rt.trigger('dataChange',{type:'dataChange',key:String(key),value:next});return next;},
+        increment(key,amount=1){const next=Number(store.rawGet(`app.${rt.app.meta.id}.${key}`,0)||0)+Number(amount||0);store.rawSet(`app.${rt.app.meta.id}.${key}`,next);rt.trigger('dataChange',{type:'dataChange',key:String(key),value:next});return next;},
+        globalGet(key,fallback=''){const k=rt.app.system||hasPermission(rt.app,'superuser')?String(key):`shared.${String(key)}`;return store.rawGet(k,fallback);},
+        globalSet(key,value){const raw=String(key);if(['permissions','installedApps','disabledSystemApps'].includes(raw))throw new MScriptError('That storage record is kernel-managed');const k=rt.app.system||hasPermission(rt.app,'superuser')?raw:`shared.${raw}`;store.rawSet(k,value);return value;},
+        globalDelete(key){const raw=String(key);if(['permissions','installedApps','disabledSystemApps'].includes(raw))throw new MScriptError('That storage record is kernel-managed');const k=rt.app.system||hasPermission(rt.app,'superuser')?raw:`shared.${raw}`;store.rawDelete(k);return true;},
+        globalKeys(prefix=''){const p=rt.app.system||hasPermission(rt.app,'superuser')?String(prefix):`shared.${String(prefix)}`;return store.keys(p).map(k=>(rt.app.system||hasPermission(rt.app,'superuser'))?k:k.slice(7)).join('|');},
+        globalHas(key){const k=rt.app.system||hasPermission(rt.app,'superuser')?String(key):`shared.${String(key)}`;return store.keys().includes(k);}
+      },
+      settings:{
+        get(key,fallback=''){return settings[key]??fallback;},
+        has(key){return Object.prototype.hasOwnProperty.call(settings,String(key));},
+        set(key,value){requirePermission(rt,'settings');settings[key]=value;saveSettings();rt.trigger('settingsChange',{type:'settingsChange',key:String(key),value});return value;},
+        toggle(key){requirePermission(rt,'settings');settings[key]=!settings[key];saveSettings();rt.trigger('settingsChange',{type:'settingsChange',key:String(key),value:settings[key]});return settings[key];},
+        keys(){return Object.keys(settings).sort().join('|');},
+        reset(){requirePermission(rt,'settings');settings={...defaults};saveSettings();rt.trigger('settingsChange',{type:'settingsChange',reset:true});return true;}
+      },
+      app:{
+        open(id){openApp(String(id));return true;},home(){showHome();return true;},
+        close(id){const target=String(id||rt.app.meta.id);if(target!==rt.app.meta.id&&!rt.app.system&&!hasPermission(rt.app,'superuser'))requirePermission(rt,'superuser');closeRecent(target);return true;},
+        install(source){requirePermission(rt,'installApps');return installMScript(String(source),rt.app.meta.id);},
+        remove(id){requirePermission(rt,'installApps');return uninstallApp(String(id),rt.app.meta.id);},
+        restoreSystem(id){if(superuserHolder()!==rt.app.meta.id)throw new MScriptError('Only the current Superuser app can restore built-in system apps');return restoreSystemApp(String(id));},
+        source(id){const a=getApp(String(id));return a?.source||'';},preview(source){return previewMScript(String(source));},
+        exists(id){return !!getApp(String(id));},list(){return getAllApps().map(a=>a.meta.id).sort().join('|');},
+        name(id){return getApp(String(id))?.meta.name||'';},version(id){return getApp(String(id))?.meta.version||'';},
+        current(){return rt.app.meta.id;},isSystem(id){return !!getApp(String(id))?.system;},isHidden(id){return getHiddenApps().includes(String(id));},
+        setHidden(id,hidden){if(!rt.app.system)requirePermission(rt,'superuser');return setAppHidden(String(id),!!hidden);},
+        disabledSystems(){return getDisabledSystemApps().join('|');}
+      },
+      notify:{
+        send(title,body){requirePermission(rt,'notifications');return notify(title,body,rt.app.meta.id);},
+        clear(){requirePermission(rt,'notifications');state.notifications=[];store.rawSet('notifications',[]);renderNotifications();return true;},
+        count(){return state.notifications.length;},
+        latestTitle(){return state.notifications[0]?.title||'';},latestBody(){return state.notifications[0]?.body||'';},
+        remove(id){requirePermission(rt,'notifications');const before=state.notifications.length;state.notifications=state.notifications.filter(n=>n.id!==String(id));store.rawSet('notifications',state.notifications);renderNotifications();return state.notifications.length<before;}
+      },
+      permission:{
+        ask(permission){return requestPermission(rt,permission);},has(permission){return hasPermission(rt.app,String(permission));},
+        set(appId,permission,value){requirePermission(rt,'modifyPermissions');if(arguments.length===2){value=permission;permission=appId;appId=rt.app.meta.id;}if(String(permission)==='superuser')return false;return setAppPermission(String(appId),String(permission),!!value);},
+        disableSuperuser(){if(rt.app.system)return false;return disableOwnSuperuser(rt.app.meta.id);},
+        name(permission){return permissionLabel(permission);},list(){return Object.keys(PERMISSIONS).join('|');},
+        holder(){return superuserHolder()||'';},isSuperuser(){return superuserHolder()===rt.app.meta.id;}
+      },
+      background:{
+        start(name,ms,eventName){requirePermission(rt,'background');backgroundStart(rt,String(name),Number(ms),String(eventName));return true;},
+        stop(name){backgroundStop(rt.app.meta.id,String(name));return true;},
+        isRunning(name){return state.background.has(`${rt.app.meta.id}:${String(name)}`);},
+        list(){return [...state.background.keys()].filter(k=>k.startsWith(rt.app.meta.id+':')).map(k=>k.slice(rt.app.meta.id.length+1)).join('|');}
+      },
+      timer:{
+        after(name,ms,eventName){const n=String(name);rt.api.timer.stop(n);const id=setTimeout(()=>{rt.foregroundTimers.delete(n);rt.trigger(String(eventName),{type:'timer',name:n,time:Date.now()});},Math.max(0,Number(ms)||0));rt.foregroundTimers.set(n,{id,kind:'timeout'});return true;},
+        every(name,ms,eventName){const n=String(name);rt.api.timer.stop(n);const id=setInterval(()=>rt.trigger(String(eventName),{type:'timer',name:n,time:Date.now()}),Math.max(50,Number(ms)||50));rt.foregroundTimers.set(n,{id,kind:'interval'});return true;},
+        stop(name){const n=String(name),h=rt.foregroundTimers.get(n);if(!h)return false;if(h.kind==='interval')clearInterval(h.id);else clearTimeout(h.id);rt.foregroundTimers.delete(n);return true;},
+        isRunning(name){return rt.foregroundTimers.has(String(name));},list(){return [...rt.foregroundTimers.keys()].join('|');}
+      },
+      dialog:{
+        alert(title,message,detail=''){return requestDialog(rt,'alert',title,message,detail,'OK','');},
+        confirm(title,message,detail=''){return requestDialog(rt,'confirm',title,message,detail,'Confirm','Cancel');},
+        danger(title,message,detail=''){return requestDialog(rt,'danger',title,message,detail,'Continue','Cancel');},
+        choose(title,message,yesLabel='Yes',noLabel='No',detail=''){return requestDialog(rt,'confirm',title,message,detail,yesLabel,noLabel);}
+      },
+      events:{emit(name,value=''){queueMicrotask(()=>rt.trigger(String(name),{type:'custom',name:String(name),value}));return true;}},
+      system:{
+        toast,log,
+        reset(){requirePermission(rt,'superuser');return requestFactoryReset();},
+        reboot(){requirePermission(rt,'superuser');location.reload();return true;},
+        setAppHidden(id,hidden){if(!rt.app.system)requirePermission(rt,'superuser');return setAppHidden(String(id),!!hidden);},
+        info(key){const info={name:'MellorsOS',version:'1.0 Release',engine:'MScript 1.0 Release',platform:navigator.platform||'Browser',language:navigator.language,online:'Offline / self-contained',apps:getAllApps().length,systemApps:getActiveSystemApps().length,userApps:getInstalled().length,storageKeys:store.keys().length,userAgent:navigator.userAgent,superuser:superuserHolder()||'None'};return info[key]??'';},
+        time(){return new Date().toLocaleTimeString([],{hour12:!settings.clock24h});},date(){return new Date().toLocaleDateString();},
+        now(){return Date.now();},uptime(){return Math.floor(performance.now()/1000);},
+        execute(expression){
+          if(!rt.app.system&&superuserHolder()!==rt.app.meta.id)throw new MScriptError('system.execute is restricted to built-in system apps or the current Superuser holder');
+          try{return evalExpression(String(expression),rt.vars,rt);}catch(e){return `Error: ${e?.message||String(e)}`;}
+        },
+        random(min,max){return Math.floor(Math.random()*(Number(max)-Number(min)+1))+Number(min);},
+        storageBytes(){return new Blob(storageKeys().map(k=>{try{return localStorage.getItem(k)||memoryStorage.get(k)||'';}catch{return memoryStorage.get(k)||'';}})).size;},
+        screenWidth(){return device.clientWidth;},screenHeight(){return device.clientHeight;},
+        vibrate(ms=12){if(navigator.vibrate)navigator.vibrate(Math.max(0,Number(ms)||0));return true;},
+        clipboard(text){navigator.clipboard?.writeText(String(text));toast('Copied to clipboard');return true;}
+      },
+      math:{
+        eval(expr){const safe=String(expr).replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-');if(!/^[0-9+\-*/%.()\s]+$/.test(safe))throw new Error('Invalid math expression');return evalExpression(safe,{},rt);},
+        round(v,d=0){const p=10**Number(d);return Math.round(Number(v)*p)/p;},abs(v){return Math.abs(Number(v));},floor(v){return Math.floor(Number(v));},ceil(v){return Math.ceil(Number(v));},
+        min(a,b){return Math.min(Number(a),Number(b));},max(a,b){return Math.max(Number(a),Number(b));},clamp(v,min,max){return Math.max(Number(min),Math.min(Number(max),Number(v)));},
+        random(min,max){let a=Number(min),b=Number(max);if(!Number.isFinite(a)||!Number.isFinite(b))throw new MScriptError('math.random min and max must be numbers');if(a>b)[a,b]=[b,a];if(a===b)return a;return Math.random()*(b-a)+a;},
+        sqrt(v){return Math.sqrt(Number(v));},pow(v,p){return Math.pow(Number(v),Number(p));}
+      },
+      text:{
+        length(v){return String(v).length;},upper(v){return String(v).toUpperCase();},lower(v){return String(v).toLowerCase();},trim(v){return String(v).trim();},
+        contains(v,q){return String(v).includes(String(q));},startsWith(v,q){return String(v).startsWith(String(q));},endsWith(v,q){return String(v).endsWith(String(q));},
+        replace(v,a,b){return String(v).split(String(a)).join(String(b));},slice(v,start,end){return String(v).slice(Number(start),end===undefined?undefined:Number(end));},
+        indexOf(v,q){return String(v).indexOf(String(q));},part(v,separator,index){return String(v).split(String(separator))[Number(index)]??'';},
+        count(v,separator='|'){return String(v)===''?0:String(v).split(String(separator)).length;},repeat(v,count){return String(v).repeat(Math.max(0,Math.min(1000,Number(count)||0)));}
+      },
+      json:{
+        stringify(v){return JSON.stringify(v);},parse(v){return JSON.parse(v);},
+        get(v,key,fallback=''){try{const o=typeof v==='string'?JSON.parse(v):v;return o?.[String(key)]??fallback;}catch{return fallback;}},
+        set(v,key,value){let o={};try{o=typeof v==='string'?JSON.parse(v):v||{};}catch{}o[String(key)]=value;return JSON.stringify(o);}
+      },
+      value:{number(v){return Number(v);},string(v){return String(v);},bool(v){return !!v;},type(v){return Array.isArray(v)?'array':v===null?'null':typeof v;}},
+      toast
+    };
+  }
+  uid(id){return `ms-${this.app.meta.id}-${id}`.replace(/[^\w-]/g,'_');}
+}
+function showRuntimeError(app,e){log(`Error in ${app.meta.name}: ${e.message} line ${e.line||'?'}`);root.innerHTML=`<section class="screen"><div class="app-page"><div class="app-header"><div class="app-header-icon" style="background:#b03b55">!</div><div><div class="app-header-title">MScript Error</div><div class="app-header-sub">${escapeHTML(app.meta.name)}</div></div></div><div class="card"><div class="row-title">${escapeHTML(e.message)}</div><div class="row-sub">Line ${e.line||'unknown'}</div></div><pre class="code">${escapeHTML(app.source.split('\n').map((l,i)=>`${String(i+1).padStart(3)}  ${l}`).join('\n'))}</pre></div></section>`;}
+function crashForPermission(rt,e){const app=rt.app;log(`${app.meta.name} crashed: ungranted permission ${e.permission}`);rt.destroy();stopAppBackground(app.meta.id);state.appInstances.delete(app.meta.id);state.recents=state.recents.filter(id=>id!==app.meta.id);notify('MScript',`${app.meta.name} crashed due to an ungranted permission: ${permissionLabel(e.permission)}.`, 'system');if(state.current===app.meta.id)renderHome();}
+function backgroundStart(rt,name,ms,eventName){const key=`${rt.app.meta.id}:${name}`;backgroundStop(rt.app.meta.id,name);const id=setInterval(()=>{if(!hasPermission(rt.app,'background')){crashForPermission(rt,new PermissionDeniedError('background'));return;}rt.trigger(eventName,{type:'background',name,time:Date.now()});},Math.max(250,ms));state.background.set(key,id);rt.timerNames.add(name);log(`Background process started: ${key} every ${ms}ms`);}
+function backgroundStop(appId,name){const key=`${appId}:${name}`,id=state.background.get(key);if(id){clearInterval(id);state.background.delete(key);log(`Background process stopped: ${key}`);}}
+
+/* ---------------------- Built-in MScript Apps ---------------------- */
+const SYSTEM_SOURCES = {};
+SYSTEM_SOURCES.notes = String.raw`app "Notes"
+meta id "notes"
+meta icon "📝"
+meta color "#f0a33b"
+meta version "1.0 Release"
+
+on start
+  ui.header("Notes", "Saved locally with MScript data functions")
+  ui.section("Editor")
+  ui.input("name", "File name", data.get("lastName", "New Note"))
+  ui.textarea("body", "Contents", data.globalGet("notes.file." + data.get("lastName", "New Note"), ""), "Write anything...")
+  ui.button("save", "Save file", "primary")
+  ui.button("new", "New", "secondary")
+  ui.button("delete", "Delete", "danger")
+  ui.section("Saved files")
+  ui.noteList("notes.file.")
+end
+
+on click save
+  let name = ui.value("name")
+  let body = ui.value("body")
+  if name == ""
+    system.toast("Enter a file name")
+  else
+    data.globalSet("notes.file." + name, body)
+    data.set("lastName", name)
+    notify.send("Notes", "Saved " + name)
+    app.open("notes")
+  end
+end
+
+on click new
+  data.set("lastName", "Untitled")
+  app.open("notes")
+end
+
+on click delete
+  let name = ui.value("name")
+  data.globalDelete("notes.file." + name)
+  data.set("lastName", "New Note")
+  system.toast("Deleted " + name)
+  app.open("notes")
+end
+
+on openNote
+  data.set("lastName", event.value)
+  app.open("notes")
+end`;
+
+SYSTEM_SOURCES.settings = String.raw`app "Settings"
+meta id "settings"
+meta icon "⚙️"
+meta color "#737d95"
+meta version "1.0 Release"
+
+function shell(title, subtitle)
+  ui.clear()
+  ui.header(title, subtitle)
+  if page != "main"
+    ui.button("settingsBack", "← All Settings", "ghost")
+  end
+end
+
+function renderMain()
+  let page = "main"
+  shell("Settings", "Control every major part of MellorsOS")
+  ui.alert("Programmable settings", "This entire Settings app is MScript. Superuser ownership is enforced by the kernel and cannot be changed here.", "info")
+  ui.section("Personal")
+  ui.menu("goCustomization", "Customization", "Wallpaper, colors, Home screen, icons, and density", "🎨")
+  ui.menu("goAccessibility", "Accessibility", "Text, contrast, motion, transparency, touch, and haptics", "♿")
+  ui.menu("goNotifications", "Notifications", "Toasts, previews, and notification history limits", "🔔")
+  ui.menu("goNavigation", "Status & navigation", "Clock, status icons, battery, and navigation bar", "🧭")
+  ui.section("Apps & data")
+  ui.menu("goApps", "App Manager", "Permissions, Home visibility, app data, and uninstall controls", "▦")
+  ui.menu("goStorage", "Storage & privacy", "Local browser data and storage tools", "💾")
+  ui.section("Advanced")
+  ui.menu("goDeveloper", "Developer options", "App Studio, logs, FPS, and MScript tools", "</>")
+  ui.menu("goSystem", "System", "Version information, resets, and device details", "⚙")
+end
+
+function renderCustomization()
+  let page = "customization"
+  shell("Customization", "Make MellorsOS look and feel like your OS")
+  ui.section("Wallpaper")
+  ui.wallpaperPicker()
+  ui.section("Accent color")
+  ui.accentPicker()
+  ui.section("Home identity")
+  ui.input("username", "Owner name", settings.get("username"))
+  ui.input("homeTitle", "Home screen title", settings.get("homeTitle"))
+  ui.input("homeSubtitle", "Home screen subtitle", settings.get("homeSubtitle"))
+  ui.button("saveHomeText", "Apply Home identity", "primary")
+  ui.section("Home layout")
+  ui.slider("gridCols", "Grid columns", settings.get("gridCols"), 3, 5, 1)
+  ui.slider("iconSize", "App icon size", settings.get("iconSize"), 42, 76, 2)
+  ui.select("iconShape", "Icon shape", settings.get("iconShape"), "square:Square|squircle:Squircle|round:Rounded|circle:Circle")
+  ui.toggle("showAppLabels", "Show app labels", settings.get("showAppLabels"), "Hide labels for a cleaner Home screen")
+  ui.toggle("compact", "Compact interface", settings.get("compact"), "Reduce spacing throughout system apps")
+end
+
+function renderAccessibility()
+  let page = "accessibility"
+  shell("Accessibility", "Display, motion, readability, and interaction")
+  ui.slider("fontScale", "Text size", settings.get("fontScale"), 0.85, 1.45, 0.05)
+  ui.toggle("boldText", "Bold text", settings.get("boldText"), "Increase visual weight across the interface")
+  ui.toggle("highContrast", "High contrast", settings.get("highContrast"), "Use stronger text and borders")
+  ui.toggle("reduceMotion", "Reduce motion", settings.get("reduceMotion"), "Disable most interface animations")
+  ui.toggle("reduceTransparency", "Reduce transparency", settings.get("reduceTransparency"), "Replace translucent surfaces with solid panels")
+  ui.toggle("largeTargets", "Larger touch targets", settings.get("largeTargets"), "Increase the minimum size of interactive controls")
+  ui.toggle("haptics", "System haptics", settings.get("haptics"), "Vibrate for supported MellorsOS interactions")
+end
+
+function renderNotifications()
+  let page = "notifications"
+  shell("Notifications", "Control how MellorsOS surfaces alerts")
+  ui.toggle("notificationToasts", "Notification pop-up toasts", settings.get("notificationToasts"), "Show a temporary message when a notification arrives")
+  ui.toggle("notificationPreview", "Show notification previews", settings.get("notificationPreview"), "Display notification body text in the notification shade")
+  ui.slider("notificationLimit", "Maximum saved notifications", settings.get("notificationLimit"), 5, 100, 5)
+  ui.section("Tools")
+  ui.menu("openNotifications", "Notification Center", "View or clear saved notifications", "🔔", notify.count())
+end
+
+function renderNavigation()
+  let page = "navigation"
+  shell("Status & navigation", "Tune the persistent system controls")
+  ui.section("Clock")
+  ui.toggle("clock24h", "24-hour clock", settings.get("clock24h"), "Use 18:30 instead of 6:30 PM")
+  ui.toggle("showSeconds", "Show seconds", settings.get("showSeconds"), "Include seconds in the status clock")
+  ui.section("Status bar")
+  ui.toggle("showBattery", "Show battery estimate", settings.get("showBattery"), "Display the emulator battery indicator")
+  ui.toggle("showStatusIcons", "Show status icons", settings.get("showStatusIcons"), "Display device and connectivity indicators")
+  ui.section("Navigation bar")
+  ui.toggle("navCompact", "Compact navigation bar", settings.get("navCompact"), "Use a shorter bottom navigation area")
+end
+
+function renderApps()
+  let page = "apps"
+  shell("App Manager", "Permissions, visibility, storage, and uninstall controls")
+  ui.alert("Superuser is kernel-controlled", "Settings cannot grant, revoke, transfer, or uninstall the active Superuser app. Only that app can relinquish Superuser, or a factory reset can remove it.", "warning")
+  ui.infoRow("Current Superuser", system.info("superuser"), "None means no user app currently owns Superuser")
+  ui.appManager()
+end
+
+function renderStorage()
+  let page = "storage"
+  shell("Storage & privacy", "MellorsOS stays entirely inside this browser")
+  ui.infoRow("Storage used", system.storageBytes() + " bytes", "All persistent MellorsOS records")
+  ui.infoRow("Storage records", system.info("storageKeys"))
+  ui.infoRow("Connectivity", system.info("online"), "No network access is required")
+  ui.alert("Local by design", "Notes, settings, permissions, and installed MScript apps are stored locally. User apps receive private app storage plus a sandboxed shared namespace unless they have Superuser.", "success")
+  ui.menu("openStorage", "Storage inspector", "Inspect MellorsOS browser records", "💾")
+end
+
+function renderDeveloper()
+  let page = "developer"
+  shell("Developer options", "Build, inspect, and debug MScript apps")
+  ui.toggle("developerMode", "Developer mode", settings.get("developerMode"), "Show developer status and verbose kernel logging")
+  ui.toggle("showFPS", "FPS overlay", settings.get("showFPS"), "Display approximate rendering performance")
+  ui.section("Development tools")
+  ui.menu("openStudio", "App Studio", "Write, preview, save, and install MScript apps", "🧪")
+  ui.menu("openGuide", "MScript Guide", "Complete syntax, events, permissions, and API reference", "📘")
+  ui.menu("openTerminal", "Terminal", "Execute MScript functions directly", ">_")
+  ui.menu("openMonitor", "System Monitor", "Runtime state, logs, and system metrics", "📊")
+  ui.infoRow("MScript engine", system.info("engine"))
+end
+
+function renderSystem()
+  let page = "system"
+  shell("System", "About, diagnostics, and reset options")
+  ui.section("About")
+  ui.infoRow("Operating system", system.info("name") + " " + system.info("version"))
+  ui.infoRow("Language engine", system.info("engine"))
+  ui.infoRow("Platform", system.info("platform"))
+  ui.infoRow("Language", system.info("language"))
+  ui.infoRow("Active system apps", system.info("systemApps"))
+  ui.infoRow("Installed user apps", system.info("userApps"))
+  ui.infoRow("Current Superuser", system.info("superuser"))
+  ui.section("Reset")
+  ui.alert("Reset carefully", "Factory reset erases installed apps, app data, permissions, Superuser ownership, notes, notifications, and all MellorsOS settings.", "danger")
+  ui.button("resetSettings", "Reset settings only", "secondary")
+  ui.button("resetEverything", "Factory reset MellorsOS", "danger")
+end
+
+on start
+  let page = "main"
+  renderMain()
+end
+
+on back
+  if page != "main"
+    renderMain()
+    return true
+  end
+  return false
+end
+
+on click settingsBack
+  renderMain()
+end
+on click goCustomization
+  renderCustomization()
+end
+on click goAccessibility
+  renderAccessibility()
+end
+on click goNotifications
+  renderNotifications()
+end
+on click goNavigation
+  renderNavigation()
+end
+on click goApps
+  renderApps()
+end
+on click goStorage
+  renderStorage()
+end
+on click goDeveloper
+  renderDeveloper()
+end
+on click goSystem
+  renderSystem()
+end
+
+on wallpaper
+  settings.set("wallpaper", event.value)
+end
+on accent
+  settings.set("accent", event.value)
+end
+on click saveHomeText
+  settings.set("username", ui.value("username"))
+  settings.set("homeTitle", ui.value("homeTitle"))
+  settings.set("homeSubtitle", ui.value("homeSubtitle"))
+  system.toast("Home identity updated")
+end
+on change gridCols
+  settings.set("gridCols", event.value)
+end
+on change iconSize
+  settings.set("iconSize", event.value)
+end
+on change iconShape
+  settings.set("iconShape", event.value)
+end
+on change showAppLabels
+  settings.set("showAppLabels", event.value)
+end
+on change compact
+  settings.set("compact", event.value)
+end
+on change fontScale
+  settings.set("fontScale", event.value)
+end
+on change boldText
+  settings.set("boldText", event.value)
+end
+on change highContrast
+  settings.set("highContrast", event.value)
+end
+on change reduceMotion
+  settings.set("reduceMotion", event.value)
+end
+on change reduceTransparency
+  settings.set("reduceTransparency", event.value)
+end
+on change largeTargets
+  settings.set("largeTargets", event.value)
+end
+on change haptics
+  settings.set("haptics", event.value)
+end
+on change notificationToasts
+  settings.set("notificationToasts", event.value)
+end
+on change notificationPreview
+  settings.set("notificationPreview", event.value)
+end
+on change notificationLimit
+  settings.set("notificationLimit", event.value)
+end
+on change clock24h
+  settings.set("clock24h", event.value)
+end
+on change showSeconds
+  settings.set("showSeconds", event.value)
+end
+on change showBattery
+  settings.set("showBattery", event.value)
+end
+on change showStatusIcons
+  settings.set("showStatusIcons", event.value)
+end
+on change navCompact
+  settings.set("navCompact", event.value)
+end
+on change developerMode
+  settings.set("developerMode", event.value)
+end
+on change showFPS
+  settings.set("showFPS", event.value)
+end
+
+on click openNotifications
+  app.open("notifications")
+end
+on click openStorage
+  app.open("storage")
+end
+on click openStudio
+  app.open("studio")
+end
+on click openGuide
+  app.open("guide")
+end
+on click openTerminal
+  app.open("terminal")
+end
+on click openMonitor
+  app.open("monitor")
+end
+on permissionChange
+  permission.set(event.appId, event.permission, event.value)
+end
+on appVisibility
+  system.setAppHidden(event.appId, event.hidden)
+end
+on uninstallManagedApp
+  app.remove(event.appId)
+  ui.refreshAppManager()
+end
+on click resetSettings
+  if dialog.confirm("Reset settings?", "Restore all MellorsOS settings to their defaults?", "Apps and app data will not be erased.")
+    settings.reset()
+    renderSystem()
+    system.toast("Default settings restored")
+  end
+end
+on click resetEverything
+  system.reset()
+end`;
+
+SYSTEM_SOURCES.guide = String.raw`app "MScript Guide"
+meta id "guide"
+meta icon "📘"
+meta color "#4d79e6"
+meta version "1.0 Release"
+
+on start
+  ui.header("MScript Guide", "Complete MScript 1.0 Release language and API reference")
+  ui.alert("Everything here is MScript", "System apps and user apps use the same language. Built-in apps are trusted; user apps must request protected permissions. Superuser ownership is enforced by the MellorsOS kernel, not by Settings.", "info")
+
+  ui.section("1 · App structure")
+  ui.text("Every app begins with app metadata, then optional functions and event handlers. Statements inside events and functions execute from top to bottom.")
+  ui.code("app \"My App\"\nmeta id \"my.app\"\nmeta icon \"◆\"\nmeta color \"#6d7cff\"\nmeta version \"1.0 Release\"\n\nfunction greet(name)\n  return \"Hello \" + name\nend\n\non start\n  ui.header(\"My App\", greet(\"MellorsOS\"))\nend")
+  ui.text("app sets the display name. meta id must uniquely identify the app. meta icon, color, and version control Home-screen and app-header metadata. A custom distribution may change built-in MScript sources, but kernel security rules still apply.", "small")
+
+  ui.section("2 · Comments, values, variables, and operators")
+  ui.code("# A comment occupies its own line\nlet score = 10\nset score = score + 5\nlet name = \"MellorsOS\"\nlet enabled = true\nlet empty = null\n\n# Operators\n+  -  *  /  %\n==  !=  <  >  <=  >=\n&&  ||  !")
+  ui.text("let and set both assign a variable. Strings use single or double quotes and support \\n, \\t, and \\r escapes. Numbers, true, false, and null are literals. + adds numbers or concatenates when either side is text. Parentheses control expression order. Dotted names such as event.value read properties or API namespaces; function arguments are comma-separated.", "small")
+
+  ui.section("3 · Conditions and loops")
+  ui.code("if score >= 10\n  system.toast(\"High score\")\nelse\n  system.toast(\"Keep going\")\nend\n\nlet i = 0\nwhile i < 5\n  set i = i + 1\nend\n\nrepeat 3\n  system.log(index)\nend\n\nfor n from 1 to 5\n  if n == 3\n    continue\n  end\n  if n == 5\n    break\n  end\nend")
+  ui.text("if evaluates an expression and optionally runs an else block. while repeats while its condition remains true. repeat count runs a block a fixed number of times and exposes zero-based index. for variable from start to end counts inclusively upward or downward. break exits the nearest loop and continue skips to its next iteration. MellorsOS caps loops and statement execution to protect the emulator.", "small")
+
+  ui.section("4 · Functions and return")
+  ui.code("function add(a, b)\n  return a + b\nend\n\non start\n  let result = add(2, 3)\nend")
+  ui.text("function name(arguments) defines reusable MScript code. Parameters are local inputs. return ends that function and supplies a value to the caller.", "small")
+
+  ui.section("5 · Events")
+  ui.code("on start ... end\non resume ... end\non pause ... end\non close ... end\non back ... end\non homeButton ... end\non recentsButton ... end\non click buttonId ... end\non click ... end\non input fieldId ... end\non input ... end\non change controlId ... end\non change ... end\non dataChange ... end\non settingsChange ... end")
+  ui.text("start runs when the app mounts. resume follows start when an app opens. pause runs before navigation leaves the app. close runs when its runtime is destroyed. back, homeButton, and recentsButton fire from the navigation bar; returning true from those navigation events consumes the default action. click, input, and change are generated by UI controls. event.id, event.value, event.type, event.key, event.reason, and similar fields describe the event.", "small")
+  ui.code("timer.after(\"welcome\", 1000, \"welcomeTimer\")\nbackground.start(\"sync\", 5000, \"syncTick\")\nevents.emit(\"customEvent\", \"hello\")\n\non welcomeTimer\n  system.toast(event.name)\nend\n\non syncTick\n  system.log(\"Background tick\")\nend\n\non customEvent\n  system.toast(event.value)\nend")
+  ui.text("Timer, background, and custom event names are arbitrary. App Manager also emits permissionChange, appVisibility, and uninstallManagedApp to the app hosting ui.appManager(). Specialized widgets emit wallpaper, accent, key, and openNote.", "small")
+
+  ui.section("6 · Permission model")
+  ui.code("permission.ask(\"settings\")\npermission.ask(\"notifications\")\npermission.ask(\"installApps\")\npermission.ask(\"modifyPermissions\")\npermission.ask(\"background\")\npermission.ask(\"superuser\")")
+  ui.text("User apps start without protected permissions. permission.ask displays a MellorsOS-native prompt and returns true or false. Put permission.ask before other side effects in the handler because the handler resumes after the user answers. Calling a protected command without its permission crashes and exits the user app with an MScript crash notification.", "small")
+  ui.code("if permission.ask(\"notifications\")\n  notify.send(\"Hello\", \"Allowed\")\nelse\n  system.toast(\"Using fallback UI\")\nend")
+  ui.text("settings protects settings.set, settings.toggle, and settings.reset. notifications protects notification modification. installApps protects app.install and app.remove. modifyPermissions protects permission.set and ui.appManager. background protects background.start. Superuser bypasses protected permissions and adds kernel ownership powers.", "small")
+
+  ui.section("7 · Superuser security")
+  ui.text("Only one user app can hold Superuser. It can only be granted when that app itself calls permission.ask(\"superuser\") and the user completes multiple warnings. Settings cannot grant, revoke, transfer, or directly uninstall the holder. No other MScript app, including a built-in or custom Settings app, can disable the holder. The holder relinquishes with permission.disableSuperuser(), or factory reset removes it.")
+  ui.text("Superuser can uninstall built-in system apps with app.remove(id), install replacements even using a built-in app id with app.install(source), and restore the original built-in with app.restoreSystem(id). Kernel-owned permissions, installed-app records, and disabled-system-app records cannot be overwritten through data.globalSet.", "small")
+
+  ui.section("8 · UI creation API")
+  ui.code("ui.clear()\nui.header(title, subtitle)\nui.section(title)\nui.text(text, style)\nui.rich(title, body, icon)\nui.card(title, body)\nui.menu(id, title, subtitle, icon, value)\nui.alert(title, body, kind)\nui.divider()\nui.spacer(px)\nui.badge(text, kind)\nui.stat(label, value)\nui.progress(title, value, max)\nui.label(id, text, style)\nui.infoRow(title, value, subtitle)")
+  ui.text("clear rebuilds the app page as a blank content surface. header explicitly creates or updates the sticky app header; custom apps do not receive an automatic header unless their MScript calls ui.header(). section creates a section heading. text and label render escaped text; label has an id for later mutation. rich/card/infoRow create information surfaces. menu creates a tappable Settings-style row and fires click id. alert kinds are info, warning, danger, or success. divider/spacer control layout. badge/stat/progress display compact status information.", "small")
+
+  ui.section("9 · UI input API")
+  ui.code("ui.button(id, label, kind)\nui.input(id, label, value, type)\nui.numberInput(id, label, value, min, max, step)\nui.password(id, label, value)\nui.search(id, label, value)\nui.colorInput(id, label, value)\nui.dateInput(id, label, value)\nui.timeInput(id, label, value)\nui.textarea(id, label, value, placeholder)\nui.codeEditor(id, value)\nui.toggle(id, title, on, subtitle)\nui.slider(id, title, value, min, max, step)\nui.select(id, title, value, \"a:Label A|b:Label B\")\nui.segmented(id, title, value, options)\nui.chips(id, title, selected, options)")
+  ui.text("The id parameter names a control and connects it to events. You may write it as a quoted string, such as ui.button(\"save\", ...), or as a bare identifier, such as ui.button(save, ...); both connect to on click save. button kinds are primary, secondary, danger, or ghost. input type accepts normal HTML input types while the dedicated helpers cover common types. toggle, slider, select, segmented, and chips fire change id plus the generic change event. input and numberInput fire input id plus generic input. textarea fires input id. Read current control contents with ui.value(id).", "small")
+
+  ui.section("10 · UI mutation API")
+  ui.code("ui.value(id)\nui.setValue(id, value)\nui.clearValue(id)\nui.setText(id, text)\nui.setVisible(id, visible)\nui.setEnabled(id, enabled)\nui.remove(id)\nui.exists(id)\nui.focus(id)\nui.scrollTop()")
+  ui.text("These functions inspect or modify controls already rendered on the current app page. setText is intended for elements created with ui.label or other id-bearing controls. setVisible hides without deleting. setEnabled disables interaction. remove deletes the element. focus moves keyboard focus. scrollTop returns to the top of the app page.", "small")
+
+  ui.section("11 · Specialized system UI helpers")
+  ui.code("ui.code(text)\nui.noteList(prefix)\nui.appList()\nui.storageView()\nui.notificationList()\nui.calculator()\nui.calcSet(value)\nui.wallpaperPicker()\nui.accentPicker()\nui.logView()\nui.appManager()\nui.refreshAppManager()\nui.html(htmlFile)\nui.htmlSafe(text)")
+  ui.text("code renders a formatted code block. noteList lists storage records and emits openNote. appList opens installed apps. storageView, notificationList, calculator/calcSet, wallpaperPicker, accentPicker, and logView power built-in tools. appManager requires Modify permissions and renders app permissions, Home visibility, and uninstall controls while keeping Superuser kernel-controlled. refreshAppManager updates it in place. htmlSafe displays text inside a card and always escapes markup.", "small")
+
+  ui.section("12 · Private and shared storage")
+  ui.code("data.get(key, fallback)\ndata.set(key, value)\ndata.delete(key)\ndata.keys(prefix)\ndata.has(key)\ndata.clear()\ndata.count(prefix)\ndata.append(key, value, separator)\ndata.increment(key, amount)\ndata.globalGet(key, fallback)\ndata.globalSet(key, value)\ndata.globalDelete(key)\ndata.globalKeys(prefix)\ndata.globalHas(key)")
+  ui.text("Private data functions automatically namespace records to the current app. keys returns | separated key names. clear only clears the current app's private data. append concatenates text and increment updates a numeric record. Ordinary user apps' global functions are sandboxed under shared.*. Built-in apps and Superuser can address broader OS storage, except kernel-owned trust records.", "small")
+
+  ui.section("13 · Settings API")
+  ui.code("settings.get(key, fallback)\nsettings.has(key)\nsettings.set(key, value)\nsettings.toggle(key)\nsettings.keys()\nsettings.reset()")
+  ui.text("get, has, and keys are readable by apps. set, toggle, and reset require Modify system settings for user apps. Changes are immediately persisted and applied. settingsChange fires in the calling runtime when set, toggle, or reset succeeds.", "small")
+
+  ui.section("14 · App API")
+  ui.code("app.open(id)\napp.home()\napp.close(id)\napp.install(source)\napp.remove(id)\napp.restoreSystem(id)\napp.source(id)\napp.preview(source)\napp.exists(id)\napp.list()\napp.name(id)\napp.version(id)\napp.current()\napp.isSystem(id)\napp.isHidden(id)\napp.setHidden(id, hidden)\napp.disabledSystems()")
+  ui.text("open launches an app, home shows Home, and close removes a recent runtime. install and remove require Install apps for normal user apps. app.install validates the entire source before writing anything to storage: empty source, missing app/meta id declarations, malformed syntax, invalid ids, duplicate handlers/functions/parameters, unknown function calls, and invalid loop control are rejected. A failed install returns false and MellorsOS posts an MScript Installer notification with the error and line number when available. source returns MScript source for an active app. preview runs source without installing. list returns | separated ids. current returns this app id. setHidden needs system/Superuser authority for user apps. restoreSystem and system-app removal/replacement are restricted to the actual current Superuser holder, not merely a trusted Settings app.", "small")
+
+  ui.section("15 · Notification API")
+  ui.code("notify.send(title, body)\nnotify.clear()\nnotify.count()\nnotify.latestTitle()\nnotify.latestBody()\nnotify.remove(id)")
+  ui.text("send, clear, and remove modify notifications and require Notifications for user apps. count and latestTitle/latestBody are read-only. send returns the new notification id.", "small")
+
+  ui.section("16 · Permission API")
+  ui.code("permission.ask(permission)\npermission.has(permission)\npermission.set(appId, permission, enabled)\npermission.disableSuperuser()\npermission.name(permission)\npermission.list()\npermission.holder()\npermission.isSuperuser()")
+  ui.text("ask requests one of the six permissions. has checks effective access, including inherited Superuser access. set requires Modify permissions and can change ordinary permissions but always refuses Superuser. disableSuperuser only works when called by the current holder itself. name returns a friendly label. list returns permission ids. holder returns the holder app id or empty text. isSuperuser tests actual ownership.", "small")
+
+  ui.section("17 · Foreground timers")
+  ui.code("timer.after(name, milliseconds, eventName)\ntimer.every(name, milliseconds, eventName)\ntimer.stop(name)\ntimer.isRunning(name)\ntimer.list()")
+  ui.text("Foreground timers require no permission and exist only while the current app runtime exists. after fires once; every repeats. Their events include event.type = timer, event.name, and event.time. Use background processes instead when work must survive leaving the app.", "small")
+
+  ui.section("18 · Background API")
+  ui.code("background.start(name, milliseconds, eventName)\nbackground.stop(name)\nbackground.isRunning(name)\nbackground.list()")
+  ui.text("start requires Run background processes and runs at a minimum interval enforced by the kernel. stop terminates one named process. isRunning checks one process. list returns the current app's background process names. Revoking Background stops that app's processes.", "small")
+
+  ui.section("19 · Native dialog API")
+  ui.code("dialog.alert(title, message, detail)\ndialog.confirm(title, message, detail)\ndialog.danger(title, message, detail)\ndialog.choose(title, message, yesLabel, noLabel, detail)")
+  ui.text("Dialogs are drawn by MellorsOS, never browser pop-ups. alert returns true after dismissal. confirm, danger, and choose return true or false. Put the dialog call before other side effects in its event handler because MScript resumes the handler after the user answers.", "small")
+
+  ui.section("20 · Custom events")
+  ui.code("events.emit(name, value)")
+  ui.text("emit queues a custom event in the same app. Handle it with on name. The event object contains type = custom, name, and value.", "small")
+
+  ui.section("21 · System API")
+  ui.code("system.toast(message)\nsystem.log(message)\nsystem.reset()\nsystem.reboot()\nsystem.setAppHidden(id, hidden)\nsystem.info(key)\nsystem.time()\nsystem.date()\nsystem.now()\nsystem.uptime()\nsystem.execute(expression)\nsystem.random(min, max)\nsystem.storageBytes()\nsystem.screenWidth()\nsystem.screenHeight()\nsystem.vibrate(milliseconds)\nsystem.clipboard(text)")
+  ui.text("toast shows a temporary OS message and log writes to System Monitor. reset starts the native factory-reset flow; reboot reloads MellorsOS; both require effective Superuser authority. setAppHidden is a privileged visibility control. info keys include name, version, engine, platform, language, online, apps, systemApps, userApps, storageKeys, userAgent, and superuser. time/date return formatted local values, now returns epoch milliseconds, uptime returns emulator seconds, execute evaluates one MScript expression directly for system/Superuser runtimes, system.random returns an inclusive random integer, storageBytes estimates MellorsOS storage, screenWidth/screenHeight report emulator dimensions, vibrate uses device vibration when available, and clipboard copies text when the browser permits it.", "small")
+
+  ui.section("22 · Math API")
+  ui.code("math.eval(expression)\nmath.round(value, decimals)\nmath.abs(value)\nmath.floor(value)\nmath.ceil(value)\nmath.min(a, b)\nmath.max(a, b)\nmath.clamp(value, min, max)\nmath.random(min, max)\nmath.sqrt(value)\nmath.pow(value, power)")
+  ui.text("math.eval evaluates arithmetic-only text. round supports decimal places. abs/floor/ceil perform standard numeric transforms. min/max compare values. clamp constrains a value. math.random returns a random floating-point number from min (inclusive) up to max (exclusive), swapping the bounds if they are reversed. sqrt and pow provide square-root and exponent operations.", "small")
+
+  ui.section("23 · Text API")
+  ui.code("text.length(value)\ntext.upper(value)\ntext.lower(value)\ntext.trim(value)\ntext.contains(value, query)\ntext.startsWith(value, query)\ntext.endsWith(value, query)\ntext.replace(value, old, new)\ntext.slice(value, start, end)\ntext.indexOf(value, query)\ntext.part(value, separator, index)\ntext.count(value, separator)\ntext.repeat(value, count)")
+  ui.text("All text functions convert their inputs to strings. part is useful with | separated lists returned by MScript APIs. count returns the number of separated parts. repeat is capped by the runtime to prevent extreme output.", "small")
+
+  ui.section("24 · JSON API")
+  ui.code("json.stringify(value)\njson.parse(text)\njson.get(jsonOrObject, key, fallback)\njson.set(jsonOrObject, key, value)")
+  ui.text("stringify serializes a value. parse creates a JavaScript-compatible MScript value. get safely reads one object key. set updates one key and returns JSON text, making it convenient to persist structured data without object-literal syntax.", "small")
+
+  ui.section("25 · Value conversion API")
+  ui.code("value.number(value)\nvalue.string(value)\nvalue.bool(value)\nvalue.type(value)")
+  ui.text("number converts to a number, string converts to text, bool applies truthiness, and type returns number, string, boolean, object, array, null, undefined, or function as appropriate.", "small")
+
+  ui.section("26 · Toast shorthand")
+  ui.code("toast(\"Saved\")")
+  ui.text("toast is a top-level shorthand for system.toast(message). It is retained for simple apps.", "small")
+
+  ui.section("27 · Complete API parameter reference")
+  ui.text("The reference below is generated from the actual running MScript API, so every exposed function is listed. Every parameter explicitly says whether literal values require quotes. General rule: literal text needs single or double quotes; numbers, true, false, and null do not. Variables and function results are never quoted. UI control IDs are the special case where a literal identifier may be either \"save\" or bare save; both match handlers such as on click save.", "small")
+  ui.apiReference()
+
+  ui.section("28 · Full secure example")
+  ui.code("app \"Reminder\"\nmeta id \"example.reminder\"\nmeta icon \"✓\"\nmeta color \"#21b8a6\"\n\non start\n  ui.header(\"Reminder\", \"Permission-aware example\")\n  ui.input(\"message\", \"Message\", data.get(\"message\", \"Hello\"))\n  ui.button(\"save\", \"Save and notify\")\nend\n\non click save\n  let message = ui.value(\"message\")\n  data.set(\"message\", message)\n  if permission.has(\"notifications\") || permission.ask(\"notifications\")\n    notify.send(\"Reminder\", message)\n  else\n    dialog.alert(\"Saved locally\", \"Notification permission was declined.\")\n  end\nend")
+  ui.button("studio", "Open App Studio", "primary")
+end
+
+on click studio
+  app.open("studio")
+end`;
+
+const STARTER = String.raw`app "Counter"
+meta id "counter"
+meta icon "🔢"
+meta color "#21b8a6"
+meta version "1.0 Release"
+
+on start
+  let count = data.get("count", 0)
+  ui.header("Counter", "A persistent MScript 1.0 Release app")
+  ui.infoRow("Current value", count, "Stored in this app's private browser data")
+  ui.button("add", "Add one", "primary")
+  ui.button("reset", "Reset", "danger")
+end
+
+on click add
+  let count = data.increment("count", 1)
+  if permission.has("notifications") || permission.ask("notifications")
+    notify.send("Counter", "Count is now " + count)
+  else
+    system.toast("Count saved without a notification")
+  end
+  app.open("counter")
+end
+
+on click reset
+  if dialog.confirm("Reset counter?", "Set the saved count back to zero?")
+    data.set("count", 0)
+    app.open("counter")
+  end
+end`;
+
+SYSTEM_SOURCES.studio = String.raw`app "App Studio"
+meta id "studio"
+meta icon "🛠️"
+meta color "#9b62e8"
+meta version "1.0 Release"
+
+on start
+  ui.header("App Studio", "Write, preview, and install MScript apps")
+  ui.rich("MScript workspace", "Apps run locally and offline. User apps start with no privileged permissions; use permission.ask before protected APIs. Use a unique meta id before installing.", "</>")
+  ui.codeEditor("source", data.get("draft", data.globalGet("starter.source", "")))
+  ui.button("preview", "Preview", "primary")
+  ui.button("install", "Install to home", "secondary")
+  ui.button("save", "Save draft", "secondary")
+  ui.button("guide", "Open language guide", "ghost")
+end
+
+on click preview
+  data.set("draft", ui.value("source"))
+  app.preview(ui.value("source"))
+end
+on click install
+  data.set("draft", ui.value("source"))
+  app.install(ui.value("source"))
+end
+on click save
+  data.set("draft", ui.value("source"))
+  notify.send("App Studio", "Draft saved locally")
+end
+on click guide
+  app.open("guide")
+end`;
+
+SYSTEM_SOURCES.calculator = String.raw`app "Calculator"
+meta id "calculator"
+meta icon "🧮"
+meta color "#ff785e"
+meta version "1.0 Release"
+
+on start
+  set expr = ""
+  ui.header("Calculator", "Built with MScript event handling")
+  ui.calculator()
+end
+
+on key
+  if event.value == "C"
+    set expr = ""
+  else
+    if event.value == "⌫"
+      set expr = ""
+    else
+      if event.value == "="
+        if expr != ""
+          set expr = math.eval(expr)
+        end
+      else
+        set expr = expr + event.value
+      end
+    end
+  end
+  if expr == ""
+    ui.calcSet("0")
+  else
+    ui.calcSet(expr)
+  end
+end`;
+
+SYSTEM_SOURCES.clock = String.raw`app "Clock"
+meta id "clock"
+meta icon "🕒"
+meta color "#397de0"
+meta version "1.0 Release"
+
+on start
+  ui.header("Clock", "Live MScript background process")
+  ui.section("Current time")
+  ui.input("time", "Clock", system.time())
+  ui.infoRow("Date", system.date())
+  ui.rich("Background process", "This app uses background.start to update once each second.", "↻")
+  background.start("clockTick", 1000, "tick")
+end
+
+on tick
+  ui.setValue("time", system.time())
+end`;
+
+SYSTEM_SOURCES.notifications = String.raw`app "Notifications"
+meta id "notifications"
+meta icon "🔔"
+meta color "#e65679"
+meta version "1.0 Release"
+
+on start
+  ui.header("Notifications", "Messages from system and installed apps")
+  ui.button("test", "Send test notification", "primary")
+  ui.button("clear", "Clear all", "danger")
+  ui.notificationList()
+end
+on click test
+  notify.send("MellorsOS", "Notifications are controlled by MScript")
+  app.open("notifications")
+end
+on click clear
+  notify.clear()
+  app.open("notifications")
+end`;
+
+SYSTEM_SOURCES.storage = String.raw`app "Storage"
+meta id "storage"
+meta icon "🗄️"
+meta color "#34a978"
+meta version "1.0 Release"
+
+on start
+  ui.header("Storage", "Inspect local browser data")
+  ui.rich("Persistent and offline", "MellorsOS is a self-contained offline file. It uses local browser storage so settings and apps remain after a refresh when the browser permits persistent localStorage.", "▣")
+  ui.storageView()
+  ui.button("notes", "Open Notes", "primary")
+  ui.button("settings", "Storage settings", "secondary")
+end
+on click notes
+  app.open("notes")
+end
+on click settings
+  app.open("settings")
+end`;
+
+SYSTEM_SOURCES.monitor = String.raw`app "System Monitor"
+meta id "monitor"
+meta icon "📊"
+meta color "#2e9bb7"
+meta version "1.0 Release"
+
+on start
+  ui.header("System Monitor", "Runtime, device, and MScript diagnostics")
+  ui.infoRow("System", system.info("name") + " " + system.info("version"))
+  ui.infoRow("MScript", system.info("engine"))
+  ui.infoRow("Connectivity", system.info("online"))
+  ui.infoRow("Apps", system.info("apps"))
+  ui.infoRow("Storage records", system.info("storageKeys"))
+  ui.section("Runtime log")
+  ui.logView()
+  ui.button("refresh", "Refresh", "primary")
+  ui.button("copy", "Copy user agent", "secondary")
+end
+on click refresh
+  app.open("monitor")
+end
+on click copy
+  system.clipboard(system.info("userAgent"))
+end`;
+
+SYSTEM_SOURCES.terminal = String.raw`app "Terminal"
+meta id "terminal"
+meta icon ">_"
+meta color "#18a66f"
+meta version "1.0 Release"
+
+on start
+  ui.header("Terminal", "Execute MScript functions directly")
+  ui.alert("Trusted system console", "Type one MScript expression, such as math.random(1, 10) or system.info(\"version\"). Terminal runs as a built-in system app.", "warning")
+  ui.input("command", "MScript expression", data.get("lastCommand", "system.info(\"version\")"))
+  ui.button("run", "Run", "primary")
+  ui.button("clear", "Clear output", "secondary")
+  ui.section("Output")
+  ui.label("output", data.get("lastOutput", "Ready."))
+end
+
+on click run
+  let command = ui.value("command")
+  data.set("lastCommand", command)
+  let result = system.execute(command)
+  let output = "> " + command + "\n" + value.string(result)
+  data.set("lastOutput", output)
+  ui.setText("output", output)
+end
+
+on click clear
+  data.set("lastOutput", "Ready.")
+  ui.setText("output", "Ready.")
+end`;
+
+SYSTEM_SOURCES.apps = String.raw`app "App Library"
+meta id "apps"
+meta icon "🧩"
+meta color "#5e6ad8"
+meta version "1.0 Release"
+
+on start
+  ui.header("App Library", "System and installed MScript apps")
+  ui.appList()
+  ui.button("studio", "Create an app", "primary")
+end
+on click studio
+  app.open("studio")
+end`;
+
+const systemApps=[];
+for(const src of Object.values(SYSTEM_SOURCES)){try{const a=parseMScript(src);a.system=true;systemApps.push(a);}catch(e){console.error('Built-in parse error',e,src);}}
+store.rawSet('starter.source',STARTER);
+function getInstalled(){const srcs=store.rawGet('installedApps',[])||[];return srcs.map(src=>{try{const a=parseMScript(src);a.system=false;return a;}catch{return null;}}).filter(Boolean);}
+function sanitizeInstalledApps(){
+  const srcs=store.rawGet('installedApps',[])||[];const valid=[];const validIds=new Set();let removed=0;
+  for(const src of srcs){try{const app=validateMScriptForInstall(String(src));valid.push(String(src));validIds.add(String(app.meta.id));}catch{removed++;}}
+  if(removed){
+    store.rawSet('installedApps',valid);
+    const all=permissionRecords();let permissionsChanged=false;
+    for(const id of Object.keys(all)){
+      if(all[id]?.superuser===true)continue;
+      if(!validIds.has(id)){delete all[id];permissionsChanged=true;}
+    }
+    if(permissionsChanged)store.rawSet('permissions',all);
+    notify('MScript Installer',`Removed ${removed} invalid legacy app${removed===1?'':'s'} that could not pass installation validation.`,'system');
+    log(`Removed ${removed} invalid legacy installed app record(s)`);
+  }
+  return removed;
+}
+function getDisabledSystemApps(){return (store.rawGet('disabledSystemApps',[])||[]).map(String);}
+function setSystemDisabled(id,disabled){id=String(id);let list=getDisabledSystemApps().filter(x=>x!==id);if(disabled)list.push(id);store.rawSet('disabledSystemApps',[...new Set(list)]);return true;}
+function getActiveSystemApps(){const disabled=getDisabledSystemApps();return systemApps.filter(a=>!disabled.includes(a.meta.id));}
+function getAllApps(){const installed=getInstalled();const installedIds=new Set(installed.map(a=>a.meta.id));return [...getActiveSystemApps().filter(a=>!installedIds.has(a.meta.id)),...installed];}
+function getApp(id){id=String(id);return getAllApps().find(a=>a.meta.id===id);}
+function getHiddenApps(){return store.rawGet('hiddenApps',[])||[];}
+function setAppHidden(id,hidden){id=String(id);let list=getHiddenApps().filter(x=>x!==id);if(hidden)list.push(id);store.rawSet('hiddenApps',list);return true;}
+function installFailure(message,line=0){const detail=`${String(message)}${line?` (line ${line})`:''}`;log(`MScript install rejected: ${detail}`);notify('MScript Installer',`Installation failed: ${detail}`,'system');toast('App not installed — see Notifications');return false;}
+function installMScript(source,requesterId=''){try{const app=validateMScriptForInstall(source);const requester=String(requesterId);const holder=superuserHolder();const builtIn=systemApps.find(a=>a.meta.id===app.meta.id);if(builtIn&&holder!==requester)return installFailure('That app id belongs to a built-in system app');if(holder===app.meta.id&&requester!==app.meta.id)return installFailure('The Superuser app is protected from replacement');if(builtIn&&holder===requester)setSystemDisabled(app.meta.id,true);let srcs=store.rawGet('installedApps',[])||[];srcs=srcs.filter(s=>{try{return parseMScript(s).meta.id!==app.meta.id;}catch{return false;}});srcs.push(String(source));store.rawSet('installedApps',srcs);const all=permissionRecords();if(!Object.prototype.hasOwnProperty.call(all,app.meta.id)){all[app.meta.id]={};store.rawSet('permissions',all);}notify('App installed',app.meta.name,app.meta.id);showHome();return true;}catch(e){return installFailure(e?.message||'Unknown MScript installation error',e?.line||0);}}
+function uninstallApp(id,requesterId=''){id=String(id);const requester=String(requesterId),holder=superuserHolder(),app=getApp(id);if(!app){toast('App not found');return false;}if(holder===id){toast('Superuser app is protected. It must disable Superuser itself first.');return false;}if(app.system){if(holder!==requester){toast('Only the current Superuser app can remove a built-in system app');return false;}setSystemDisabled(id,true);for(const key of store.keys(`app.${id}.`))store.rawDelete(key);setAppHidden(id,false);stopAppBackground(id);closeRecent(id);toast('System app removed by Superuser');return true;}let srcs=store.rawGet('installedApps',[])||[];srcs=srcs.filter(s=>{try{return parseMScript(s).meta.id!==id;}catch{return false;}});store.rawSet('installedApps',srcs);for(const key of store.keys(`app.${id}.`))store.rawDelete(key);const all=permissionRecords();delete all[id];store.rawSet('permissions',all);setAppHidden(id,false);stopAppBackground(id);closeRecent(id);toast('App uninstalled and its data erased');return true;}
+function restoreSystemApp(id){id=String(id);if(!systemApps.some(a=>a.meta.id===id))return false;let srcs=store.rawGet('installedApps',[])||[];srcs=srcs.filter(s=>{try{return parseMScript(s).meta.id!==id;}catch{return false;}});store.rawSet('installedApps',srcs);setSystemDisabled(id,false);setAppHidden(id,false);toast('Built-in system app restored');return true;}
+function previewMScript(source){try{const app=parseMScript(source);app.meta.id='preview_'+Date.now();openParsedApp(app,true);return true;}catch(e){showRuntimeError({meta:{name:'Preview',id:'preview',icon:'!',color:'#b03b55'},source},e);return false;}}
+
+/* -------------------------- Window manager -------------------------- */
+function renderHome(){
+  const hidden=getHiddenApps();const apps=getAllApps().filter(a=>!hidden.includes(a.meta.id)).sort((a,b)=>a.meta.name.localeCompare(b.meta.name));
+  root.innerHTML=`<section class="screen" id="home"><div class="home-header"><div><div class="home-title">${escapeHTML(settings.homeTitle)}</div><div class="home-sub">${escapeHTML(settings.homeSubtitle)}</div></div><div class="avatar">${escapeHTML((settings.username||'O')[0].toUpperCase())}</div></div><div id="appGrid">${apps.map(a=>`<button class="app-icon-wrap" data-launch="${a.meta.id}"><span class="app-icon" style="background:linear-gradient(145deg,${a.meta.color},color-mix(in srgb,${a.meta.color} 55%,#111))">${escapeHTML(a.meta.icon)}</span><span class="app-label">${escapeHTML(a.meta.name)}</span></button>`).join('')}</div></section>`;
+  document.querySelectorAll('[data-launch]').forEach(el=>el.onclick=()=>openApp(el.dataset.launch)); state.current=null;
+}
+function pauseCurrent(reason='navigate'){const rt=state.appInstances.get(state.current);if(rt){rt.trigger('pause',{type:'pause',reason});for(const h of rt.foregroundTimers.values()){if(h.kind==='interval')clearInterval(h.id);else clearTimeout(h.id);}rt.foregroundTimers.clear();}}
+function showHome(){ if(state.current) state.history.push(state.current); pauseCurrent('home'); renderHome(); }
+function openParsedApp(app,preview=false){
+  const existing=state.appInstances.get(app.meta.id);if(existing)existing.destroy('relaunch');
+  const rt=new MRuntime(app);state.appInstances.set(app.meta.id,rt);state.current=app.meta.id;
+  if(!preview){state.recents=state.recents.filter(id=>id!==app.meta.id);state.recents.unshift(app.meta.id);state.recents=state.recents.slice(0,12);}
+  log(`Opened ${app.meta.name}`);rt.mount();
+}
+function openApp(id){id=String(id);const app=getApp(id);if(!app){toast('App not found');return;}if(state.current&&state.current!==id){state.history.push(state.current);pauseCurrent('app-open');}openParsedApp(app);}
+function closeRecent(id){state.recents=state.recents.filter(x=>x!==id);const rt=state.appInstances.get(id);if(rt){rt.destroy('recent-close');state.appInstances.delete(id);}if(state.current===id)showHome();}
+function showRecents(){
+  if(state.current)state.history.push(state.current);pauseCurrent('recents');
+  const apps=state.recents.map(getApp).filter(Boolean);
+  root.innerHTML=`<section class="screen" id="recents"><div class="app-header"><div class="app-header-icon" style="background:#4e5875">▢</div><div><div class="app-header-title">Recent Apps</div><div class="app-header-sub">Tap a card to reopen · close apps with ×</div></div></div>${apps.length?apps.map(a=>`<div class="recent-card" data-open-recent="${a.meta.id}"><div class="recent-top"><span>${escapeHTML(a.meta.icon)} ${escapeHTML(a.meta.name)}</span><button class="close-x" data-close-recent="${a.meta.id}" aria-label="Close">×</button></div><div class="recent-preview">${escapeHTML(a.meta.icon)}</div></div>`).join(''):'<div class="card center"><div style="font-size:2rem">▢</div><div class="row-title">No recent apps</div></div>'}</section>`;
+  document.querySelectorAll('[data-open-recent]').forEach(el=>el.onclick=e=>{if(!e.target.closest('[data-close-recent]'))openApp(el.dataset.openRecent)});
+  document.querySelectorAll('[data-close-recent]').forEach(el=>el.onclick=e=>{e.stopPropagation();closeRecent(el.dataset.closeRecent);showRecents();});state.current='__recents';
+}
+$('#navHome').onclick=()=>{vibrate();const rt=state.appInstances.get(state.current);if(rt?.trigger('homeButton',{type:'homeButton'})===true)return;showHome();};
+$('#navRecents').onclick=()=>{vibrate();const rt=state.appInstances.get(state.current);if(rt?.trigger('recentsButton',{type:'recentsButton'})===true)return;showRecents();};
+$('#navBack').onclick=()=>{vibrate();if($('#notificationShade').classList.contains('shade-open')){$('#notificationShade').classList.remove('shade-open');return;}const rt=state.appInstances.get(state.current);if(rt?.trigger('back',{type:'back'})===true)return;const prev=state.history.pop();if(prev&&prev!=='__recents'&&getApp(prev))openApp(prev);else showHome();};
+
+let fpsEl=null,lastFrame=performance.now(),frames=0;
+function fpsLoop(t){frames++;if(t-lastFrame>=1000){if(settings.showFPS){if(!fpsEl){fpsEl=document.createElement('div');fpsEl.style='position:absolute;top:38px;right:8px;z-index:90;background:#000a;padding:4px 7px;border-radius:8px;font:11px monospace';device.appendChild(fpsEl);}fpsEl.textContent=frames+' FPS';}else if(fpsEl){fpsEl.remove();fpsEl=null;}frames=0;lastFrame=t;}requestAnimationFrame(fpsLoop);}requestAnimationFrame(fpsLoop);
+
+window.addEventListener('error',e=>log(`Kernel error: ${e.message}`));
+log('MellorsOS kernel booted');
+sanitizeInstalledApps();
+renderHome();
+})();
+</script>
+</body>
+</html>
