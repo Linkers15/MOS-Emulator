@@ -284,11 +284,45 @@ $('#notificationShade').addEventListener('touchend',e=>{if(e.changedTouches[0].c
 
 /* --------------------------- MScript --------------------------- */
 class MScriptError extends Error { constructor(message,line=0){super(message);this.line=line;} }
-function splitLines(source){
-  // Convert physical source lines into logical MScript statements. Newlines
-  // inside quoted strings remain part of the expression, which is essential
-  // for ui.html("...multiline HTML/CSS/JS...").
+function normalizeRawHTMLBlocks(source){
+  // Full HTML documents often contain thousands of unescaped quote characters.
+  // Support this raw multiline MScript form without requiring HTML changes:
+  //   ui.html("
+  //   <!doctype html> ...
+  //   </html>"
+  //   )
+  // The content is converted internally to one safely escaped MScript string.
+  // Blank replacement lines preserve source line numbers after the HTML block.
   const input=String(source??'').replace(/\r/g,'');
+  const lines=input.split('\n');
+  for(let i=0;i<lines.length;i++){
+    const open=lines[i].match(/^(\s*)ui\.html\(\s*"\s*$/);
+    if(!open)continue;
+    let chosen=-1,closeParen=-1,fallback=-1,fallbackParen=-1;
+    for(let j=i+1;j<lines.length;j++){
+      if(!/"\s*$/.test(lines[j]))continue;
+      let k=j+1;
+      while(k<lines.length&&/^\s*$/.test(lines[k]))k++;
+      if(k>=lines.length||!/^\s*\)\s*$/.test(lines[k]))continue;
+      if(fallback<0){fallback=j;fallbackParen=k;}
+      if(/<\/html>\s*"\s*$/i.test(lines[j])){chosen=j;closeParen=k;break;}
+    }
+    if(chosen<0){chosen=fallback;closeParen=fallbackParen;}
+    if(chosen<0)continue;
+    const contentLines=lines.slice(i+1,chosen+1);
+    contentLines[contentLines.length-1]=contentLines[contentLines.length-1].replace(/"\s*$/,'');
+    const html=contentLines.join('\n');
+    lines[i]=open[1]+'ui.html('+JSON.stringify(html)+')';
+    for(let n=i+1;n<=closeParen;n++)lines[n]='';
+    i=closeParen;
+  }
+  return lines.join('\n');
+}
+function splitLines(source){
+  // Convert physical source lines into logical MScript statements. Raw
+  // ui.html blocks are normalized first; ordinary quoted multiline strings
+  // continue to work as before.
+  const input=normalizeRawHTMLBlocks(source);
   const out=[];
   let buffer='',line=1,startLine=1,quote=null,escaped=false;
   function flush(){
@@ -545,7 +579,7 @@ function apiParamDescription(path,param){
 function apiParamQuoteRule(path,param){
   const p=String(param).split('=')[0].trim();
   if(path.startsWith('ui.')&&p==='id')return 'Quotes optional for a literal control ID: save and "save" are equivalent. Use no quotes when passing a variable or function result.';
-  if(p==='htmlFile')return 'A literal HTML document must be enclosed in single or double quotes. Multiline quoted HTML is supported, and HTML/CSS/JavaScript lines inside the string are not parsed as MScript. Escape only occurrences of the same quote character used around the document. A variable or function result containing HTML is passed without quotes.';
+  if(p==='htmlFile')return 'For a short literal, use quotes. For a complete HTML file, use the raw multiline form ui.html(\" followed by a newline, the unchanged HTML document, then a final quote and closing parenthesis on their own lines. Inside that raw form, HTML single quotes, double quotes, template literals, CSS, and JavaScript require no escaping and are never parsed as MScript. A variable or function result containing HTML is passed without quotes.';
   const type=apiParamType(path,p);
   if(type==='text')return 'Literal text requires single or double quotes. Variables and function results are written without quotes.';
   if(type==='boolean')return 'Do not quote boolean literals: use true or false. Variables and function results are also unquoted.';
@@ -560,7 +594,7 @@ function apiFunctionSummary(path){
     'permission.set':'Changes an ordinary permission. Requires Modify permissions; it can never grant, revoke, or transfer Superuser.',
     'app.install':'Validates complete MScript source, then installs it when authorized. Returns true on success or false when validation/installation fails.',
     'app.remove':'Uninstalls a user app; the current Superuser holder can also remove built-in system apps.',
-    'ui.html':'Runs a complete, including multiline, HTML/CSS/JavaScript document inside an isolated in-app iframe. Quoted HTML is treated as one MScript argument, so JavaScript loops and other web syntax are not parsed as MScript.',
+    'ui.html':'Runs a complete HTML/CSS/JavaScript document inside an isolated in-app iframe. Its raw multiline form accepts an unchanged HTML file, including internal quotes, template literals, and JavaScript loops, without parsing them as MScript.',
     'math.random':'Returns a random numeric value between min (inclusive) and max (exclusive).',
     'system.execute':'Evaluates one MScript expression directly in the current runtime. Restricted to built-in system apps or the actual Superuser holder.',
     'dialog.alert':'Shows a native MellorsOS alert and resumes MScript after dismissal.',
