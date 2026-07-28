@@ -285,7 +285,34 @@ $('#notificationShade').addEventListener('touchend',e=>{if(e.changedTouches[0].c
 /* --------------------------- MScript --------------------------- */
 class MScriptError extends Error { constructor(message,line=0){super(message);this.line=line;} }
 function splitLines(source){
-  return source.replace(/\r/g,'').split('\n').map((raw,i)=>({raw,line:i+1,text:raw.trim()})).filter(x=>x.text && !x.text.startsWith('#'));
+  // Convert physical source lines into logical MScript statements. Newlines
+  // inside quoted strings remain part of the expression, which is essential
+  // for ui.html("...multiline HTML/CSS/JS...").
+  const input=String(source??'').replace(/\r/g,'');
+  const out=[];
+  let buffer='',line=1,startLine=1,quote=null,escaped=false;
+  function flush(){
+    const text=buffer.trim();
+    if(text&&!text.startsWith('#'))out.push({raw:buffer,line:startLine,text});
+    buffer='';startLine=line;
+  }
+  for(let i=0;i<input.length;i++){
+    const c=input[i];
+    if(c==='\n'){
+      if(quote){buffer+=c;escaped=false;}
+      else flush();
+      line++;if(!buffer)startLine=line;
+      continue;
+    }
+    buffer+=c;
+    if(escaped){escaped=false;continue;}
+    if(quote){
+      if(c==='\\'){escaped=true;continue;}
+      if(c===quote)quote=null;
+    }else if(c==='"'||c==="'") quote=c;
+  }
+  if(buffer.trim()||quote)flush();
+  return out;
 }
 function tokenize(expr){
   const out=[]; let i=0;
@@ -518,7 +545,7 @@ function apiParamDescription(path,param){
 function apiParamQuoteRule(path,param){
   const p=String(param).split('=')[0].trim();
   if(path.startsWith('ui.')&&p==='id')return 'Quotes optional for a literal control ID: save and "save" are equivalent. Use no quotes when passing a variable or function result.';
-  if(p==='htmlFile')return 'A literal HTML document must be inside quotes (escape internal quotes/newlines), but a variable or function result containing HTML is passed without quotes. For large documents, storing the HTML in app data and passing that value is recommended.';
+  if(p==='htmlFile')return 'A literal HTML document must be enclosed in single or double quotes. Multiline quoted HTML is supported, and HTML/CSS/JavaScript lines inside the string are not parsed as MScript. Escape only occurrences of the same quote character used around the document. A variable or function result containing HTML is passed without quotes.';
   const type=apiParamType(path,p);
   if(type==='text')return 'Literal text requires single or double quotes. Variables and function results are written without quotes.';
   if(type==='boolean')return 'Do not quote boolean literals: use true or false. Variables and function results are also unquoted.';
@@ -533,7 +560,7 @@ function apiFunctionSummary(path){
     'permission.set':'Changes an ordinary permission. Requires Modify permissions; it can never grant, revoke, or transfer Superuser.',
     'app.install':'Validates complete MScript source, then installs it when authorized. Returns true on success or false when validation/installation fails.',
     'app.remove':'Uninstalls a user app; the current Superuser holder can also remove built-in system apps.',
-    'ui.html':'Runs a complete HTML/CSS/JavaScript document inside an isolated in-app iframe while MellorsOS continues running around it.',
+    'ui.html':'Runs a complete, including multiline, HTML/CSS/JavaScript document inside an isolated in-app iframe. Quoted HTML is treated as one MScript argument, so JavaScript loops and other web syntax are not parsed as MScript.',
     'math.random':'Returns a random numeric value between min (inclusive) and max (exclusive).',
     'system.execute':'Evaluates one MScript expression directly in the current runtime. Restricted to built-in system apps or the actual Superuser holder.',
     'dialog.alert':'Shows a native MellorsOS alert and resumes MScript after dismissal.',
