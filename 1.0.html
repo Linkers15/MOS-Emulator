@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'self' data: blob:; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https: http:; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' data: blob: https: http:; style-src 'unsafe-inline' data: blob: https: http:; img-src data: blob: https: http:; font-src data: blob: https: http:; connect-src https: http: ws: wss:; media-src data: blob: https: http:; object-src 'none'; frame-src 'self' data: blob: https: http:; worker-src data: blob: https: http:; base-uri 'none'; form-action https: http:" />
 <title>MellorsOS</title>
 <style>
 :root{
@@ -514,7 +514,7 @@ function apiParamDescription(path,param){
   if(p==='appId')return 'The target app’s meta id. When permission.set is called with two arguments, appId is omitted and the current app is targeted.';
   if(p==='permission')return 'Permission id: settings, notifications, installApps, modifyPermissions, background, or superuser. Superuser cannot be changed with permission.set().';
   if(p==='source')return 'Complete MScript source code text for the app being previewed or installed.';
-  if(p==='htmlFile')return 'Complete HTML document/source to render inside the current app. CSS and JavaScript run inside an isolated sandboxed iframe; the MellorsOS status/navigation bars remain outside it.';
+  if(p==='htmlFile')return 'Complete HTML document/source to render inside the current app. HTML, CSS, JavaScript, WebAssembly, external resources, fetch/XHR, and WebSockets run inside an isolated internet-capable iframe; the MellorsOS status/navigation bars remain outside it.';
   if(p==='key'&&path.startsWith('settings.'))return 'Settings record name. Use settings.keys() to discover the currently available keys.';
   if(p==='key'&&path.startsWith('data.'))return 'Storage key. Private data functions automatically scope it to the current app; global functions use the shared/global storage rules.';
   if(p==='key'&&path==='system.info')return 'Information field to read: name, version, engine, platform, language, online, apps, systemApps, userApps, storageKeys, userAgent, or superuser.';
@@ -594,7 +594,7 @@ function apiFunctionSummary(path){
     'permission.set':'Changes an ordinary permission. Requires Modify permissions; it can never grant, revoke, or transfer Superuser.',
     'app.install':'Validates complete MScript source, then installs it when authorized. Returns true on success or false when validation/installation fails.',
     'app.remove':'Uninstalls a user app; the current Superuser holder can also remove built-in system apps.',
-    'ui.html':'Runs a complete HTML/CSS/JavaScript document inside an isolated in-app iframe. Its raw multiline form accepts an unchanged HTML file, including internal quotes, template literals, and JavaScript loops, without parsing them as MScript.',
+    'ui.html':'Runs a complete HTML/CSS/JavaScript document inside an isolated internet-capable in-app iframe. External scripts, styles, images, audio, fetch/XHR, WebSockets, pointer lock, fullscreen, gamepad input, and WebAssembly are supported. The frame has a unique opaque origin and cannot access the MellorsOS parent DOM, kernel, permissions, cookies, or browser storage. fetch/XHR still follows normal browser CORS rules. Its raw multiline form accepts an unchanged HTML file, including internal quotes, template literals, and JavaScript loops, without parsing them as MScript.',
     'math.random':'Returns a random numeric value between min (inclusive) and max (exclusive).',
     'system.execute':'Evaluates one MScript expression directly in the current runtime. Restricted to built-in system apps or the actual Superuser holder.',
     'dialog.alert':'Shows a native MellorsOS alert and resumes MScript after dismissal.',
@@ -612,7 +612,10 @@ function apiFunctionSummary(path){
 }
 function sandboxHTMLDocument(source){
   const html=String(source??'');
-  const csp=`<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' blob:; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'; media-src data: blob:; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">`;
+  // Internet-capable child policy. The iframe sandbox intentionally omits
+  // allow-same-origin, so scripts run with a unique opaque origin and cannot
+  // access MellorsOS, its DOM, cookies, localStorage, or kernel APIs.
+  const csp=`<meta http-equiv="Content-Security-Policy" content="default-src https: http: data: blob:; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https: http: data: blob:; style-src 'unsafe-inline' https: http: data: blob:; img-src https: http: data: blob:; font-src https: http: data: blob:; connect-src https: http: ws: wss:; media-src https: http: data: blob:; worker-src https: http: data: blob:; frame-src https: http: data: blob:; object-src 'none'; base-uri https: http: data: blob:; form-action https: http:">`;
   const charset='<meta charset="UTF-8">';
   if(/<head(?:\s[^>]*)?>/i.test(html))return html.replace(/<head(?:\s[^>]*)?>/i,m=>m+charset+csp);
   if(/<html(?:\s[^>]*)?>/i.test(html))return html.replace(/<html(?:\s[^>]*)?>/i,m=>m+`<head>${charset}${csp}</head>`);
@@ -747,13 +750,17 @@ class MRuntime{
           const page=root.querySelector('.app-page');if(!page)return false;
           const frame=document.createElement('iframe');
           frame.className='ms-html-frame';
-          frame.setAttribute('sandbox','allow-scripts');
+          frame.setAttribute('sandbox','allow-scripts allow-forms allow-modals allow-popups allow-downloads allow-pointer-lock allow-presentation');
           frame.setAttribute('referrerpolicy','no-referrer');
+          frame.setAttribute('allow','autoplay; fullscreen; gamepad');
+          frame.setAttribute('allowfullscreen','');
+          frame.setAttribute('tabindex','0');
           frame.setAttribute('title',`${rt.app.meta.name} HTML surface`);
           const header=page.querySelector('.app-header');
           frame.style.height=Math.max(260,root.clientHeight-(header?header.offsetHeight:0)-70)+'px';
           frame.srcdoc=sandboxHTMLDocument(htmlFile);
           page.appendChild(frame);
+          queueMicrotask(()=>frame.focus());
           return true;
         },
         htmlSafe(text){append(`<div class="card">${escapeHTML(text)}</div>`);} 
@@ -1277,7 +1284,7 @@ on start
 
   ui.section("11 · Specialized system UI helpers")
   ui.code("ui.code(text)\nui.noteList(prefix)\nui.appList()\nui.storageView()\nui.notificationList()\nui.calculator()\nui.calcSet(value)\nui.wallpaperPicker()\nui.accentPicker()\nui.logView()\nui.appManager()\nui.refreshAppManager()\nui.html(htmlFile)\nui.htmlSafe(text)")
-  ui.text("code renders a formatted code block. noteList lists storage records and emits openNote. appList opens installed apps. storageView, notificationList, calculator/calcSet, wallpaperPicker, accentPicker, and logView power built-in tools. appManager requires Modify permissions and renders app permissions, Home visibility, and uninstall controls while keeping Superuser kernel-controlled. refreshAppManager updates it in place. htmlSafe displays text inside a card and always escapes markup.", "small")
+  ui.text("code renders a formatted code block. noteList lists storage records and emits openNote. appList opens installed apps. storageView, notificationList, calculator/calcSet, wallpaperPicker, accentPicker, and logView power built-in tools. appManager requires Modify permissions and renders app permissions, Home visibility, and uninstall controls while keeping Superuser kernel-controlled. refreshAppManager updates it in place. ui.html runs a complete HTML/CSS/JavaScript or WebAssembly document in an internet-capable sandbox while MellorsOS keeps its status and navigation bars visible. External scripts, styles, images, media, fetch/XHR, WebSockets, pointer lock, fullscreen, and gamepads are supported. The sandbox cannot access the MellorsOS parent DOM, kernel, permissions, cookies, or browser storage. fetch/XHR requests remain subject to the destination server's CORS policy. htmlSafe displays text inside a card and always escapes markup.", "small")
 
   ui.section("12 · Private and shared storage")
   ui.code("data.get(key, fallback)\ndata.set(key, value)\ndata.delete(key)\ndata.keys(prefix)\ndata.has(key)\ndata.clear()\ndata.count(prefix)\ndata.append(key, value, separator)\ndata.increment(key, amount)\ndata.globalGet(key, fallback)\ndata.globalSet(key, value)\ndata.globalDelete(key)\ndata.globalKeys(prefix)\ndata.globalHas(key)")
