@@ -612,7 +612,7 @@ function validateMScriptForInstall(source){
 
 function apiParamType(path,param){
   const p=String(param).split('=')[0].trim();
-  if(['id','appId','key','name','eventName','permission','title','subtitle','body','message','detail','label','style','kind','type','icon','text','source','htmlFile','url','prefix','placeholder','separator','query','q','old','new','yesLabel','noLabel','optionsCSV','selected','expression','expr','accept','path','fromPath','toPath','mime','content'].includes(p))return 'text';
+  if(['id','appId','key','name','eventName','permission','title','subtitle','body','message','detail','label','style','kind','type','icon','text','source','htmlFile','url','mode','prefix','placeholder','separator','query','q','old','new','yesLabel','noLabel','optionsCSV','selected','expression','expr','accept','path','fromPath','toPath','mime','content'].includes(p))return 'text';
   if(['value','fallback','jsonOrObject'].includes(p))return 'any';
   if(['enabled','visible','hidden','on'].includes(p))return 'boolean';
   if(['ms','milliseconds','amount','min','max','step','start','end','index','count','decimals','d','power','p','px','v','a','b'].includes(p))return 'number / value';
@@ -629,7 +629,8 @@ function apiParamDescription(path,param){
   if(p==='permission')return 'Permission id: settings, notifications, installApps, modifyPermissions, allFiles, background, or superuser. Superuser cannot be changed with permission.set().';
   if(p==='source')return 'Complete MScript source code text for the app being previewed or installed.';
   if(p==='htmlFile')return 'Complete HTML document/source to render inside the current app. HTML, CSS, JavaScript, WebAssembly, external resources, fetch/XHR, and WebSockets run inside an isolated internet-capable iframe; the MellorsOS status/navigation bars remain outside it.';
-  if(p==='url')return 'Absolute HTTP or HTTPS address to open directly in one cross-origin sandboxed web frame. Use ui.web() for hosted games and sites that need their normal web origin, storage, WebGL, audio, or Safari behavior.';
+  if(p==='url')return 'Absolute HTTP or HTTPS address to open in an in-app web frame. Cross-origin pages use compatible mode by default for Safari/WebGL behavior.';
+  if(p==='mode'&&path==='ui.web')return 'Optional web-frame mode: \"compatible\" (default) uses a normal cross-origin iframe for maximum browser compatibility; \"sandboxed\" applies additional iframe sandbox restrictions. Same-origin URLs are always sandboxed.';
   if(p==='accept')return 'Optional browser file-type filter, such as \".mscript,text/plain\". It guides the file chooser but does not replace installer validation. Every selected file is also saved in /imports and event.filePath reports that stored path.';
   if(p==='path')return 'Filesystem path. Relative paths resolve inside /apps/<current-app-id> and need no permission. Absolute paths outside that private folder require Access to all files.';
   if(p==='fromPath')return 'Existing source file or folder path. Relative paths use the current app folder; other locations require Access to all files.';
@@ -716,7 +717,7 @@ function apiFunctionSummary(path){
     'app.install':'Validates complete MScript source, then installs it when authorized. Returns true on success or false when validation/installation fails.',
     'app.remove':'Uninstalls a user app; the current Superuser holder can also remove built-in system apps.',
     'ui.html':'Runs a complete HTML/CSS/JavaScript document through a sandboxed Blob-backed in-app iframe. External scripts, styles, images, audio, fetch/XHR, WebSockets, pointer lock, fullscreen, gamepad input, and WebAssembly are supported. The frame has a unique opaque origin and cannot access the MellorsOS parent DOM, kernel, permissions, cookies, or browser storage. fetch/XHR still follows normal browser CORS rules. Its raw multiline form accepts an unchanged HTML file, including internal quotes, template literals, and JavaScript loops, without parsing them as MScript. Unicode and common mojibake indentation are normalized before loading and repaired again inside the child document so CSS selectors remain valid.',
-    'ui.web':'Loads an absolute HTTP or HTTPS URL directly in a single sandboxed iframe. Cross-origin pages retain their own origin for WebGL, site storage, audio, and iOS Safari compatibility, but browser same-origin rules prevent them from reading MellorsOS. Same-origin destinations remain opaque to preserve the OS boundary.',
+    'ui.web':'Loads an HTTP or HTTPS page in an in-app web frame. The default compatible mode uses a normal iframe for genuinely cross-origin pages so iOS Safari gives the page its ordinary WebGL, audio, and origin behavior; browser same-origin rules still prevent it from reading MellorsOS. Use mode \"sandboxed\" for additional iframe restrictions. Same-origin destinations are always sandboxed.',
     'ui.fileInput':'Shows a native file chooser control. Every selected file is preserved in /imports. MScript receives on file <id> with event.value, event.fileName, event.fileType, event.filePath, event.fileEncoding, and size metadata.',
     'ui.fileBrowser':'Renders a folder browser and emits fileNavigate for folders or fileAction for selected-file actions.',
     'file.root':'Returns the current app private folder at /apps/<app-id>.',
@@ -931,25 +932,32 @@ class MRuntime{
           page.appendChild(frame);
           return true;
         },
-        web(url){
+        web(url,mode='compatible'){
           const page=root.querySelector('.app-page');if(!page)return false;
           const raw=String(url??'').trim();
+          const webMode=String(mode??'compatible').trim().toLowerCase()||'compatible';
           let target;
           try{target=new URL(raw,location.href);}catch{throw new MScriptError('ui.web requires a valid HTTP or HTTPS URL');}
           if(target.protocol!=='https:'&&target.protocol!=='http:')throw new MScriptError('ui.web only accepts HTTP or HTTPS URLs');
+          if(!['compatible','sandboxed'].includes(webMode))throw new MScriptError('ui.web mode must be "compatible" or "sandboxed"');
           const frame=document.createElement('iframe');
           frame.className='ms-html-frame ms-web-frame';
+          frame.loading='eager';
           let sameOrigin=false;
           try{sameOrigin=location.origin!=='null'&&target.origin===location.origin;}catch{}
-          const sandboxTokens=['allow-scripts','allow-forms','allow-modals','allow-popups','allow-downloads','allow-pointer-lock','allow-presentation','allow-orientation-lock'];
-          // A genuinely cross-origin hosted page can safely retain its own origin:
-          // the browser's same-origin policy still prevents access to MellorsOS.
-          // Same-origin URLs stay opaque so scripts cannot remove the sandbox.
-          if(!sameOrigin){sandboxTokens.push('allow-same-origin','allow-storage-access-by-user-activation');}
-          frame.setAttribute('sandbox',sandboxTokens.join(' '));
+          // Compatible cross-origin pages use a normal iframe. The browser's
+          // same-origin policy prevents the remote page from reading MellorsOS,
+          // while avoiding WebKit's extra sandbox restrictions on WebGL and audio.
+          // Same-origin pages are always sandboxed because SOP would not isolate them.
+          if(sameOrigin||webMode==='sandboxed'){
+            const sandboxTokens=['allow-scripts','allow-forms','allow-modals','allow-popups','allow-downloads','allow-pointer-lock','allow-presentation','allow-orientation-lock'];
+            if(!sameOrigin)sandboxTokens.push('allow-same-origin','allow-storage-access-by-user-activation');
+            frame.setAttribute('sandbox',sandboxTokens.join(' '));
+          }
           frame.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
-          frame.setAttribute('allow','autoplay; fullscreen; gamepad; accelerometer; gyroscope; screen-wake-lock; clipboard-read; clipboard-write');
+          frame.setAttribute('allow','autoplay *; fullscreen *; gamepad *; accelerometer *; gyroscope *; screen-wake-lock *; clipboard-read *; clipboard-write *');
           frame.setAttribute('allowfullscreen','');
+          frame.setAttribute('webkitallowfullscreen','true');
           frame.setAttribute('tabindex','0');
           frame.setAttribute('title',`${rt.app.meta.name} web surface`);
           const header=page.querySelector('.app-header');
@@ -960,9 +968,11 @@ class MRuntime{
           }else{
             frame.style.height=Math.max(260,page.clientHeight-header.offsetHeight-16)+'px';
           }
-          frame.src=target.href;
-          frame.addEventListener('load',()=>frame.focus(),{once:true});
           page.appendChild(frame);
+          // Assign after insertion so iOS WebKit sees a laid-out, visible frame
+          // before the remote page creates its WebGL context.
+          requestAnimationFrame(()=>{frame.src=target.href;});
+          frame.addEventListener('load',()=>frame.focus(),{once:true});
           return true;
         },
         htmlSafe(text){append(`<div class="card">${escapeHTML(text)}</div>`);} 
@@ -1610,8 +1620,8 @@ on start
   ui.text("These functions inspect or modify controls already rendered on the current app page. setText is intended for elements created with ui.label or other id-bearing controls. setVisible hides without deleting. setEnabled disables interaction. remove deletes the element. focus moves keyboard focus. scrollTop returns to the top of the app page.", "small")
 
   ui.section("11 · Specialized system UI helpers")
-  ui.code("ui.code(text)\nui.fileInput(id, label, accept)\nui.noteList(prefix)\nui.appList()\nui.storageView()\nui.notificationList()\nui.calculator()\nui.calcSet(value)\nui.wallpaperPicker()\nui.accentPicker()\nui.logView()\nui.appManager()\nui.refreshAppManager()\nui.html(htmlFile)\nui.web(url)\nui.htmlSafe(text)")
-  ui.text("code renders a formatted code block. fileInput opens a browser file chooser, preserves the selected file in /imports, and emits on file <id>; event.filePath identifies the stored import. fileBrowser renders folders and emits fileNavigate or fileAction. noteList lists storage records and emits openNote. appList opens installed apps. storageView, notificationList, calculator/calcSet, wallpaperPicker, accentPicker, and logView power built-in tools. appManager requires Modify permissions and renders app permissions, Home visibility, and uninstall controls while keeping Superuser kernel-controlled. refreshAppManager updates it in place. ui.html runs supplied HTML/CSS/JavaScript or WebAssembly in an opaque-origin sandbox and is best for bundled documents. ui.web loads a hosted HTTP/HTTPS page directly in one web frame; use it for hosted games that need their normal origin, WebGL, site storage, audio, or iOS Safari behavior. Cross-origin ui.web pages remain isolated from MellorsOS by the browser same-origin policy, while same-origin destinations are kept opaque. Both keep the status and navigation bars visible. fetch/XHR requests remain subject to the destination server's CORS policy. htmlSafe displays text inside a card and always escapes markup.", "small")
+  ui.code("ui.code(text)\nui.fileInput(id, label, accept)\nui.noteList(prefix)\nui.appList()\nui.storageView()\nui.notificationList()\nui.calculator()\nui.calcSet(value)\nui.wallpaperPicker()\nui.accentPicker()\nui.logView()\nui.appManager()\nui.refreshAppManager()\nui.html(htmlFile)\nui.web(url, mode="compatible")\nui.htmlSafe(text)")
+  ui.text("code renders a formatted code block. fileInput opens a browser file chooser, preserves the selected file in /imports, and emits on file <id>; event.filePath identifies the stored import. fileBrowser renders folders and emits fileNavigate or fileAction. noteList lists storage records and emits openNote. appList opens installed apps. storageView, notificationList, calculator/calcSet, wallpaperPicker, accentPicker, and logView power built-in tools. appManager requires Modify permissions and renders app permissions, Home visibility, and uninstall controls while keeping Superuser kernel-controlled. refreshAppManager updates it in place. ui.html runs supplied HTML/CSS/JavaScript or WebAssembly in an opaque-origin sandbox and is best for bundled documents. ui.web loads a hosted HTTP/HTTPS page directly in one web frame. Compatible mode is the default and uses a normal iframe for genuinely cross-origin pages so Safari supplies normal WebGL, audio, and origin behavior; the browser same-origin policy still isolates the page from MellorsOS. Pass "sandboxed" as the second argument for extra iframe restrictions. Same-origin destinations are always sandboxed. Both keep the status and navigation bars visible. fetch/XHR requests remain subject to the destination server's CORS policy. htmlSafe displays text inside a card and always escapes markup.", "small")
 
   ui.section("12 · Private and shared storage")
   ui.code("data.get(key, fallback)\ndata.set(key, value)\ndata.delete(key)\ndata.keys(prefix)\ndata.has(key)\ndata.clear()\ndata.count(prefix)\ndata.append(key, value, separator)\ndata.increment(key, amount)\ndata.globalGet(key, fallback)\ndata.globalSet(key, value)\ndata.globalDelete(key)\ndata.globalKeys(prefix)\ndata.globalHas(key)")
