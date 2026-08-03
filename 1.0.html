@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https: http:; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' data: blob: https: http:; style-src 'unsafe-inline' data: blob: https: http:; img-src data: blob: https: http:; font-src data: blob: https: http:; connect-src https: http: ws: wss:; media-src data: blob: https: http:; object-src 'none'; frame-src 'self' data: blob: https: http:; worker-src data: blob: https: http:; base-uri 'none'; form-action https: http:" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'unsafe-inline' 'unsafe-eval' data: blob:; style-src 'unsafe-inline' data: blob:; img-src data: blob:; font-src data: blob:; connect-src 'none'; media-src data: blob:; object-src 'none'; frame-src 'none'; worker-src data: blob:; base-uri 'none'; form-action 'none'" />
 <title>MellorsOS</title>
 <style>
 :root{
@@ -65,7 +65,14 @@ body{display:grid;place-items:center;background:radial-gradient(circle at 20% 0%
 .large-targets button,.large-targets .toggle{min-height:48px}.bold-text{font-weight:600}.bold-text .row-title,.bold-text .app-header-title,.bold-text .home-title{font-weight:950}.reduce-transparency #nav,.reduce-transparency .app-page,.reduce-transparency .card,.reduce-transparency #notificationShade{backdrop-filter:none!important;background-color:#11162a!important}.nav-compact #nav{height:56px}.nav-compact #appRoot{bottom:56px}.nav-compact #notificationShade{bottom:56px}.nav-compact .navbtn{height:40px}
 #osModalHost{position:absolute;inset:0;z-index:140;display:none;align-items:flex-end;justify-content:center;background:rgba(2,4,10,.66);backdrop-filter:blur(10px);padding:14px}#osModalHost.open{display:flex}.os-modal{width:100%;max-height:86%;overflow:auto;background:linear-gradient(180deg,#171c31,#0d1121);border:1px solid rgba(255,255,255,.14);border-radius:26px;padding:18px;box-shadow:0 24px 70px rgba(0,0,0,.55);animation:modalIn .18s ease}.os-modal-icon{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;background:rgba(109,124,255,.18);font-size:1.65rem;margin-bottom:12px}.os-modal-title{font-size:1.28rem;font-weight:900;letter-spacing:-.02em}.os-modal-body{color:#e2e6f7;line-height:1.5;margin-top:8px}.os-modal-detail{color:var(--muted);font-size:.78rem;line-height:1.5;margin-top:10px}.os-modal-actions{display:grid;gap:8px;margin-top:16px}.os-modal-actions button{width:100%;margin:0;min-height:46px}.disabled-control{opacity:.42;pointer-events:none}.permission-inherited{opacity:.48;pointer-events:none}.app-manager-card .manager-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.status-pill{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.08);font-size:.7rem;color:var(--muted);font-weight:800}.status-pill.superuser{background:rgba(255,93,120,.16);color:#ffabb9}.status-pill.system{background:rgba(70,215,163,.13);color:#8eecc8}@keyframes modalIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
 
-.menu-entry{width:100%;border:0;background:var(--panel);color:var(--text);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:14px;margin:8px 0;display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer}.menu-entry:active{transform:scale(.985)}.menu-icon{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.09);display:grid;place-items:center;font-size:1.3rem;flex:0 0 auto}.menu-copy{min-width:0;flex:1}.menu-value{color:var(--muted);font-size:.78rem;max-width:34%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.menu-chevron{color:var(--muted);font-size:1.35rem}.alert{border-left:4px solid var(--accent)}.alert.warning{border-left-color:#f0a33b}.alert.danger{border-left-color:var(--danger)}.alert.success{border-left-color:var(--ok)}.ui-divider{height:1px;background:rgba(255,255,255,.09);margin:12px 2px}.segmented{display:flex;gap:5px;padding:4px;background:rgba(255,255,255,.06);border-radius:14px}.segment{flex:1;border:0;background:transparent;color:var(--muted);padding:9px 7px;border-radius:11px;font-size:.76rem;font-weight:800}.segment.selected{background:var(--accent);color:white}.chip-wrap{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:var(--text);border-radius:999px;padding:7px 11px;font-size:.76rem}.chip.selected{background:var(--accent);border-color:var(--accent)}.ui-stat{display:inline-flex;flex-direction:column;min-width:92px;padding:12px;border-radius:16px;background:rgba(255,255,255,.06);margin:4px}.ui-stat strong{font-size:1.2rem}.ui-hidden{display:none!important}.ui-disabled{opacity:.42!important;pointer-events:none!important}.app-page.html-surface{height:100%;min-height:0;padding:0;overflow:hidden;background:#000;border-radius:26px 26px 0 0}.screen.html-surface-screen{padding:0;overflow:hidden}.ms-html-frame{display:block;width:100%;height:100%;border:0;border-radius:0;background:#000;margin:0}.file-import{display:inline-flex;align-items:center;gap:8px;cursor:pointer}.file-import input{display:none}.terminal-output{font-family:"SFMono-Regular",Consolas,monospace;white-space:pre-wrap;word-break:break-word;background:#080b16;border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:12px;min-height:90px;color:#d5dcff}
+.menu-entry{width:100%;border:0;background:var(--panel);color:var(--text);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:14px;margin:8px 0;display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer}.menu-entry:active{transform:scale(.985)}.menu-icon{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.09);display:grid;place-items:center;font-size:1.3rem;flex:0 0 auto}.menu-copy{min-width:0;flex:1}.menu-value{color:var(--muted);font-size:.78rem;max-width:34%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.menu-chevron{color:var(--muted);font-size:1.35rem}.alert{border-left:4px solid var(--accent)}.alert.warning{border-left-color:#f0a33b}.alert.danger{border-left-color:var(--danger)}.alert.success{border-left-color:var(--ok)}.ui-divider{height:1px;background:rgba(255,255,255,.09);margin:12px 2px}.segmented{display:flex;gap:5px;padding:4px;background:rgba(255,255,255,.06);border-radius:14px}.segment{flex:1;border:0;background:transparent;color:var(--muted);padding:9px 7px;border-radius:11px;font-size:.76rem;font-weight:800}.segment.selected{background:var(--accent);color:white}.chip-wrap{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:var(--text);border-radius:999px;padding:7px 11px;font-size:.76rem}.chip.selected{background:var(--accent);border-color:var(--accent)}.ui-stat{display:inline-flex;flex-direction:column;min-width:92px;padding:12px;border-radius:16px;background:rgba(255,255,255,.06);margin:4px}.ui-stat strong{font-size:1.2rem}.ui-hidden{display:none!important}.ui-disabled{opacity:.42!important;pointer-events:none!important}.file-import{display:inline-flex;align-items:center;gap:8px;cursor:pointer}.file-import input{display:none}.terminal-output{font-family:"SFMono-Regular",Consolas,monospace;white-space:pre-wrap;word-break:break-word;background:#080b16;border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:12px;min-height:90px;color:#d5dcff}
+.ms-game-wrap{position:relative;width:100%;max-width:100%;margin:8px auto 14px;background:#000;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 30px rgba(0,0,0,.25);touch-action:none;user-select:none}
+.ms-game-canvas{display:block;width:100%;height:100%;background:#000;touch-action:none;outline:none}
+.ms-game-controls{position:absolute;inset:0;pointer-events:none}
+.ms-game-control{position:absolute;pointer-events:auto;border:1px solid rgba(255,255,255,.2);background:rgba(20,25,45,.62);backdrop-filter:blur(8px);color:white;border-radius:14px;font-weight:850;display:grid;place-items:center;touch-action:none;user-select:none;margin:0;padding:0}
+.ms-game-control.pressed{background:color-mix(in srgb,var(--accent) 72%,transparent);transform:scale(.96)}
+.file-preview-image{display:block;max-width:100%;max-height:520px;margin:10px auto;border-radius:16px;background:repeating-conic-gradient(#222 0 25%,#2b2b2b 0 50%) 0/20px 20px;object-fit:contain}
+.file-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.file-action-grid button{margin:0}
 </style>
 </head>
 <body>
@@ -92,7 +99,7 @@ const device = $('#device');
 const STORAGE_PREFIX = 'mellorsos.';
 const state = {
   current:null, history:[], recents:[], notifications:[], appInstances:new Map(),
-  background:new Map(), eventBus:new Map(), logs:[], developer:false
+  background:new Map(), eventBus:new Map(), pendingFileOpens:new Map(), fileGrants:new Map(), logs:[], developer:false
 };
 const defaults = {
   accent:'#6d7cff', accent2:'#a96cff', wallpaper:'aurora', gridCols:4, iconSize:58, iconShape:'squircle',
@@ -185,6 +192,8 @@ function fsDeletePath(path){
 }
 function fsCopyPath(fromPath,toPath,owner='user'){
   fromPath=fsNormalize(fromPath);toPath=fsNormalize(toPath);const fs=fsLoad(),source=fs.entries[fromPath];if(!source)throw new MScriptError(`File or folder not found: ${fromPath}`);
+  if(fromPath===toPath)throw new MScriptError('Source and destination paths must be different');
+  if(fs.entries[toPath])throw new MScriptError(`A file or folder already exists at ${toPath}`);
   if(source.kind==='file')return fsWritePath(toPath,source.content,source.mime,owner,source.encoding);
   if(toPath.startsWith(fromPath+'/'))throw new MScriptError('A folder cannot be copied inside itself');
   fsEnsureFolderIn(fs,toPath,owner);const prefix=fromPath+'/';
@@ -194,6 +203,55 @@ function fsCopyPath(fromPath,toPath,owner='user'){
   fsSave(fs);return toPath;
 }
 function fsMovePath(fromPath,toPath,owner='user'){fromPath=fsNormalize(fromPath);toPath=fsNormalize(toPath);if(FILESYSTEM_CORE_FOLDERS.includes(fromPath))throw new MScriptError('Core filesystem folders cannot be moved');fsCopyPath(fromPath,toPath,owner);fsDeletePath(fromPath);return toPath;}
+
+function fsRenamePath(path,newName,owner='user'){
+  path=fsNormalize(path);if(path==='/')throw new MScriptError('The filesystem root cannot be renamed');
+  if(FILESYSTEM_CORE_FOLDERS.includes(path))throw new MScriptError('Core filesystem folders cannot be renamed');
+  const clean=String(newName??'').replace(/[\\/\u0000-\u001f\u007f]/g,'_').trim();
+  if(!clean)throw new MScriptError('A new file or folder name is required');
+  const destination=fsNormalize(fsParent(path)+'/'+clean);
+  if(destination===path)return path;
+  if(fsEntry(destination))throw new MScriptError(`A file or folder already exists at ${destination}`);
+  const out=fsMovePath(path,destination,owner);
+  const entry=fsEntry(out);if(entry?.kind==='file'){entry.mime=fsMimeFromName(out);const fs=fsLoad();fs.entries[out]=entry;fsSave(fs);}
+  return out;
+}
+function fsChangeExtensionPath(path,newExtension,owner='user'){
+  path=fsNormalize(path);const entry=fsEntry(path);if(!entry||entry.kind!=='file')throw new MScriptError(`File not found: ${path}`);
+  let ext=String(newExtension??'').trim().replace(/^\.+/,'').replace(/[^A-Za-z0-9_-]/g,'');
+  const name=fsName(path),dot=name.lastIndexOf('.'),base=dot>0?name.slice(0,dot):name;
+  const nextName=ext?`${base}.${ext}`:base;
+  return fsRenamePath(path,nextName,owner);
+}
+function fsEntryDataURL(path){
+  path=fsNormalize(path);const entry=fsEntry(path);if(!entry||entry.kind!=='file')return '';
+  const content=String(entry.content??'');
+  if(/^data:/i.test(content))return content;
+  const mime=entry.mime||fsMimeFromName(path);
+  if(entry.encoding==='text'||mime.startsWith('text/')||mime==='image/svg+xml'){
+    return `data:${mime};charset=utf-8,${encodeURIComponent(content)}`;
+  }
+  return '';
+}
+function fsEntryBlob(path){
+  path=fsNormalize(path);const entry=fsEntry(path);if(!entry||entry.kind!=='file')throw new MScriptError(`File not found: ${path}`);
+  const mime=entry.mime||fsMimeFromName(path),content=String(entry.content??'');
+  if(/^data:/i.test(content)){
+    const m=content.match(/^data:([^;,]*)(;base64)?,([\s\S]*)$/i);
+    if(m){
+      const type=m[1]||mime;const raw=m[2]?atob(m[3]):decodeURIComponent(m[3]);
+      const bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
+      return new Blob([bytes],{type});
+    }
+  }
+  return new Blob([content],{type:mime});
+}
+function fsExportPath(path,downloadName=''){
+  path=fsNormalize(path);const entry=fsEntry(path);if(!entry||entry.kind!=='file')throw new MScriptError(`File not found: ${path}`);
+  const blob=fsEntryBlob(path),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=String(downloadName||fsName(path));a.rel='noopener';a.style.display='none';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);return true;
+}
 function fsUniquePath(directory,name){
   directory=fsNormalize(directory);let clean=String(name||'Untitled').replace(/[\\/\u0000-\u001f\u007f]/g,'_').trim()||'Untitled';
   let candidate=fsNormalize(directory+'/'+clean);if(!fsEntry(candidate))return candidate;
@@ -202,10 +260,12 @@ function fsUniquePath(directory,name){
 }
 function fsMimeFromName(name){const ext=fsExtension(name);return({mscript:'text/plain',txt:'text/plain',md:'text/markdown',json:'application/json',html:'text/html',htm:'text/html',css:'text/css',js:'text/javascript',csv:'text/csv',xml:'application/xml',svg:'image/svg+xml',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',gif:'image/gif',webp:'image/webp',mp3:'audio/mpeg',wav:'audio/wav',mp4:'video/mp4'})[ext]||'application/octet-stream';}
 function fsIsTextEntry(entry,path=''){if(!entry||entry.kind!=='file')return false;return entry.encoding==='text'||entry.mime.startsWith('text/')||['json','xml','svg','js','css','html','htm','md','mscript','csv'].includes(fsExtension(path));}
+function hasFileGrant(appId,path){const grants=state.fileGrants.get(String(appId));path=fsNormalize(path);return !!grants&&[...grants].some(grant=>path===grant||path.startsWith(grant+'/'));}
+function grantFileAccess(appId,path){appId=String(appId);path=fsNormalize(path);const grants=state.fileGrants.get(appId)||new Set();grants.add(path);state.fileGrants.set(appId,grants);return path;}
 function fsResolveRuntime(rt,path){
   const raw=String(path??'').trim(),rootPath=fsAppRoot(rt.app.meta.id);let resolved=raw.startsWith('/')?fsNormalize(raw):fsNormalize(rootPath+'/'+raw);
-  const owns=resolved===rootPath||resolved.startsWith(rootPath+'/');
-  if(!rt.app.system&&superuserHolder()!==rt.app.meta.id&&!owns&&!hasPermission(rt.app,'allFiles'))requirePermission(rt,'allFiles');
+  const owns=resolved===rootPath||resolved.startsWith(rootPath+'/'),granted=hasFileGrant(rt.app.meta.id,resolved);
+  if(!rt.app.system&&superuserHolder()!==rt.app.meta.id&&!owns&&!granted&&!hasPermission(rt.app,'allFiles'))requirePermission(rt,'allFiles');
   fsEnsureFolder(rootPath,rt.app.meta.id);return resolved;
 }
 function fsEraseAppFolder(appId){const rootPath=fsAppRoot(appId);if(fsEntry(rootPath))return fsDeletePath(rootPath);return false;}
@@ -216,6 +276,22 @@ async function fsReadBrowserFile(file){
   return{content,encoding:'dataURL'};
 }
 function fsStoreImport(file,content,encoding){const path=fsUniquePath('/imports',file.name||'Imported file');return fsWritePath(path,content,file.type||fsMimeFromName(file.name),`import:${Date.now()}`,encoding);}
+function appAcceptPatterns(app){return String(app?.meta?.accepts||'').split(/[|,]/).map(x=>x.trim().toLowerCase()).filter(Boolean);}
+function appCanOpenPath(app,path){
+  if(!app)return false;const patterns=appAcceptPatterns(app);if(!patterns.length)return false;
+  path=fsNormalize(path);const entry=fsEntry(path);if(!entry||entry.kind!=='file')return false;
+  const ext=fsExtension(path).toLowerCase(),mime=String(entry.mime||fsMimeFromName(path)).toLowerCase();
+  return patterns.some(pattern=>pattern==='*'||pattern==='*/*'||pattern===ext||pattern===`.${ext}`||pattern===mime||(pattern.endsWith('/*')&&mime.startsWith(pattern.slice(0,-1))));
+}
+function compatibleAppsForPath(path){return getAllApps().filter(app=>appCanOpenPath(app,path)).sort((a,b)=>a.meta.name.localeCompare(b.meta.name));}
+function openFileInApp(appId,path){
+  appId=String(appId);path=fsNormalize(path);const app=getApp(appId),entry=fsEntry(path);
+  if(!entry||entry.kind!=='file'){toast('File not found');return false;}
+  if(!appCanOpenPath(app,path)){toast(`${app?.meta?.name||appId} cannot open this file type`);return false;}
+  grantFileAccess(appId,path);
+  state.pendingFileOpens.set(appId,{type:'openFile',path,name:fsName(path),extension:fsExtension(path),mime:entry.mime||fsMimeFromName(path),size:fsEntryBlob(path).size,content:fsIsTextEntry(entry,path)?String(entry.content??''):'',encoding:entry.encoding||'text'});
+  openApp(appId);return true;
+}
 fsLoad();
 
 const PERMISSIONS = Object.freeze({
@@ -389,57 +465,14 @@ $('#notificationShade').addEventListener('touchend',e=>{if(e.changedTouches[0].c
 
 /* --------------------------- MScript --------------------------- */
 class MScriptError extends Error { constructor(message,line=0){super(message);this.line=line;} }
-function normalizeRawHTMLBlocks(source){
-  // Full HTML documents often contain thousands of unescaped quote characters.
-  // Support this raw multiline MScript form without requiring HTML changes:
-  //   ui.html("
-  //   <!doctype html> ...
-  //   </html>"
-  //   )
-  // The content is converted internally to one safely escaped MScript string.
-  // Blank replacement lines preserve source line numbers after the HTML block.
-  const input=String(source??'').replace(/\r/g,'');
-  const lines=input.split('\n');
-  for(let i=0;i<lines.length;i++){
-    const open=lines[i].match(/^(\s*)ui\.html\(\s*"\s*$/);
-    if(!open)continue;
-    let chosen=-1,closeParen=-1,fallback=-1,fallbackParen=-1,sameLineClose=false;
-    for(let j=i+1;j<lines.length;j++){
-      // Accept either raw-block closing style:
-      //   "              or   " ) / " ) with no space
-      //   )
-      // A same-line close is recognized only when the text before the quote is
-      // blank or ends the HTML document, avoiding accidental matches inside JS.
-      const joinedClose=lines[j].match(/^(.*)"\s*\)\s*$/);
-      if(joinedClose&&( /^\s*$/.test(joinedClose[1]) || /<\/html>\s*$/i.test(joinedClose[1]) )){
-        chosen=j;closeParen=j;sameLineClose=true;break;
-      }
-      if(!/"\s*$/.test(lines[j]))continue;
-      let k=j+1;
-      while(k<lines.length&&/^\s*$/.test(lines[k]))k++;
-      if(k>=lines.length||!/^\s*\)\s*$/.test(lines[k]))continue;
-      if(fallback<0){fallback=j;fallbackParen=k;}
-      if(/<\/html>\s*"\s*$/i.test(lines[j])){chosen=j;closeParen=k;break;}
-    }
-    if(chosen<0){chosen=fallback;closeParen=fallbackParen;}
-    if(chosen<0)continue;
-    const contentLines=lines.slice(i+1,chosen+1);
-    contentLines[contentLines.length-1]=contentLines[contentLines.length-1].replace(sameLineClose?/"\s*\)\s*$/:/"\s*$/,'');
-    const html=contentLines.join('\n');
-    lines[i]=open[1]+'ui.html('+JSON.stringify(html)+')';
-    for(let n=i+1;n<=closeParen;n++)lines[n]='';
-    i=closeParen;
-  }
-  return lines.join('\n');
-}
 function splitLines(source){
   // Convert physical source lines into logical MScript statements. A logical
   // statement continues across line breaks while a quoted string or grouping
   // delimiter remains open. This makes multiline calls work uniformly for
   // every API function, assignment, condition, return value, and function
-  // declaration—not only ui.html(). The first physical line remains the error
+  // declaration. The first physical line remains the error
   // line for the combined statement.
-  const input=normalizeRawHTMLBlocks(source);
+  const input=String(source??'').replace(/\r/g,'');
   const out=[];
   let buffer='',line=1,startLine=1,quote=null,escaped=false;
   let parenDepth=0,bracketDepth=0,braceDepth=0;
@@ -513,7 +546,7 @@ function evalExpression(expr,env,runtime){
       if(t[p]?.t==='lp'){
         p++; const args=[];
         const path=x.v;
-        const bareIdFirstArg=new Set(['ui.menu','ui.label','ui.button','ui.input','ui.numberInput','ui.password','ui.search','ui.colorInput','ui.dateInput','ui.timeInput','ui.textarea','ui.codeEditor','ui.fileInput','ui.toggle','ui.slider','ui.select','ui.segmented','ui.chips','ui.value','ui.setValue','ui.clearValue','ui.setText','ui.setVisible','ui.setEnabled','ui.remove','ui.exists','ui.focus']);
+        const bareIdFirstArg=new Set(['ui.menu','ui.label','ui.button','ui.input','ui.numberInput','ui.password','ui.search','ui.colorInput','ui.dateInput','ui.timeInput','ui.textarea','ui.codeEditor','ui.fileInput','ui.toggle','ui.slider','ui.select','ui.segmented','ui.chips','ui.value','ui.setValue','ui.clearValue','ui.setText','ui.setVisible','ui.setEnabled','ui.remove','ui.exists','ui.focus','game.control','game.entity','game.circleEntity','game.imageEntity','game.textEntity','game.removeEntity','game.setPosition','game.move','game.setVelocity','game.setSize','game.setColor','game.setRotation','game.setOpacity','game.setVisible','game.setText','game.entityX','game.entityY','game.collides','game.contains','sound.stop','sound.pause','sound.resume','sound.volume','sound.isPlaying']);
         if(t[p]?.t!=='rp'){while(true){
           const argStart=p;let value=parse(0);
           if(args.length===0&&bareIdFirstArg.has(path)&&p===argStart+1&&t[argStart]?.t==='id'&&value===undefined)value=t[argStart].v;
@@ -630,157 +663,127 @@ function validateMScriptForInstall(source){
 
 function apiParamType(path,param){
   const p=String(param).split('=')[0].trim();
-  if(['id','appId','key','name','eventName','permission','title','subtitle','body','message','detail','label','style','kind','type','icon','text','source','htmlFile','url','mode','prefix','placeholder','separator','query','q','old','new','yesLabel','noLabel','optionsCSV','selected','expression','expr','accept','path','fromPath','toPath','mime','content'].includes(p))return 'text';
+  if(['id','appId','key','name','eventName','permission','title','subtitle','body','message','detail','label','style','kind','type','icon','text','source','prefix','placeholder','separator','query','q','old','new','yesLabel','noLabel','optionsCSV','selected','expression','expr','accept','path','fromPath','toPath','mime','content','downloadName','newName','newExtension','color','background','align','wave','imagePath'].includes(p))return 'text';
   if(['value','fallback','jsonOrObject'].includes(p))return 'any';
-  if(['enabled','visible','hidden','on'].includes(p))return 'boolean';
-  if(['ms','milliseconds','amount','min','max','step','start','end','index','count','decimals','d','power','p','px','v','a','b'].includes(p))return 'number / value';
+  if(['enabled','visible','hidden','on','fill','loop','clearFirst','bounce'].includes(p))return 'boolean';
+  if(['ms','milliseconds','amount','min','max','step','start','end','index','count','decimals','d','power','p','px','v','a','b','x','y','x1','y1','x2','y2','width','height','w','h','radius','size','lineWidth','fps','frequency','duration','volume','rotation','opacity','margin','vx','vy','delta'].includes(p))return 'number / value';
   return 'value';
 }
 function apiParamDescription(path,param){
   const p=String(param).split('=')[0].trim();
-  const uiId=path.startsWith('ui.')&&p==='id';
-  if(uiId)return 'Unique control identifier used later by on click/on input/on change handlers and ui.value/ui.set* calls. It may be written as a quoted string ("save") or as a bare identifier (save).';
-  if(path.startsWith('app.')&&p==='id')return 'The target app’s meta id, such as "notes" or "my.app".';
-  if(path==='system.setAppHidden'&&p==='id')return 'The target app’s meta id whose Home-screen visibility will change.';
-  if(path==='notify.remove'&&p==='id')return 'Notification identifier returned by notify.send().';
-  if(p==='appId')return 'The target app’s meta id. When permission.set is called with two arguments, appId is omitted and the current app is targeted.';
-  if(p==='permission')return 'Permission id: settings, notifications, installApps, modifyPermissions, allFiles, background, or superuser. Superuser cannot be changed with permission.set().';
-  if(p==='source')return 'Complete MScript source code text for the app being previewed or installed.';
-  if(p==='htmlFile')return 'Complete HTML document/source to render inside the current app. HTML, CSS, JavaScript, WebAssembly, external resources, fetch/XHR, and WebSockets run inside an isolated internet-capable iframe; the MellorsOS status/navigation bars remain outside it.';
-  if(p==='url')return 'Absolute HTTP or HTTPS address to open in an in-app web frame. Cross-origin pages use compatible mode by default for Safari/WebGL behavior.';
-  if(p==='mode'&&path==='ui.web')return 'Optional mode: \"compatible\" (default) embeds a normal cross-origin iframe; \"sandboxed\" adds iframe restrictions; \"external\" shows a user-activated top-level launch link; \"auto\" uses external launch on iPhone/iPad and compatible embedding elsewhere. Same-origin URLs are always sandboxed when embedded.';
-  if(p==='accept')return 'Optional browser file-type filter, such as \".mscript,text/plain\". It guides the file chooser but does not replace installer validation. Every selected file is also saved in /imports and event.filePath reports that stored path.';
-  if(p==='path')return 'Filesystem path. Relative paths resolve inside /apps/<current-app-id> and need no permission. Absolute paths outside that private folder require Access to all files.';
-  if(p==='fromPath')return 'Existing source file or folder path. Relative paths use the current app folder; other locations require Access to all files.';
-  if(p==='toPath')return 'Destination file or folder path. Parent folders are created automatically. Other apps or shared folders require Access to all files.';
-  if(p==='content')return 'Text or data to write or append to the file. Literal text must be quoted; variables and function results are unquoted.';
-  if(p==='mime')return 'Optional MIME type such as \"text/plain\", \"application/json\", or \"text/html\".';
-  if(p==='key'&&path.startsWith('settings.'))return 'Settings record name. Use settings.keys() to discover the currently available keys.';
-  if(p==='key'&&path.startsWith('data.'))return 'Storage key. Private data functions automatically scope it to the current app; global functions use the shared/global storage rules.';
-  if(p==='key'&&path==='system.info')return 'Information field to read: name, version, engine, platform, language, online, apps, systemApps, userApps, storageKeys, files, userAgent, or superuser.';
-  if(p==='key'&&path.startsWith('json.'))return 'Object property name to read or write.';
-  if(p==='fallback')return 'Value returned when the requested key/property does not exist or cannot be read.';
-  if(p==='value'){
-    if(path==='events.emit')return 'Payload placed in event.value for the custom event handler.';
-    if(path.startsWith('ui.set')||path==='ui.progress'||path==='ui.stat')return 'Value displayed or assigned to the target UI element.';
-    if(path.startsWith('data.'))return 'Value to store or append. Numbers, text, booleans, null, and JSON-compatible values are accepted.';
-    if(path==='json.set')return 'New value assigned to the specified object property.';
-    return 'Input value used by this function.';
-  }
-  if(p==='title')return path.startsWith('ui.')?'Visible heading/title shown by the UI element.':'Primary title shown to the user.';
-  if(p==='subtitle')return 'Optional secondary explanatory text shown below the main title.';
-  if(p==='body')return 'Main body text displayed inside the UI element or notification.';
-  if(p==='message')return 'Main explanatory message displayed in the MellorsOS dialog.';
-  if(p==='detail')return 'Optional smaller detail text shown beneath the dialog message.';
-  if(p==='label')return 'User-visible label for the control or statistic.';
-  if(p==='icon')return 'Text or emoji used as the visual icon.';
-  if(p==='style')return 'Optional presentation style. For ui.text/ui.label, "small" uses smaller muted text.';
-  if(p==='kind')return path==='ui.button'?'Button style: primary, secondary, danger, or ghost.':'Visual style/category for the element; supported values depend on the function.';
-  if(p==='type')return 'Input type, such as text, password, search, color, date, time, or another supported HTML input type.';
-  if(p==='on')return 'Initial boolean state of the toggle: true is on and false is off.';
-  if(p==='enabled')return 'true enables interaction; false disables the control.';
-  if(p==='visible')return 'true shows the element; false hides it without deleting it.';
-  if(p==='hidden')return 'true hides the app from Home; false shows it again.';
-  if(p==='min')return 'Minimum allowed numeric value or lower bound.';
-  if(p==='max')return 'Maximum allowed numeric value or upper bound.';
-  if(p==='step')return 'Increment used when a numeric input or slider changes.';
-  if(p==='px')return 'Spacer height in pixels; MellorsOS clamps it to a safe range.';
-  if(p==='optionsCSV')return 'Pipe-separated choices. Use value:Label pairs such as "dark:Dark|light:Light"; the value is delivered to change events.';
+  if(path.startsWith('ui.')&&p==='id')return 'Unique control identifier used by events and ui.value/ui.set* calls. A literal ID may be quoted or written as a bare identifier.';
+  if(path.startsWith('game.')&&p==='id')return 'Developer-chosen game object, control, image, sound, or entity identifier. Quote literal IDs; variables are unquoted.';
+  if(path.startsWith('app.')&&p==='id')return 'Target app meta id, such as "notes" or "my.app".';
+  if(p==='appId')return 'Target app meta id. For app.openFile, the target must declare a compatible meta accepts pattern and an on openFile handler.';
+  if(p==='permission')return 'Permission id: settings, notifications, installApps, modifyPermissions, allFiles, background, or superuser.';
+  if(p==='source')return 'Complete MScript source code text.';
+  if(p==='accept')return 'Browser file chooser filter such as ".mscript,text/plain". Imported files are stored in /imports.';
+  if(p==='path'||p==='imagePath')return 'Filesystem path. Relative paths stay inside /apps/<current-app-id>; absolute shared paths require Access to all files for user apps.';
+  if(p==='fromPath')return 'Existing source file or folder path.';
+  if(p==='toPath')return 'Destination path, including the desired file or folder name.';
+  if(p==='newName')return 'New file or folder name only, without a directory path.';
+  if(p==='newExtension')return 'New extension with or without a leading dot. Use an empty string to remove the extension.';
+  if(p==='downloadName')return 'Optional name used when exporting the file to the host device. Empty uses the filesystem name.';
+  if(p==='content')return 'Text or data written to the file.';
+  if(p==='mime')return 'MIME type such as "text/plain", "image/png", or "audio/mpeg".';
+  if(p==='key'&&path.startsWith('settings.'))return 'Settings record name. Use settings.keys() to discover available keys.';
+  if(p==='key'&&path.startsWith('data.'))return 'Storage key scoped to the current app unless a global data function is used.';
+  if(p==='key'&&path==='system.info')return 'System information field name.';
+  if(p==='fallback')return 'Value returned when the requested value is unavailable.';
+  if(p==='title')return 'Primary user-visible title.';
+  if(p==='subtitle')return 'Optional secondary text.';
+  if(p==='body'||p==='message')return 'Main user-visible text.';
+  if(p==='detail')return 'Optional smaller explanatory text.';
+  if(p==='label')return 'User-visible control label.';
+  if(p==='icon')return 'Text or emoji icon.';
+  if(p==='style'||p==='kind')return 'Presentation style supported by the function.';
+  if(p==='type')return 'Control or data type supported by the function.';
+  if(p==='enabled')return 'true enables the control; false disables it.';
+  if(p==='visible')return 'true shows the item; false hides it.';
+  if(p==='hidden')return 'true hides the app from Home; false shows it.';
+  if(p==='fill')return 'true draws a filled shape; false draws only its outline.';
+  if(p==='loop')return 'true repeats playback; false plays once.';
+  if(p==='clearFirst')return 'true clears the game canvas before entities are drawn.';
+  if(p==='bounce')return 'true reverses velocity when an entity reaches an edge.';
+  if(p==='min')return 'Minimum numeric bound.';
+  if(p==='max')return 'Maximum numeric bound.';
+  if(p==='step')return 'Numeric increment.';
+  if(p==='optionsCSV')return 'Pipe-separated options, optionally written as value:Label.';
   if(p==='selected')return 'Currently selected option value.';
-  if(p==='placeholder')return 'Hint text displayed when the field is empty.';
-  if(p==='prefix')return 'Optional key/name prefix used to filter the returned or displayed records.';
-  if(p==='separator')return 'Text delimiter used when joining, splitting, appending, or counting values.';
-  if(p==='amount')return 'Numeric amount added to the stored number; defaults to 1.';
+  if(p==='placeholder')return 'Hint shown when an input is empty.';
+  if(p==='prefix')return 'Optional prefix used to filter records.';
+  if(p==='separator')return 'Delimiter used to join or split text.';
+  if(p==='amount')return path==='math.lerp'?'Interpolation amount, usually from 0 to 1.':'Numeric amount to add.';
   if(p==='name'){
-    if(path.startsWith('timer.')||path.startsWith('background.'))return 'Developer-chosen identifier for this timer/background process. Reusing the same name replaces the existing one.';
-    if(path==='events.emit')return 'Custom event name handled with on <name>.';
-    return 'Developer-chosen name used by this function.';
+    if(path.startsWith('timer.')||path.startsWith('background.'))return 'Developer-chosen timer or process name.';
+    return 'Developer-chosen name.';
   }
-  if(p==='ms'||p==='milliseconds')return 'Delay or interval in milliseconds. Foreground repeating timers enforce at least 50 ms; background work has a kernel-enforced minimum interval.';
-  if(p==='eventName')return 'MScript event handler name to trigger when the timer/background interval fires.';
-  if(p==='yesLabel')return 'Text displayed on the affirmative dialog button.';
-  if(p==='noLabel')return 'Text displayed on the cancel/negative dialog button.';
-  if(p==='expression'||p==='expr')return path==='system.execute'?'One complete MScript expression to evaluate, for example math.random(1, 10) or system.info("version").':'Arithmetic expression text. math.eval accepts digits, arithmetic operators, decimal points, parentheses, and whitespace only.';
-  if(p==='decimals'||p==='d')return 'Number of decimal places to retain when rounding.';
-  if(p==='power'||p==='p')return 'Exponent applied to the base value.';
-  if(p==='query'||p==='q')return 'Text to search for inside the source value.';
-  if(p==='old')return 'Text to search for and replace.';
-  if(p==='new')return 'Replacement text inserted wherever the old text occurs.';
-  if(p==='start')return path==='text.slice'?'Zero-based starting character index.':'Starting numeric value.';
-  if(p==='end')return path==='text.slice'?'Optional zero-based ending character index; the character at end is not included.':'Ending numeric value.';
-  if(p==='index')return 'Zero-based position to retrieve from the separated text.';
-  if(p==='count')return 'Number of repetitions. Runtime safety caps may apply.';
-  if(p==='a')return path==='text.replace'?'Text to find.':'First numeric/input operand.';
-  if(p==='b')return path==='text.replace'?'Replacement text.':'Second numeric/input operand.';
-  if(p==='v')return 'Value converted or processed by the function.';
-  if(p==='text')return 'Text content to display, copy, parse, or transform.';
+  if(p==='ms'||p==='milliseconds'||p==='duration')return 'Time in milliseconds.';
+  if(p==='eventName')return 'MScript event handler triggered by the timer or game loop.';
+  if(p==='expression'||p==='expr')return 'Expression to evaluate.';
+  if(p==='x'||p==='x1'||p==='x2')return 'Horizontal coordinate in game-canvas pixels.';
+  if(p==='y'||p==='y1'||p==='y2')return 'Vertical coordinate in game-canvas pixels.';
+  if(p==='width'||p==='w')return 'Width in game-canvas pixels.';
+  if(p==='height'||p==='h')return 'Height in game-canvas pixels.';
+  if(p==='radius')return 'Circle radius in game-canvas pixels.';
+  if(p==='size')return 'Text size, control size, or another numeric size used by the function.';
+  if(p==='lineWidth')return 'Stroke width in game-canvas pixels.';
+  if(p==='fps')return 'Requested game-loop frames per second, clamped to a safe range.';
+  if(p==='color'||p==='background')return 'CSS color text such as "#21b8a6", "white", or "rgba(0,0,0,.5)".';
+  if(p==='align')return 'Text alignment: left, center, or right.';
+  if(p==='frequency')return 'Tone frequency in hertz.';
+  if(p==='volume'||p==='opacity')return 'Number from 0 to 1.';
+  if(p==='wave')return 'Oscillator shape: sine, square, triangle, or sawtooth.';
+  if(p==='rotation')return 'Rotation in radians.';
+  if(p==='vx'||p==='vy')return 'Velocity in canvas pixels per second.';
+  if(p==='delta')return 'Elapsed seconds used for frame-rate-independent movement.';
+  if(p==='margin')return 'Optional boundary margin in game-canvas pixels.';
+  if(p==='value')return 'Value consumed, displayed, or stored by the function.';
+  if(p==='text')return 'Text to display or transform.';
   return 'Input consumed by this function.';
 }
 function apiParamQuoteRule(path,param){
-  const p=String(param).split('=')[0].trim();
-  if(path.startsWith('ui.')&&p==='id')return 'Quotes optional for a literal control ID: save and "save" are equivalent. Use no quotes when passing a variable or function result.';
-  if(p==='htmlFile')return 'For a short literal, use quotes. For a complete HTML file, use the raw multiline form ui.html(\" followed by a newline, the unchanged HTML document, then either a final quote and closing parenthesis on separate lines, or a combined ")" line. Inside that raw form, HTML single quotes, double quotes, template literals, CSS, and JavaScript require no escaping and are never parsed as MScript. A variable or function result containing HTML is passed without quotes.';
-  const type=apiParamType(path,p);
-  if(type==='text')return 'Literal text—including file and folder paths—requires single or double quotes. Variables and function results are written without quotes.';
-  if(type==='boolean')return 'Do not quote boolean literals: use true or false. Variables and function results are also unquoted.';
-  if(type==='number / value')return 'Do not quote numeric literals. Variables and numeric function results are unquoted; quoting a number turns it into text.';
-  if(type==='any')return 'Depends on the value: quote literal text; do not quote numbers, true, false, or null. Variables/function results are unquoted.';
-  return 'Use quotes only when the value you are supplying is literal text. Numbers, booleans, null, variables, and function results are unquoted.';
+  const p=String(param).split('=')[0].trim(),type=apiParamType(path,p);
+  if(path.startsWith('ui.')&&p==='id')return 'Literal control IDs may be bare or quoted. Variables and function results are unquoted.';
+  if(type==='text')return 'Quote literal text. Variables and function results are unquoted.';
+  if(type==='boolean')return 'Use true or false without quotes.';
+  if(type==='number / value')return 'Do not quote numeric literals. Variables and numeric results are unquoted.';
+  if(type==='any')return 'Quote literal text; do not quote numbers, true, false, null, variables, or function results.';
+  return 'Use quotes only for literal text.';
 }
 function apiFunctionSummary(path){
   const summaries={
-    'permission.disableSuperuser':'Relinquishes Superuser only when called by the current Superuser holder itself. It takes no parameters and returns true on success.',
-    'permission.ask':'Shows a MellorsOS permission sheet when needed and returns true when permission is available, false when declined/unavailable.',
-    'permission.set':'Changes an ordinary permission. Requires Modify permissions; it can never grant, revoke, or transfer Superuser.',
-    'app.install':'Validates complete MScript source, then installs it when authorized. Returns true on success or false when validation/installation fails.',
-    'app.remove':'Uninstalls a user app; the current Superuser holder can also remove built-in system apps.',
-    'ui.html':'Runs a complete HTML/CSS/JavaScript document through a sandboxed Blob-backed in-app iframe. External scripts, styles, images, audio, fetch/XHR, WebSockets, pointer lock, fullscreen, gamepad input, and WebAssembly are supported. The frame has a unique opaque origin and cannot access the MellorsOS parent DOM, kernel, permissions, cookies, or browser storage. fetch/XHR still follows normal browser CORS rules. Its raw multiline form accepts an unchanged HTML file, including internal quotes, template literals, and JavaScript loops, without parsing them as MScript. Unicode and common mojibake indentation are normalized before loading and repaired again inside the child document so CSS selectors remain valid.',
-    'ui.web':'Loads an HTTP or HTTPS page. compatible embeds a normal cross-origin iframe, sandboxed adds iframe restrictions, external renders a user-activated top-level launch link, and auto uses external launch on iPhone/iPad while embedding elsewhere. Same-origin destinations are always sandboxed when embedded.',
-    'ui.fileInput':'Shows a native file chooser control. Every selected file is preserved in /imports. MScript receives on file <id> with event.value, event.fileName, event.fileType, event.filePath, event.fileEncoding, and size metadata.',
-    'ui.fileBrowser':'Renders a folder browser and emits fileNavigate for folders or fileAction for selected-file actions.',
-    'file.root':'Returns the current app private folder at /apps/<app-id>.',
-    'file.write':'Creates or replaces a file. Relative paths remain private; absolute paths elsewhere require Access to all files.',
-    'file.read':'Reads a file and returns fallback when no readable file exists at that path.',
-    'file.mkdir':'Creates a folder and any missing parent folders.',
-    'file.delete':'Deletes a file or an entire folder tree, except protected core folders.',
-    'math.random':'Returns a random numeric value between min (inclusive) and max (exclusive).',
-    'system.execute':'Evaluates one MScript expression directly in the current runtime. Restricted to built-in system apps or the actual Superuser holder.',
-    'dialog.alert':'Shows a native MellorsOS alert and resumes MScript after dismissal.',
-    'dialog.confirm':'Shows a native confirmation and returns true for Confirm or false for Cancel.',
-    'dialog.danger':'Shows a danger-styled confirmation and returns true or false.',
-    'dialog.choose':'Shows a native two-choice dialog with custom button labels and returns true or false.',
-    'events.emit':'Queues a custom event in the current app.',
-    'toast':'Top-level shorthand for system.toast().' 
+    'permission.disableSuperuser':'Relinquishes Superuser only when called by the current Superuser holder. It takes no parameters.',
+    'permission.ask':'Requests a permission through a MellorsOS-native prompt and returns true or false.',
+    'app.install':'Validates complete MScript source before installing it.',
+    'app.openFile':'Opens a filesystem file in a compatible app and delivers an on openFile event.',
+    'app.openers':'Returns compatible app ids separated by | based on each app’s meta accepts declaration.',
+    'ui.fileInput':'Imports a host-device file into /imports and emits on file <id>.',
+    'ui.fileBrowser':'Renders the Files browser and emits fileNavigate or fileAction.',
+    'ui.image':'Displays an image stored in the MellorsOS filesystem.',
+    'ui.openWithList':'Renders apps that declare support for the selected file type.',
+    'file.rename':'Renames a file or folder in its current directory.',
+    'file.changeExtension':'Changes or removes a file extension and updates its MIME type.',
+    'file.export':'Downloads a filesystem file to the device running MellorsOS.',
+    'file.copy':'Copies a file or folder tree.',
+    'file.move':'Moves a file or folder tree.',
+    'game.create':'Creates a native offline canvas and input surface for the current MScript app.',
+    'game.start':'Starts a requestAnimationFrame game loop and triggers the selected event.',
+    'game.entity':'Creates a drawable rectangular entity with position, size, color, and velocity.',
+    'game.draw':'Draws all visible entities in creation order.',
+    'game.collides':'Checks axis-aligned entity collision.',
+    'sound.beep':'Synthesizes an offline tone with the Web Audio API.',
+    'sound.play':'Plays a local audio file stored in the MellorsOS filesystem.',
+    'math.random':'Returns a random numeric value between min inclusive and max exclusive.',
+    'math.randomInt':'Returns a random whole number between min and max, inclusive.',
+    'system.execute':'Evaluates one MScript expression; restricted to system apps and the Superuser holder.'
   };
   if(summaries[path])return summaries[path];
   const [ns,name]=path.includes('.')?path.split('.'):[null,path];
-  const verbs={get:'Reads',set:'Writes',has:'Checks',clear:'Clears',count:'Counts',list:'Lists',open:'Opens',close:'Closes',remove:'Removes',exists:'Checks whether',isRunning:'Checks whether',stop:'Stops',start:'Starts',reset:'Resets',toggle:'Toggles',name:'Returns a display name for',version:'Returns the version of',current:'Returns the current app id.',source:'Returns source code for',preview:'Runs a non-installed preview of',send:'Creates',install:'Installs',ask:'Requests',holder:'Returns the current Superuser holder id.',isSuperuser:'Returns whether this app is the actual Superuser holder.',after:'Schedules a one-shot timer.',every:'Schedules a repeating foreground timer.',emit:'Emits',info:'Returns system information selected by key.',time:'Returns the formatted local time.',date:'Returns the formatted local date.',now:'Returns the current epoch time in milliseconds.',uptime:'Returns emulator uptime in seconds.',random:'Returns a random integer between the supplied bounds.',storageBytes:'Returns estimated MellorsOS browser-storage use in bytes.',screenWidth:'Returns the emulator viewport width.',screenHeight:'Returns the emulator viewport height.',vibrate:'Requests device vibration when the browser supports it.',clipboard:'Copies text to the clipboard when browser permission allows it.'};
+  const verbs={get:'Reads',set:'Writes',has:'Checks',clear:'Clears',count:'Counts',list:'Lists',open:'Opens',close:'Closes',remove:'Removes',exists:'Checks whether',isRunning:'Checks whether',stop:'Stops',start:'Starts',reset:'Resets',toggle:'Toggles',name:'Returns the name for',version:'Returns the version of',current:'Returns the current app id.',source:'Returns source code for',preview:'Runs a preview of',send:'Creates',install:'Installs',ask:'Requests',holder:'Returns the Superuser holder.',after:'Schedules a one-shot timer.',every:'Schedules a repeating timer.',emit:'Emits',info:'Returns system information.',time:'Returns local time.',date:'Returns local date.',now:'Returns epoch time.',uptime:'Returns uptime.',random:'Returns a random number.',read:'Reads',write:'Writes',append:'Appends to',copy:'Copies',move:'Moves',rename:'Renames',export:'Exports',draw:'Draws',create:'Creates',collides:'Checks collision between'};
   if(verbs[name])return verbs[name]+(verbs[name].endsWith('.')?'':` ${ns||'the requested value'}.`);
   return `MScript ${path} API function.`;
 }
-function normalizeEmbeddedHTML(source){
-  // Repair copied indentation before parsing. Besides true Unicode spaces,
-  // also repair the common UTF-8-as-Windows-1252 mojibake sequence "Â ".
-  // HTML entities such as &nbsp; remain untouched because they are text.
-  return String(source??'')
-    .replace(/^\uFEFF/,'')
-    .replace(/\u00C2(?=[\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000])/g,'')
-    .replace(/[\u00A0\u1680\u2000-\u200A\u202F\u205F\u3000]/g,' ');
-}
-function sandboxHTMLDocument(source){
-  const html=normalizeEmbeddedHTML(source);
-  const csp=`<meta http-equiv="Content-Security-Policy" content="default-src https: http: data: blob:; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https: http: data: blob:; style-src 'unsafe-inline' https: http: data: blob:; img-src https: http: data: blob:; font-src https: http: data: blob:; connect-src https: http: ws: wss:; media-src https: http: data: blob:; worker-src https: http: data: blob:; frame-src https: http: data: blob:; object-src 'none'; base-uri https: http: data: blob:; form-action https: http:">`;
-  const charset='<meta charset="UTF-8">';
-  // Repair style blocks again after the child document parses. Reassigning
-  // textContent makes the browser reparse selectors that arrived with copied
-  // Unicode spaces or the common mojibake prefix character.
-  const repairCode=`(()=>{const fix=v=>String(v).replace(/\\u00C2(?=[\\u00A0\\u1680\\u2000-\\u200A\\u202F\\u205F\\u3000])/g,'').replace(/[\\u00A0\\u1680\\u2000-\\u200A\\u202F\\u205F\\u3000]/g,' ');const repair=()=>{document.querySelectorAll('style').forEach(style=>{const next=fix(style.textContent);if(next!==style.textContent)style.textContent=next;});};document.addEventListener('DOMContentLoaded',repair,{once:true});new MutationObserver(repair).observe(document.documentElement,{childList:true,subtree:true});window.addEventListener('error',event=>{try{parent.postMessage({mellorsHTML:true,type:'error',message:event.message||'HTML app error'},'*');}catch{}});window.addEventListener('unhandledrejection',event=>{try{parent.postMessage({mellorsHTML:true,type:'error',message:String(event.reason||'Unhandled promise rejection')},'*');}catch{}});})();`;
-  const repair='<scr'+'ipt>'+repairCode+'</scr'+'ipt>';
-  if(/<head(?:\s[^>]*)?>/i.test(html))return html.replace(/<head(?:\s[^>]*)?>/i,m=>m+charset+csp+repair);
-  if(/<html(?:\s[^>]*)?>/i.test(html))return html.replace(/<html(?:\s[^>]*)?>/i,m=>m+`<head>${charset}${csp}${repair}</head>`);
-  return `<!doctype html><html><head>${charset}${csp}${repair}</head><body>${html}</body></html>`;
-}
-
 function apiReferenceHTML(rt){
   const groups=[];
   for(const [ns,obj] of Object.entries(rt.api)){
@@ -801,7 +804,7 @@ function apiReferenceHTML(rt){
 }
 
 class MRuntime{
-  constructor(app){this.app=app;this.vars={};this.dom={};this.timerNames=new Set();this.foregroundTimers=new Map();this.htmlBlobUrls=new Set();this.permissionResume=new Map();this.permissionPromptPending=false;this.dialogResume=new Map();this.dialogPromptPending=false;this.destroying=false;this.startedAt=Date.now();this.functions={};this.api=this.makeAPI();for(const [name,fn] of Object.entries(app.functions)){this.functions[name]=(...args)=>{const local={...this.vars};fn.args.forEach((a,i)=>local[a]=args[i]);const r=this.exec(fn.body,local);return r?.returned?r.value:null;};}}
+  constructor(app){this.app=app;this.vars={};this.dom={};this.timerNames=new Set();this.foregroundTimers=new Map();this.permissionResume=new Map();this.permissionPromptPending=false;this.dialogResume=new Map();this.dialogPromptPending=false;this.destroying=false;this.startedAt=Date.now();this.gameState={canvas:null,ctx:null,wrap:null,controlsLayer:null,width:0,height:0,background:'#000',running:false,raf:0,last:0,delta:0,time:0,frame:0,fps:60,eventName:'gameFrame',keys:new Set(),pointer:{x:0,y:0,down:false},controls:new Map(),entities:new Map(),images:new Map(),audios:new Map(),listeners:[]};this.functions={};this.api=this.makeAPI();for(const [name,fn] of Object.entries(app.functions)){this.functions[name]=(...args)=>{const local={...this.vars};fn.args.forEach((a,i)=>local[a]=args[i]);const r=this.exec(fn.body,local);return r?.returned?r.value:null;};}}
   exec(stmts,env=this.vars){let guard=0;for(const st of stmts){if(++guard>5000)throw new MScriptError('Execution limit exceeded',st.line);try{if(st.k==='set'){env[st.name]=evalExpression(st.expr,env,this);this.vars[st.name]=env[st.name];}
       else if(st.k==='expr')evalExpression(st.expr,env,this);
       else if(st.k==='if'){const r=this.exec(evalExpression(st.expr,env,this)?st.yes:st.no,env);if(r?.returned||r?.broken||r?.continued)return r;}
@@ -814,10 +817,37 @@ class MRuntime{
     }catch(e){if(!e.line)e.line=st.line;throw e;}}}
   trigger(name,event={}){const exact=this.app.events[name]||this.app.events[name.split(' ')[0]];if(!exact)return;this.vars.event=event;try{const r=this.exec(exact,this.vars);return r?.value;}catch(e){if(e?.isPermissionPrompt){if(this.permissionPromptPending)return false;this.permissionPromptPending=true;handlePermissionPrompt(this,e.permission).then(answer=>{this.permissionPromptPending=false;this.permissionResume.set(e.permission,!!answer);if(state.appInstances.get(this.app.meta.id)===this)this.trigger(name,event);});return false;}if(e?.isDialogPrompt){if(this.dialogPromptPending)return false;this.dialogPromptPending=true;handleDialogPrompt(e).then(answer=>{this.dialogPromptPending=false;this.dialogResume.set(e.key,answer);if(state.appInstances.get(this.app.meta.id)===this)this.trigger(name,event);});return false;}if(e?.isPermissionDenied){crashForPermission(this,e);return false;}showRuntimeError(this.app,e);return false;}}
   mount(){this.api.ui.clear();this.trigger('start',{type:'start'});this.trigger('resume',{type:'resume',reason:'open'});}
-  destroy(reason='close'){if(this.destroying)return;this.destroying=true;try{this.trigger('close',{type:'close',reason});}catch{}for(const n of this.timerNames) backgroundStop(this.app.meta.id,n);for(const h of this.foregroundTimers.values()){if(h.kind==='interval')clearInterval(h.id);else clearTimeout(h.id);}this.foregroundTimers.clear();for(const url of this.htmlBlobUrls){try{URL.revokeObjectURL(url);}catch{}}this.htmlBlobUrls.clear();}
+  destroy(reason='close'){if(this.destroying)return;this.destroying=true;try{this.trigger('close',{type:'close',reason});}catch{}for(const n of this.timerNames) backgroundStop(this.app.meta.id,n);for(const h of this.foregroundTimers.values()){if(h.kind==='interval')clearInterval(h.id);else clearTimeout(h.id);}this.foregroundTimers.clear();const g=this.gameState;if(g.raf)cancelAnimationFrame(g.raf);g.running=false;for(const [target,type,handler,options] of g.listeners){try{target.removeEventListener(type,handler,options);}catch{}}g.listeners=[];for(const audio of g.audios.values()){try{audio.pause();audio.src='';}catch{}}g.audios.clear();}
   makeAPI(){ const rt=this;
     const append=html=>{const page=root.querySelector('.app-page'); if(page) page.insertAdjacentHTML('beforeend',html);};
     const bind=(id,type,handler)=>{queueMicrotask(()=>{const el=document.getElementById(rt.uid(id));if(el)el.addEventListener(type,handler);});};
+    const game=rt.gameState;
+    const gameListen=(target,type,handler,options)=>{target.addEventListener(type,handler,options);game.listeners.push([target,type,handler,options]);};
+    const gameContext=()=>{if(!game.ctx)throw new MScriptError('Call game.create(width, height, background) before using game drawing functions');return game.ctx;};
+    const gamePoint=e=>{const rect=game.canvas.getBoundingClientRect();return{x:(e.clientX-rect.left)*(game.width/Math.max(1,rect.width)),y:(e.clientY-rect.top)*(game.height/Math.max(1,rect.height))};};
+    const gameImageURL=path=>{const p=fsResolveRuntime(rt,path),url=fsEntryDataURL(p);if(!url)throw new MScriptError(`Image file cannot be displayed: ${p}`);return{path:p,url};};
+    const ensureGameImage=(path,id='')=>{
+      const info=gameImageURL(path),key=String(id||info.path);let cached=game.images.get(key);
+      if(cached)return cached;
+      const image=new Image();cached={image,ready:false,error:false,path:info.path};game.images.set(key,cached);
+      image.onload=()=>{cached.ready=true;rt.trigger('gameImageLoaded',{type:'gameImageLoaded',id:key,path:info.path,width:image.naturalWidth,height:image.naturalHeight});};
+      image.onerror=()=>{cached.error=true;rt.trigger('gameImageError',{type:'gameImageError',id:key,path:info.path});};
+      image.src=info.url;return cached;
+    };
+    const drawEntity=entity=>{
+      if(!entity||entity.visible===false)return;const ctx=gameContext();ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,Number(entity.opacity??1)));
+      const cx=Number(entity.x)+Number(entity.w)/2,cy=Number(entity.y)+Number(entity.h)/2;ctx.translate(cx,cy);ctx.rotate(Number(entity.rotation)||0);ctx.translate(-cx,-cy);
+      if(entity.type==='image'){
+        const cached=ensureGameImage(entity.path,entity.imageId||entity.path);if(cached.ready)ctx.drawImage(cached.image,Number(entity.x),Number(entity.y),Number(entity.w),Number(entity.h));
+      }else if(entity.type==='text'){
+        ctx.fillStyle=String(entity.color||'#fff');ctx.font=`${Math.max(1,Number(entity.size)||16)}px system-ui`;ctx.textAlign=String(entity.align||'left');ctx.textBaseline='top';ctx.fillText(String(entity.text||''),Number(entity.x),Number(entity.y));
+      }else if(entity.type==='circle'){
+        ctx.beginPath();ctx.arc(Number(entity.x)+Number(entity.w)/2,Number(entity.y)+Number(entity.h)/2,Math.min(Number(entity.w),Number(entity.h))/2,0,Math.PI*2);ctx.fillStyle=String(entity.color||'#fff');ctx.fill();
+      }else{
+        ctx.fillStyle=String(entity.color||'#fff');ctx.fillRect(Number(entity.x),Number(entity.y),Number(entity.w),Number(entity.h));
+      }
+      ctx.restore();
+    };
     return {
       ui:{
         clear(){root.innerHTML=`<section class="screen"><div class="app-page"></div></section>`;rt.dom={};},
@@ -883,10 +913,28 @@ class MRuntime{
         fileBrowser(path='/'){
           const directory=fsResolveRuntime(rt,path),entry=fsEntry(directory);if(!entry||entry.kind!=='folder')throw new MScriptError(`Folder not found: ${directory}`);
           const entries=fsChildren(directory),containerId=rt.uid('fileBrowser_'+Math.random().toString(36).slice(2));
-          append(`<div class="card"><div class="row"><div class="row-main"><div class="row-title">${escapeHTML(directory)}</div><div class="row-sub">${entries.length} item${entries.length===1?'':'s'}</div></div>${directory!=='/'?`<button class="ghost" data-file-up="${escapeHTML(fsParent(directory))}">↑ Up</button>`:''}</div></div><div class="card" id="${containerId}">${entries.length?entries.map(e=>`<button class="file-item" style="width:100%;text-align:left;background:none;border:0" data-file-path="${escapeHTML(e.path)}" data-file-kind="${e.kind}"><div class="file-icon">${e.kind==='folder'?'📁':fsExtension(e.path)==='mscript'?'🧩':'📄'}</div><div class="file-name">${escapeHTML(e.name)}</div><div class="file-meta">${e.kind==='folder'?'Folder':`${new Blob([e.content||'']).size} B`}</div></button>`).join(''):'<div class="small center">This folder is empty.</div>'}</div>`);
+          const iconFor=e=>{
+            if(e.kind==='folder')return '📁';const ext=fsExtension(e.path),mime=String(e.mime||fsMimeFromName(e.path));
+            if(ext==='mscript')return '🧩';if(mime.startsWith('image/'))return '🖼️';if(mime.startsWith('audio/'))return '🎵';if(mime.startsWith('video/'))return '🎬';return '📄';
+          };
+          append(`<div class="card"><div class="row"><div class="row-main"><div class="row-title">${escapeHTML(directory)}</div><div class="row-sub">${entries.length} item${entries.length===1?'':'s'}</div></div>${directory!=='/'?`<button class="ghost" data-file-up="${escapeHTML(fsParent(directory))}">↑ Up</button>`:''}</div></div><div class="card" id="${containerId}">${entries.length?entries.map(e=>`<button class="file-item" style="width:100%;text-align:left;background:none;border:0;color:inherit" data-file-path="${escapeHTML(e.path)}" data-file-kind="${e.kind}"><div class="file-icon">${iconFor(e)}</div><div class="file-name">${escapeHTML(e.name)}</div><div class="file-meta">${e.kind==='folder'?'Folder':`${fsEntryBlob(e.path).size} B`}</div></button>`).join(''):'<div class="small center">This folder is empty.</div>'}</div>`);
           queueMicrotask(()=>{
             document.querySelectorAll('[data-file-up]').forEach(el=>el.onclick=()=>rt.trigger('fileNavigate',{type:'fileNavigate',path:el.dataset.fileUp}));
-            const host=document.getElementById(containerId);host?.querySelectorAll('[data-file-path]').forEach(el=>el.onclick=async()=>{const target=el.dataset.filePath,kind=el.dataset.fileKind;if(kind==='folder'){rt.trigger('fileNavigate',{type:'fileNavigate',path:target,name:fsName(target),isFolder:true});return;}const ext=fsExtension(target),info=fsEntry(target);const buttons=ext==='mscript'?[{label:'Cancel',value:'cancel',kind:'secondary'},{label:'View',value:'open',kind:'secondary'},{label:'Edit in App Studio',value:'edit',kind:'primary'},{label:'Install app',value:'install',kind:'primary'},{label:'Delete',value:'delete',kind:'danger'}]:[{label:'Cancel',value:'cancel',kind:'secondary'},{label:'Open',value:'open',kind:'primary'},{label:'Delete',value:'delete',kind:'danger'}];const action=await showOSDialog({icon:ext==='mscript'?'🧩':'📄',title:fsName(target),message:`${info?.mime||'File'} · ${new Blob([info?.content||'']).size} bytes`,detail:target,buttons});if(action&&action!=='cancel')rt.trigger('fileAction',{type:'fileAction',action,path:target,name:fsName(target),extension:ext,mime:info?.mime||'',size:new Blob([info?.content||'']).size});});
+            const host=document.getElementById(containerId);host?.querySelectorAll('[data-file-path]').forEach(el=>el.onclick=async()=>{
+              const target=el.dataset.filePath,kind=el.dataset.fileKind,info=fsEntry(target),ext=fsExtension(target),mime=String(info?.mime||fsMimeFromName(target));
+              let buttons;
+              if(kind==='folder'){
+                const protectedCore=FILESYSTEM_CORE_FOLDERS.includes(target);
+                buttons=[{label:'Cancel',value:'cancel',kind:'secondary'},{label:'Open folder',value:'browse',kind:'primary'}];
+                if(!protectedCore)buttons.push({label:'Rename',value:'rename',kind:'secondary'},{label:'Copy',value:'copy',kind:'secondary'},{label:'Move',value:'move',kind:'secondary'},{label:'Delete',value:'delete',kind:'danger'});
+              }else{
+                buttons=[{label:'Cancel',value:'cancel',kind:'secondary'},{label:mime.startsWith('image/')?'View image':'Open',value:'open',kind:'primary'},{label:'Open with…',value:'openWith',kind:'secondary'}];
+                if(ext==='mscript')buttons.push({label:'Edit in App Studio',value:'edit',kind:'primary'},{label:'Install app',value:'install',kind:'primary'});
+                buttons.push({label:'Rename',value:'rename',kind:'secondary'},{label:'Change extension',value:'extension',kind:'secondary'},{label:'Copy',value:'copy',kind:'secondary'},{label:'Move',value:'move',kind:'secondary'},{label:'Export to device',value:'export',kind:'secondary'},{label:'Delete',value:'delete',kind:'danger'});
+              }
+              const action=await showOSDialog({icon:iconFor({...info,path:target,kind}),title:fsName(target),message:kind==='folder'?'Folder':`${mime} · ${fsEntryBlob(target).size} bytes`,detail:target,buttons});
+              if(action&&action!=='cancel')rt.trigger('fileAction',{type:'fileAction',action,path:target,name:fsName(target),kind,extension:ext,mime,size:kind==='file'?fsEntryBlob(target).size:0});
+            });
           });return directory;
         },
         appList(){const apps=getAllApps().sort((a,b)=>a.meta.name.localeCompare(b.meta.name));append(`<div class="card">${apps.map(a=>`<div class="file-item" data-app="${a.meta.id}"><div class="file-icon">${escapeHTML(a.meta.icon)}</div><div class="file-name">${escapeHTML(a.meta.name)}</div><div class="file-meta">${a.system?'System':'Installed'}</div></div>`).join('')}</div>`);queueMicrotask(()=>document.querySelectorAll('[data-app]').forEach(el=>el.onclick=()=>openApp(el.dataset.app)));},
@@ -920,101 +968,18 @@ class MRuntime{
         },
         refreshAppManager(){if(typeof rt.dom.appManagerRender==='function')rt.dom.appManagerRender();return true;},
         apiReference(){append(apiReferenceHTML(rt));return true;},
-        html(htmlFile){
-          const page=root.querySelector('.app-page');if(!page)return false;
-          const frame=document.createElement('iframe');
-          frame.className='ms-html-frame';
-          frame.setAttribute('sandbox','allow-scripts allow-forms allow-modals allow-popups allow-downloads allow-pointer-lock allow-presentation');
-          frame.setAttribute('referrerpolicy','no-referrer');
-          frame.setAttribute('allow','autoplay; fullscreen; gamepad; clipboard-read; clipboard-write');
-          frame.setAttribute('allowfullscreen','');
-          frame.setAttribute('tabindex','0');
-          frame.setAttribute('title',`${rt.app.meta.name} HTML surface`);
-          const header=page.querySelector('.app-header');
-          if(!header){
-            page.classList.add('html-surface');
-            page.closest('.screen')?.classList.add('html-surface-screen');
-            frame.style.height='100%';
-          }else{
-            frame.style.height=Math.max(260,page.clientHeight-header.offsetHeight-16)+'px';
-          }
-          const documentText=sandboxHTMLDocument(htmlFile);
-          try{
-            const url=URL.createObjectURL(new Blob([documentText],{type:'text/html;charset=utf-8'}));
-            rt.htmlBlobUrls.add(url);
-            frame.src=url;
-          }catch{
-            frame.srcdoc=documentText;
-          }
-          frame.addEventListener('load',()=>frame.focus(),{once:true});
-          page.appendChild(frame);
+        image(path,alt='',maxHeight=520){
+          const p=fsResolveRuntime(rt,path),entry=fsEntry(p);if(!entry||entry.kind!=='file')throw new MScriptError(`Image file not found: ${p}`);
+          const src=fsEntryDataURL(p);if(!src||!String(entry.mime||'').startsWith('image/'))throw new MScriptError(`Not a supported image file: ${p}`);
+          append(`<div class="card"><img class="file-preview-image" src="${escapeHTML(src)}" alt="${escapeHTML(alt||fsName(p))}" style="max-height:${Math.max(80,Math.min(900,Number(maxHeight)||520))}px"></div>`);
           return true;
         },
-        web(url,mode='compatible'){
-          const page=root.querySelector('.app-page');if(!page)return false;
-          const raw=String(url??'').trim();
-          const requestedMode=String(mode??'compatible').trim().toLowerCase()||'compatible';
-          let target;
-          try{target=new URL(raw,location.href);}catch{throw new MScriptError('ui.web requires a valid HTTP or HTTPS URL');}
-          if(target.protocol!=='https:'&&target.protocol!=='http:')throw new MScriptError('ui.web only accepts HTTP or HTTPS URLs');
-          if(!['compatible','sandboxed','external','auto'].includes(requestedMode))throw new MScriptError('ui.web mode must be "compatible", "sandboxed", "external", or "auto"');
-          const isIOS=/iPad|iPhone|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-          const useExternal=requestedMode==='external'||(requestedMode==='auto'&&isIOS);
-          if(useExternal){
-            const shell=document.createElement('div');
-            shell.className='web-launch-shell';
-            shell.style.cssText='min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box';
-            const host=document.createElement('div');
-            host.className='card';
-            host.style.cssText='width:min(100%,460px);text-align:center;padding:24px';
-            const icon=document.createElement('div');
-            icon.textContent='🌐';icon.style.cssText='font-size:48px;margin-bottom:12px';
-            const title=document.createElement('div');
-            title.className='row-title';title.textContent=`Open ${rt.app.meta.name}`;title.style.cssText='font-size:1.2rem;margin-bottom:8px';
-            const detail=document.createElement('div');
-            detail.className='row-sub';
-            detail.textContent=isIOS?'This WebGL app needs to run as a top-level Safari page on iPhone and iPad. MellorsOS will remain open in this tab.':'Open this web app as a top-level browser page.';
-            detail.style.cssText='margin-bottom:18px;line-height:1.5';
-            const link=document.createElement('a');
-            link.href=target.href;link.target='_blank';link.rel='noopener noreferrer';link.className='primary';
-            link.textContent=isIOS?'Launch in Safari':'Open web app';
-            link.style.cssText='display:block;text-decoration:none;text-align:center';
-            const address=document.createElement('div');
-            address.className='small';address.textContent=target.hostname;address.style.cssText='margin-top:12px;word-break:break-all';
-            host.append(icon,title,detail,link,address);shell.appendChild(host);page.appendChild(shell);
-            return true;
-          }
-          const webMode=requestedMode==='auto'?'compatible':requestedMode;
-          const frame=document.createElement('iframe');
-          frame.className='ms-html-frame ms-web-frame';
-          frame.loading='eager';
-          let sameOrigin=false;
-          try{sameOrigin=location.origin!=='null'&&target.origin===location.origin;}catch{}
-          if(sameOrigin||webMode==='sandboxed'){
-            const sandboxTokens=['allow-scripts','allow-forms','allow-modals','allow-popups','allow-downloads','allow-pointer-lock','allow-presentation','allow-orientation-lock'];
-            if(!sameOrigin)sandboxTokens.push('allow-same-origin','allow-storage-access-by-user-activation');
-            frame.setAttribute('sandbox',sandboxTokens.join(' '));
-          }
-          frame.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
-          frame.setAttribute('allow','autoplay *; fullscreen *; gamepad *; accelerometer *; gyroscope *; screen-wake-lock *; clipboard-read *; clipboard-write *');
-          frame.setAttribute('allowfullscreen','');
-          frame.setAttribute('webkitallowfullscreen','true');
-          frame.setAttribute('tabindex','0');
-          frame.setAttribute('title',`${rt.app.meta.name} web surface`);
-          const header=page.querySelector('.app-header');
-          if(!header){
-            page.classList.add('html-surface');
-            page.closest('.screen')?.classList.add('html-surface-screen');
-            frame.style.height='100%';
-          }else{
-            frame.style.height=Math.max(260,page.clientHeight-header.offsetHeight-16)+'px';
-          }
-          page.appendChild(frame);
-          requestAnimationFrame(()=>{frame.src=target.href;});
-          frame.addEventListener('load',()=>frame.focus(),{once:true});
-          return true;
-        },
-        htmlSafe(text){append(`<div class="card">${escapeHTML(text)}</div>`);} 
+        openWithList(path){
+          const p=fsResolveRuntime(rt,path),apps=compatibleAppsForPath(p),containerId=rt.uid('openWith_'+Math.random().toString(36).slice(2));
+          append(`<div class="card" id="${containerId}">${apps.length?apps.map(app=>`<button class="file-item" style="width:100%;text-align:left;background:none;border:0;color:inherit" data-open-with="${escapeHTML(app.meta.id)}"><div class="file-icon">${escapeHTML(app.meta.icon)}</div><div class="file-name">${escapeHTML(app.meta.name)}</div><div class="file-meta">${escapeHTML(app.meta.accepts||'Compatible')}</div></button>`).join(''):'<div class="small center">No installed app declares support for this file type.</div>'}</div>`);
+          queueMicrotask(()=>document.getElementById(containerId)?.querySelectorAll('[data-open-with]').forEach(el=>el.onclick=()=>rt.trigger('openWith',{type:'openWith',appId:el.dataset.openWith,path:p,name:fsName(p),extension:fsExtension(p),mime:fsEntry(p)?.mime||fsMimeFromName(p)})));
+          return apps.map(app=>app.meta.id).join('|');
+        }
       },
       data:{
         get(key,fallback=''){return store.rawGet(`app.${rt.app.meta.id}.${key}`,fallback);},
@@ -1047,14 +1012,100 @@ class MRuntime{
         listFolders(path=''){return fsChildren(fsResolveRuntime(rt,path)).filter(e=>e.kind==='folder').map(e=>e.name).join('|');},
         copy(fromPath,toPath){const from=fsResolveRuntime(rt,fromPath),to=fsResolveRuntime(rt,toPath),out=fsCopyPath(from,to,rt.app.meta.id);rt.trigger('fileChange',{type:'fileChange',action:'copy',path:out,fromPath:from});return out;},
         move(fromPath,toPath){const from=fsResolveRuntime(rt,fromPath),to=fsResolveRuntime(rt,toPath),out=fsMovePath(from,to,rt.app.meta.id);rt.trigger('fileChange',{type:'fileChange',action:'move',path:out,fromPath:from});return out;},
+        rename(path,newName){const p=fsResolveRuntime(rt,path),out=fsRenamePath(p,newName,rt.app.meta.id);grantFileAccess(rt.app.meta.id,out);rt.trigger('fileChange',{type:'fileChange',action:'rename',path:out,fromPath:p});return out;},
+        changeExtension(path,newExtension){const p=fsResolveRuntime(rt,path),out=fsChangeExtensionPath(p,newExtension,rt.app.meta.id);grantFileAccess(rt.app.meta.id,out);rt.trigger('fileChange',{type:'fileChange',action:'extension',path:out,fromPath:p});return out;},
+        export(path,downloadName=''){const p=fsResolveRuntime(rt,path);return fsExportPath(p,downloadName);},
         name(path){return fsName(fsResolveRuntime(rt,path));},
         extension(path){return fsExtension(fsResolveRuntime(rt,path));},
         parent(path){const p=fsResolveRuntime(rt,path),parent=fsParent(p);if(!rt.app.system&&superuserHolder()!==rt.app.meta.id&&!hasPermission(rt.app,'allFiles')&&!parent.startsWith(fsAppRoot(rt.app.meta.id)))return fsAppRoot(rt.app.meta.id);return parent;},
-        size(path){const e=fsEntry(fsResolveRuntime(rt,path));return e?.kind==='file'?new Blob([e.content||'']).size:0;},
+        size(path){const p=fsResolveRuntime(rt,path),e=fsEntry(p);return e?.kind==='file'?fsEntryBlob(p).size:0;},
         mime(path){const p=fsResolveRuntime(rt,path),e=fsEntry(p);return e?.kind==='file'?(e.mime||fsMimeFromName(p)):'';},
         modified(path){return fsEntry(fsResolveRuntime(rt,path))?.modified||0;},
         isFile(path){return fsEntry(fsResolveRuntime(rt,path))?.kind==='file';},
         isFolder(path){return fsEntry(fsResolveRuntime(rt,path))?.kind==='folder';}
+      },
+      game:{
+        create(width=360,height=520,background='#000'){
+          const page=root.querySelector('.app-page');if(!page)return false;
+          if(game.raf)cancelAnimationFrame(game.raf);game.running=false;
+          for(const [target,type,handler,options] of game.listeners){try{target.removeEventListener(type,handler,options);}catch{}}game.listeners=[];
+          game.wrap?.remove();game.width=Math.max(120,Math.min(1920,Math.floor(Number(width)||360)));game.height=Math.max(120,Math.min(1920,Math.floor(Number(height)||520)));game.background=String(background||'#000');
+          const wrap=document.createElement('div');wrap.className='ms-game-wrap';wrap.style.aspectRatio=`${game.width}/${game.height}`;
+          const canvas=document.createElement('canvas');canvas.className='ms-game-canvas';canvas.width=game.width;canvas.height=game.height;canvas.tabIndex=0;canvas.setAttribute('aria-label',`${rt.app.meta.name} game canvas`);
+          const controls=document.createElement('div');controls.className='ms-game-controls';wrap.append(canvas,controls);page.appendChild(wrap);
+          game.wrap=wrap;game.canvas=canvas;game.controlsLayer=controls;game.ctx=canvas.getContext('2d',{alpha:false});if(!game.ctx)throw new MScriptError('Could not create the native game canvas');
+          game.ctx.imageSmoothingEnabled=false;game.keys.clear();game.controls.clear();game.entities.clear();game.pointer={x:0,y:0,down:false};game.frame=0;game.time=0;game.delta=0;
+          const keyDown=e=>{if(state.current!==rt.app.meta.id)return;game.keys.add(String(e.key));if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();rt.trigger('gameKeyDown',{type:'gameKeyDown',key:e.key,code:e.code,repeat:e.repeat});};
+          const keyUp=e=>{if(state.current!==rt.app.meta.id)return;game.keys.delete(String(e.key));rt.trigger('gameKeyUp',{type:'gameKeyUp',key:e.key,code:e.code});};
+          const pointerMove=e=>{const p=gamePoint(e);game.pointer.x=p.x;game.pointer.y=p.y;rt.trigger('gamePointerMove',{type:'gamePointerMove',x:p.x,y:p.y,down:game.pointer.down,pointerType:e.pointerType});};
+          const pointerDown=e=>{canvas.focus();const p=gamePoint(e);game.pointer={x:p.x,y:p.y,down:true};try{canvas.setPointerCapture(e.pointerId);}catch{}rt.trigger('gamePointerDown',{type:'gamePointerDown',x:p.x,y:p.y,button:e.button,pointerType:e.pointerType});};
+          const pointerUp=e=>{const p=gamePoint(e);game.pointer={x:p.x,y:p.y,down:false};rt.trigger('gamePointerUp',{type:'gamePointerUp',x:p.x,y:p.y,button:e.button,pointerType:e.pointerType});};
+          gameListen(window,'keydown',keyDown);gameListen(window,'keyup',keyUp);gameListen(canvas,'pointermove',pointerMove);gameListen(canvas,'pointerdown',pointerDown);gameListen(canvas,'pointerup',pointerUp);gameListen(canvas,'pointercancel',pointerUp);
+          rt.api.game.clear(game.background);return true;
+        },
+        resize(width,height){if(!game.canvas)return false;game.width=Math.max(120,Math.min(1920,Math.floor(Number(width)||game.width)));game.height=Math.max(120,Math.min(1920,Math.floor(Number(height)||game.height)));game.canvas.width=game.width;game.canvas.height=game.height;game.wrap.style.aspectRatio=`${game.width}/${game.height}`;game.ctx.imageSmoothingEnabled=false;return true;},
+        start(fps=60,eventName='gameFrame'){
+          gameContext();rt.api.game.stop();game.running=true;game.fps=Math.max(1,Math.min(120,Number(fps)||60));game.eventName=String(eventName||'gameFrame');game.last=performance.now();let accumulator=0;
+          const loop=now=>{if(!game.running)return;game.raf=requestAnimationFrame(loop);const raw=Math.min(.25,Math.max(0,(now-game.last)/1000));game.last=now;if(state.current!==rt.app.meta.id){accumulator=0;return;}accumulator+=raw;const step=1/game.fps;if(accumulator+1e-6<step)return;game.delta=Math.min(.1,accumulator);accumulator=0;game.time+=game.delta;game.frame++;rt.trigger(game.eventName,{type:'gameFrame',delta:game.delta,time:game.time,frame:game.frame,width:game.width,height:game.height});};
+          game.raf=requestAnimationFrame(loop);return true;
+        },
+        stop(){if(game.raf)cancelAnimationFrame(game.raf);game.raf=0;game.running=false;return true;},
+        running(){return game.running;},width(){return game.width;},height(){return game.height;},frame(){return game.frame;},delta(){return game.delta;},time(){return game.time;},
+        clear(color=''){const ctx=gameContext();ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.fillStyle=String(color||game.background||'#000');ctx.fillRect(0,0,game.width,game.height);ctx.restore();return true;},
+        setBackground(color){game.background=String(color||'#000');return game.background;},
+        rect(x,y,width,height,color='#fff',fill=true){const ctx=gameContext();ctx.beginPath();ctx.rect(Number(x),Number(y),Number(width),Number(height));if(fill){ctx.fillStyle=String(color);ctx.fill();}else{ctx.strokeStyle=String(color);ctx.stroke();}return true;},
+        circle(x,y,radius,color='#fff',fill=true){const ctx=gameContext();ctx.beginPath();ctx.arc(Number(x),Number(y),Math.max(0,Number(radius)),0,Math.PI*2);if(fill){ctx.fillStyle=String(color);ctx.fill();}else{ctx.strokeStyle=String(color);ctx.stroke();}return true;},
+        line(x1,y1,x2,y2,color='#fff',lineWidth=1){const ctx=gameContext();ctx.beginPath();ctx.moveTo(Number(x1),Number(y1));ctx.lineTo(Number(x2),Number(y2));ctx.strokeStyle=String(color);ctx.lineWidth=Math.max(.1,Number(lineWidth)||1);ctx.stroke();return true;},
+        text(text,x,y,size=16,color='#fff',align='left'){const ctx=gameContext();ctx.fillStyle=String(color);ctx.font=`${Math.max(1,Number(size)||16)}px system-ui`;ctx.textAlign=['left','center','right'].includes(String(align))?String(align):'left';ctx.textBaseline='top';ctx.fillText(String(text),Number(x),Number(y));return true;},
+        preloadImage(path,id=''){ensureGameImage(path,id);return true;},
+        drawImage(path,x,y,width,height){const cached=ensureGameImage(path,path);if(!cached.ready)return false;gameContext().drawImage(cached.image,Number(x),Number(y),Number(width),Number(height));return true;},
+        save(){gameContext().save();return true;},restore(){gameContext().restore();return true;},translate(x,y){gameContext().translate(Number(x),Number(y));return true;},rotate(rotation){gameContext().rotate(Number(rotation));return true;},scale(x,y=x){gameContext().scale(Number(x),Number(y));return true;},opacity(value){gameContext().globalAlpha=Math.max(0,Math.min(1,Number(value)));return true;},resetTransform(){gameContext().setTransform(1,0,0,1,0,0);gameContext().globalAlpha=1;return true;},
+        keyDown(key){return game.keys.has(String(key));},pointerX(){return game.pointer.x;},pointerY(){return game.pointer.y;},pointerDown(){return game.pointer.down;},
+        control(id,label,x,y,width,height){
+          if(!game.controlsLayer)throw new MScriptError('Call game.create before adding controls');const key=String(id);rt.api.game.removeControl(key);
+          const button=document.createElement('button');button.className='ms-game-control';button.textContent=String(label);button.style.left=`${Number(x)/game.width*100}%`;button.style.top=`${Number(y)/game.height*100}%`;button.style.width=`${Number(width)/game.width*100}%`;button.style.height=`${Number(height)/game.height*100}%`;
+          const stateObj={down:false,element:button};game.controls.set(key,stateObj);
+          const down=e=>{e.preventDefault();stateObj.down=true;button.classList.add('pressed');try{button.setPointerCapture(e.pointerId);}catch{}rt.trigger('gameControlDown',{type:'gameControlDown',id:key});};
+          const up=e=>{e.preventDefault();if(!stateObj.down)return;stateObj.down=false;button.classList.remove('pressed');rt.trigger('gameControlUp',{type:'gameControlUp',id:key});};
+          gameListen(button,'pointerdown',down);gameListen(button,'pointerup',up);gameListen(button,'pointercancel',up);game.controlsLayer.appendChild(button);return true;
+        },
+        dpad(x,y,size=54,gap=6){const s=Number(size)||54,g=Number(gap)||6;rt.api.game.control('up','▲',Number(x)+s+g,Number(y),s,s);rt.api.game.control('left','◀',Number(x),Number(y)+s+g,s,s);rt.api.game.control('down','▼',Number(x)+s+g,Number(y)+s+g,s,s);rt.api.game.control('right','▶',Number(x)+(s+g)*2,Number(y)+s+g,s,s);return true;},
+        controlDown(id){return !!game.controls.get(String(id))?.down;},removeControl(id){const c=game.controls.get(String(id));if(!c)return false;c.element.remove();game.controls.delete(String(id));return true;},clearControls(){for(const c of game.controls.values())c.element.remove();game.controls.clear();return true;},
+        entity(id,x,y,width,height,color='#fff'){const key=String(id);game.entities.set(key,{id:key,type:'rect',x:Number(x),y:Number(y),w:Number(width),h:Number(height),color:String(color),vx:0,vy:0,rotation:0,opacity:1,visible:true});return key;},
+        circleEntity(id,x,y,size,color='#fff'){const key=rt.api.game.entity(id,x,y,size,size,color);game.entities.get(key).type='circle';return key;},
+        imageEntity(id,path,x,y,width,height){const key=String(id);ensureGameImage(path,path);game.entities.set(key,{id:key,type:'image',path:fsResolveRuntime(rt,path),imageId:fsResolveRuntime(rt,path),x:Number(x),y:Number(y),w:Number(width),h:Number(height),vx:0,vy:0,rotation:0,opacity:1,visible:true});return key;},
+        textEntity(id,text,x,y,size=16,color='#fff'){const key=String(id);game.entities.set(key,{id:key,type:'text',text:String(text),x:Number(x),y:Number(y),w:0,h:Number(size),size:Number(size),color:String(color),align:'left',vx:0,vy:0,rotation:0,opacity:1,visible:true});return key;},
+        removeEntity(id){return game.entities.delete(String(id));},clearEntities(){game.entities.clear();return true;},entityExists(id){return game.entities.has(String(id));},entityCount(){return game.entities.size;},entities(){return [...game.entities.keys()].join('|');},
+        setPosition(id,x,y){const e=game.entities.get(String(id));if(!e)return false;e.x=Number(x);e.y=Number(y);return true;},
+        move(id,x,y){const e=game.entities.get(String(id));if(!e)return false;e.x+=Number(x);e.y+=Number(y);return true;},
+        setVelocity(id,vx,vy){const e=game.entities.get(String(id));if(!e)return false;e.vx=Number(vx);e.vy=Number(vy);return true;},
+        setSize(id,width,height){const e=game.entities.get(String(id));if(!e)return false;e.w=Number(width);e.h=Number(height);return true;},
+        setColor(id,color){const e=game.entities.get(String(id));if(!e)return false;e.color=String(color);return true;},
+        setRotation(id,rotation){const e=game.entities.get(String(id));if(!e)return false;e.rotation=Number(rotation);return true;},
+        setOpacity(id,opacity){const e=game.entities.get(String(id));if(!e)return false;e.opacity=Math.max(0,Math.min(1,Number(opacity)));return true;},
+        setVisible(id,visible){const e=game.entities.get(String(id));if(!e)return false;e.visible=!!visible;return true;},
+        setText(id,text){const e=game.entities.get(String(id));if(!e)return false;e.text=String(text);return true;},
+        entityX(id){return game.entities.get(String(id))?.x??0;},entityY(id){return game.entities.get(String(id))?.y??0;},velocityX(id){return game.entities.get(String(id))?.vx??0;},velocityY(id){return game.entities.get(String(id))?.vy??0;},
+        update(delta=game.delta){const d=Math.max(0,Number(delta)||0);for(const e of game.entities.values()){e.x+=Number(e.vx||0)*d;e.y+=Number(e.vy||0)*d;}return true;},
+        draw(clearFirst=true){if(clearFirst)rt.api.game.clear(game.background);for(const e of game.entities.values())drawEntity(e);return true;},
+        collides(idA,idB){const a=game.entities.get(String(idA)),b=game.entities.get(String(idB));if(!a||!b)return false;return rt.api.game.hit(a.x,a.y,a.w,a.h,b.x,b.y,b.w,b.h);},
+        hit(x1,y1,width1,height1,x2,y2,width2,height2){return Number(x1)<Number(x2)+Number(width2)&&Number(x1)+Number(width1)>Number(x2)&&Number(y1)<Number(y2)+Number(height2)&&Number(y1)+Number(height1)>Number(y2);},
+        contains(id,x,y){const e=game.entities.get(String(id));if(!e)return false;return Number(x)>=e.x&&Number(x)<=e.x+e.w&&Number(y)>=e.y&&Number(y)<=e.y+e.h;},
+        distance(x1,y1,x2,y2){return Math.hypot(Number(x2)-Number(x1),Number(y2)-Number(y1));},
+        keepInside(id,bounce=false){const e=game.entities.get(String(id));if(!e)return false;let hit=false;if(e.x<0){e.x=0;e.vx=bounce?Math.abs(e.vx):0;hit=true;}if(e.y<0){e.y=0;e.vy=bounce?Math.abs(e.vy):0;hit=true;}if(e.x+e.w>game.width){e.x=game.width-e.w;e.vx=bounce?-Math.abs(e.vx):0;hit=true;}if(e.y+e.h>game.height){e.y=game.height-e.h;e.vy=bounce?-Math.abs(e.vy):0;hit=true;}return hit;},
+        wrap(id,margin=0){const e=game.entities.get(String(id));if(!e)return false;const m=Number(margin)||0;if(e.x>game.width+m)e.x=-e.w-m;else if(e.x+e.w<-m)e.x=game.width+m;if(e.y>game.height+m)e.y=-e.h-m;else if(e.y+e.h<-m)e.y=game.height+m;return true;}
+      },
+      sound:{
+        beep(frequency=440,duration=120,volume=.2,wave='sine'){
+          const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return false;const ctx=rt.dom.audioContext||(rt.dom.audioContext=new Ctx());if(ctx.state==='suspended')ctx.resume();
+          const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=['sine','square','triangle','sawtooth'].includes(String(wave))?String(wave):'sine';osc.frequency.value=Math.max(20,Math.min(20000,Number(frequency)||440));gain.gain.value=Math.max(.0001,Math.min(1,Number(volume)||.2));osc.connect(gain);gain.connect(ctx.destination);osc.start();gain.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+Math.max(.02,Number(duration)||120)/1000);osc.stop(ctx.currentTime+Math.max(.02,Number(duration)||120)/1000);return true;
+        },
+        play(path,id='sound',loop=false,volume=1){const p=fsResolveRuntime(rt,path),url=fsEntryDataURL(p);if(!url)throw new MScriptError(`Audio file cannot be played: ${p}`);const key=String(id);rt.api.sound.stop(key);const audio=new Audio(url);audio.loop=!!loop;audio.volume=Math.max(0,Math.min(1,Number(volume)));game.audios.set(key,audio);audio.play().catch(()=>rt.trigger('soundError',{type:'soundError',id:key,path:p}));audio.addEventListener('ended',()=>rt.trigger('soundEnded',{type:'soundEnded',id:key,path:p}),{once:!loop});return true;},
+        stop(id='sound'){const audio=game.audios.get(String(id));if(!audio)return false;audio.pause();audio.currentTime=0;game.audios.delete(String(id));return true;},
+        pause(id='sound'){const audio=game.audios.get(String(id));if(!audio)return false;audio.pause();return true;},
+        resume(id='sound'){const audio=game.audios.get(String(id));if(!audio)return false;audio.play().catch(()=>{});return true;},
+        volume(id,value){const audio=game.audios.get(String(id));if(!audio)return false;audio.volume=Math.max(0,Math.min(1,Number(value)));return audio.volume;},
+        isPlaying(id='sound'){const audio=game.audios.get(String(id));return !!audio&&!audio.paused&&!audio.ended;}
       },
       settings:{
         get(key,fallback=''){return settings[key]??fallback;},
@@ -1074,6 +1125,9 @@ class MRuntime{
         exists(id){return !!getApp(String(id));},list(){return getAllApps().map(a=>a.meta.id).sort().join('|');},
         name(id){return getApp(String(id))?.meta.name||'';},version(id){return getApp(String(id))?.meta.version||'';},
         current(){return rt.app.meta.id;},isSystem(id){return !!getApp(String(id))?.system;},isHidden(id){return getHiddenApps().includes(String(id));},
+        openers(path){const p=fsResolveRuntime(rt,path);return compatibleAppsForPath(p).map(app=>app.meta.id).join('|');},
+        canOpen(id,path){const p=fsResolveRuntime(rt,path);return appCanOpenPath(getApp(String(id)),p);},
+        openFile(id,path){const p=fsResolveRuntime(rt,path);return openFileInApp(String(id),p);},
         setHidden(id,hidden){if(!rt.app.system)requirePermission(rt,'superuser');return setAppHidden(String(id),!!hidden);},
         disabledSystems(){return getDisabledSystemApps().join('|');}
       },
@@ -1133,7 +1187,10 @@ class MRuntime{
         round(v,d=0){const p=10**Number(d);return Math.round(Number(v)*p)/p;},abs(v){return Math.abs(Number(v));},floor(v){return Math.floor(Number(v));},ceil(v){return Math.ceil(Number(v));},
         min(a,b){return Math.min(Number(a),Number(b));},max(a,b){return Math.max(Number(a),Number(b));},clamp(v,min,max){return Math.max(Number(min),Math.min(Number(max),Number(v)));},
         random(min,max){let a=Number(min),b=Number(max);if(!Number.isFinite(a)||!Number.isFinite(b))throw new MScriptError('math.random min and max must be numbers');if(a>b)[a,b]=[b,a];if(a===b)return a;return Math.random()*(b-a)+a;},
-        sqrt(v){return Math.sqrt(Number(v));},pow(v,p){return Math.pow(Number(v),Number(p));}
+        randomInt(min,max){let a=Math.ceil(Number(min)),b=Math.floor(Number(max));if(!Number.isFinite(a)||!Number.isFinite(b))throw new MScriptError('math.randomInt min and max must be numbers');if(a>b)[a,b]=[b,a];return Math.floor(Math.random()*(b-a+1))+a;},
+        sqrt(v){return Math.sqrt(Number(v));},pow(v,p){return Math.pow(Number(v),Number(p));},
+        sin(v){return Math.sin(Number(v));},cos(v){return Math.cos(Number(v));},tan(v){return Math.tan(Number(v));},atan2(y,x){return Math.atan2(Number(y),Number(x));},
+        lerp(a,b,amount){return Number(a)+(Number(b)-Number(a))*Number(amount);},radians(v){return Number(v)*Math.PI/180;},degrees(v){return Number(v)*180/Math.PI;}
       },
       text:{
         length(v){return String(v).length;},upper(v){return String(v).toUpperCase();},lower(v){return String(v).toLowerCase();},trim(v){return String(v).trim();},
@@ -1167,7 +1224,8 @@ meta color "#4f91e8"
 meta version "1.0 Release"
 
 function renderBrowser()
-  let viewing = ""
+  set mode = "browser"
+  set viewing = ""
   ui.clear()
   ui.header("Files", currentPath)
   ui.fileInput("importFile", "Import file", "*/*")
@@ -1177,25 +1235,91 @@ function renderBrowser()
 end
 
 function renderViewer(path)
-  let viewing = path
+  set mode = "viewer"
+  set viewing = path
   ui.clear()
   ui.header(file.name(path), path)
-  ui.button("viewerBack", "← Back to folder", "ghost")
+  ui.button("operationBack", "← Back to folder", "ghost")
   ui.infoRow("Type", file.mime(path))
   ui.infoRow("Size", file.size(path) + " bytes")
   ui.infoRow("Modified", file.modified(path))
-  ui.section("Contents")
-  ui.code(file.read(path, "This file has no readable text content."))
+  if text.startsWith(file.mime(path), "image/")
+    ui.section("Image preview")
+    ui.image(path, file.name(path), 560)
+  else
+    ui.section("Contents")
+    ui.code(file.read(path, "This file has no readable text content."))
+  end
+end
+
+function renderRename(path)
+  set mode = "rename"
+  set targetPath = path
+  ui.clear()
+  ui.header("Rename", path)
+  ui.button("operationBack", "← Cancel", "ghost")
+  ui.input("newName", "New name", file.name(path))
+  ui.button("confirmRename", "Rename", "primary")
+end
+
+function renderTransfer(path, operation)
+  set mode = operation
+  set targetPath = path
+  ui.clear()
+  if operation == "copy"
+    ui.header("Copy", path)
+  else
+    ui.header("Move", path)
+  end
+  ui.button("operationBack", "← Cancel", "ghost")
+  if operation == "copy"
+    ui.input("destination", "Destination path", currentPath + "/Copy of " + file.name(path))
+  else
+    ui.input("destination", "Destination path", "/documents/" + file.name(path))
+  end
+  if operation == "copy"
+    ui.button("confirmCopy", "Copy here", "primary")
+  else
+    ui.button("confirmMove", "Move here", "primary")
+  end
+end
+
+function renderExtension(path)
+  set mode = "extension"
+  set targetPath = path
+  ui.clear()
+  ui.header("Change extension", path)
+  ui.button("operationBack", "← Cancel", "ghost")
+  ui.input("newExtension", "New extension", file.extension(path))
+  ui.text("Enter an extension with or without a leading dot. Leave it blank to remove the extension.", "small")
+  ui.button("confirmExtension", "Change extension", "primary")
+end
+
+function renderOpenWith(path)
+  set mode = "openWith"
+  set targetPath = path
+  ui.clear()
+  ui.header("Open with", file.name(path))
+  ui.button("operationBack", "← Cancel", "ghost")
+  ui.openWithList(path)
 end
 
 on start
   let currentPath = data.get("currentPath", "/")
   let viewing = ""
+  let targetPath = ""
+  let mode = "browser"
   renderBrowser()
 end
 
+on openFile
+  set currentPath = file.parent(event.path)
+  data.set("currentPath", currentPath)
+  renderViewer(event.path)
+end
+
 on back
-  if viewing != ""
+  if mode != "browser"
     renderBrowser()
     return true
   end
@@ -1208,7 +1332,7 @@ on back
   return false
 end
 
-on click viewerBack
+on click operationBack
   renderBrowser()
 end
 
@@ -1220,6 +1344,41 @@ on click newFolder
     file.mkdir(currentPath + "/" + name)
     renderBrowser()
   end
+end
+
+on click confirmRename
+  let name = ui.value("newName")
+  if name == ""
+    system.toast("Enter a new name")
+  else
+    let result = file.rename(targetPath, name)
+    set currentPath = file.parent(result)
+    data.set("currentPath", currentPath)
+    renderBrowser()
+  end
+end
+
+on click confirmCopy
+  let destination = ui.value("destination")
+  file.copy(targetPath, destination)
+  set currentPath = file.parent(destination)
+  data.set("currentPath", currentPath)
+  renderBrowser()
+end
+
+on click confirmMove
+  let destination = ui.value("destination")
+  file.move(targetPath, destination)
+  set currentPath = file.parent(destination)
+  data.set("currentPath", currentPath)
+  renderBrowser()
+end
+
+on click confirmExtension
+  let result = file.changeExtension(targetPath, ui.value("newExtension"))
+  set currentPath = file.parent(result)
+  data.set("currentPath", currentPath)
+  renderBrowser()
 end
 
 on file importFile
@@ -1235,77 +1394,144 @@ on fileNavigate
   renderBrowser()
 end
 
+on openWith
+  app.openFile(event.appId, event.path)
+end
+
 on fileAction
-  if event.action == "edit"
-    data.globalSet("studio.openPath", event.path)
-    app.open("studio")
+  if event.action == "browse"
+    set currentPath = event.path
+    data.set("currentPath", currentPath)
+    renderBrowser()
   else
-    if event.action == "install"
-      app.install(file.read(event.path, ""))
+    if event.action == "edit"
+      app.openFile("studio", event.path)
     else
-      if event.action == "delete"
-        if dialog.danger("Delete file?", "Permanently delete " + event.name + "?", event.path)
-          file.delete(event.path)
-          renderBrowser()
-        end
+      if event.action == "install"
+        app.install(file.read(event.path, ""))
       else
-        if event.action == "open"
-          renderViewer(event.path)
+        if event.action == "delete"
+          if dialog.danger("Delete permanently?", "Delete " + event.name + " and all of its contents?", event.path)
+            file.delete(event.path)
+            renderBrowser()
+          end
+        else
+          if event.action == "open"
+            renderViewer(event.path)
+          else
+            if event.action == "rename"
+              renderRename(event.path)
+            else
+              if event.action == "copy"
+                renderTransfer(event.path, "copy")
+              else
+                if event.action == "move"
+                  renderTransfer(event.path, "move")
+                else
+                  if event.action == "extension"
+                    renderExtension(event.path)
+                  else
+                    if event.action == "export"
+                      file.export(event.path, event.name)
+                      system.toast("Export started")
+                    else
+                      if event.action == "openWith"
+                        renderOpenWith(event.path)
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
         end
       end
     end
   end
 end`;
-
 SYSTEM_SOURCES.notes = String.raw`app "Notes"
 meta id "notes"
 meta icon "📝"
 meta color "#f0a33b"
 meta version "1.0 Release"
+meta accepts "txt|md|csv|json|text/*|application/json"
 
 on start
-  ui.header("Notes", "Saved locally with MScript data functions")
-  ui.section("Editor")
-  ui.input("name", "File name", data.get("lastName", "New Note"))
-  ui.textarea("body", "Contents", data.globalGet("notes.file." + data.get("lastName", "New Note"), ""), "Write anything...")
-  ui.button("save", "Save file", "primary")
-  ui.button("new", "New", "secondary")
+  let editingPath = data.get("editingPath", "")
+  ui.header("Notes", "Local notes and text-file editing")
+  if editingPath != "" && file.exists(editingPath)
+    ui.infoRow("File", editingPath)
+    ui.input("name", "File name", file.name(editingPath))
+    ui.textarea("body", "Contents", file.read(editingPath, ""), "Write anything...")
+  else
+    set editingPath = ""
+    data.set("editingPath", "")
+    ui.input("name", "Note name", data.get("lastName", "New Note"))
+    ui.textarea("body", "Contents", data.globalGet("notes.file." + data.get("lastName", "New Note"), ""), "Write anything...")
+  end
+  ui.button("save", "Save", "primary")
+  ui.button("new", "New note", "secondary")
   ui.button("delete", "Delete", "danger")
-  ui.section("Saved files")
+  ui.section("Saved notes")
   ui.noteList("notes.file.")
+end
+
+on openFile
+  data.set("editingPath", event.path)
+  app.open("notes")
 end
 
 on click save
   let name = ui.value("name")
   let body = ui.value("body")
+  let editingPath = data.get("editingPath", "")
   if name == ""
-    system.toast("Enter a file name")
+    system.toast("Enter a name")
   else
-    data.globalSet("notes.file." + name, body)
-    data.set("lastName", name)
-    notify.send("Notes", "Saved " + name)
+    if editingPath != ""
+      if file.name(editingPath) != name
+        set editingPath = file.rename(editingPath, name)
+        data.set("editingPath", editingPath)
+      end
+      file.write(editingPath, body, file.mime(editingPath))
+      notify.send("Notes", "Saved " + editingPath)
+    else
+      data.globalSet("notes.file." + name, body)
+      data.set("lastName", name)
+      notify.send("Notes", "Saved " + name)
+    end
     app.open("notes")
   end
 end
 
 on click new
+  data.set("editingPath", "")
   data.set("lastName", "Untitled")
   app.open("notes")
 end
 
 on click delete
-  let name = ui.value("name")
-  data.globalDelete("notes.file." + name)
-  data.set("lastName", "New Note")
-  system.toast("Deleted " + name)
-  app.open("notes")
+  let editingPath = data.get("editingPath", "")
+  if editingPath != ""
+    if dialog.danger("Delete file?", "Permanently delete " + editingPath + "?")
+      file.delete(editingPath)
+      data.set("editingPath", "")
+      app.open("notes")
+    end
+  else
+    let name = ui.value("name")
+    data.globalDelete("notes.file." + name)
+    data.set("lastName", "New Note")
+    system.toast("Deleted " + name)
+    app.open("notes")
+  end
 end
 
 on openNote
+  data.set("editingPath", "")
   data.set("lastName", event.value)
   app.open("notes")
 end`;
-
 SYSTEM_SOURCES.settings = String.raw`app "Settings"
 meta id "settings"
 meta icon "⚙️"
@@ -1606,139 +1832,40 @@ end`;
 SYSTEM_SOURCES.guide = String.raw`app "MScript Guide"
 meta id "guide"
 meta icon "📘"
-meta color "#4d79e6"
+meta color "#4474d9"
 meta version "1.0 Release"
 
 on start
-  ui.header("MScript Guide", "Complete MScript 1.0 Release language and API reference")
-  ui.alert("Everything here is MScript", "System apps and user apps use the same language. Built-in apps are trusted; user apps must request protected permissions. Superuser ownership is enforced by the MellorsOS kernel, not by Settings.", "info")
+  ui.header("MScript Guide", "Offline language and complete API reference")
+  ui.alert("Fully offline", "MScript cannot execute HTML, JavaScript, webpages, remote scripts, or network requests. Apps use native MellorsOS controls, storage, files, games, and sound.", "success")
 
-  ui.section("1 · App structure")
-  ui.text("Every app begins with app metadata, then optional functions and event handlers. Statements inside events and functions execute from top to bottom.")
-  ui.code("app \"My App\"\nmeta id \"my.app\"\nmeta icon \"◆\"\nmeta color \"#6d7cff\"\nmeta version \"1.0 Release\"\n\nfunction greet(name)\n  return \"Hello \" + name\nend\n\non start\n  ui.header(\"My App\", greet(\"MellorsOS\"))\nend")
-  ui.text("app sets the display name. meta id must uniquely identify the app. meta icon, color, and version control Home-screen and app-header metadata. A custom distribution may change built-in MScript sources, but kernel security rules still apply.", "small")
+  ui.section("Language syntax")
+  ui.code("app \"My App\"\nmeta id \"my.app\"\nmeta icon \"◆\"\nmeta color \"#6d7cff\"\nmeta version \"1.0\"\nmeta accepts \"txt|md|image/*\"\n\non start\n  let score = 0\n  ui.button(\"play\", \"Play\")\nend\n\non click play\n  set score = score + 1\nend")
+  ui.text("Literal text requires quotes. Numbers, true, false, null, variables, and function results are unquoted. Control IDs may be quoted or written as bare identifiers. Multiline API calls are supported while parentheses remain open.", "small")
 
-  ui.section("2 · Comments, values, variables, and operators")
-  ui.code("# A comment occupies its own line\nlet score = 10\nset score = score + 5\nlet name = \"MellorsOS\"\nlet enabled = true\nlet empty = null\n\n# Operators\n+  -  *  /  %\n==  !=  <  >  <=  >=\n&&  ||  !")
-  ui.text("let and set both assign a variable. Strings use single or double quotes and support \\n, \\t, and \\r escapes. Numbers, true, false, and null are literals. + adds numbers or concatenates when either side is text. Parentheses control expression order. Dotted names such as event.value read properties or API namespaces; function arguments are comma-separated.", "small")
+  ui.section("Control flow")
+  ui.code("if condition\n  ...\nelse\n  ...\nend\n\nwhile condition\n  ...\nend\n\nrepeat 10\n  system.log(index)\nend\n\nfor n from 1 to 10\n  if n == 5\n    continue\n  end\n  if n == 8\n    break\n  end\nend")
+  ui.text("Use let to create/set a variable and set to update it. Functions use function name(parameters) ... end and may return a value.", "small")
 
-  ui.section("3 · Conditions and loops")
-  ui.code("if score >= 10\n  system.toast(\"High score\")\nelse\n  system.toast(\"Keep going\")\nend\n\nlet i = 0\nwhile i < 5\n  set i = i + 1\nend\n\nrepeat 3\n  system.log(index)\nend\n\nfor n from 1 to 5\n  if n == 3\n    continue\n  end\n  if n == 5\n    break\n  end\nend")
-  ui.text("if evaluates an expression and optionally runs an else block. while repeats while its condition remains true. repeat count runs a block a fixed number of times and exposes zero-based index. for variable from start to end counts inclusively upward or downward. break exits the nearest loop and continue skips to its next iteration. MellorsOS caps loops and statement execution to protect the emulator.", "small")
+  ui.section("Events")
+  ui.code("on start\non resume\non pause\non close\non back\non homeButton\non recentsButton\non click controlId\non input controlId\non change controlId\non file controlId\non openFile\non fileChange\non gameFrame\non gameKeyDown\non gameKeyUp\non gamePointerDown\non gamePointerMove\non gamePointerUp\non gameControlDown\non gameControlUp\non gameImageLoaded\non gameImageError\non soundEnded\non soundError")
+  ui.text("Event details are read through event.*, such as event.value, event.path, event.key, event.x, event.y, event.delta, event.appId, and event.fileName.", "small")
 
-  ui.section("4 · Functions and return")
-  ui.code("function add(a, b)\n  return a + b\nend\n\non start\n  let result = add(2, 3)\nend")
-  ui.text("function name(arguments) defines reusable MScript code. Parameters are local inputs. return ends that function and supplies a value to the caller.", "small")
-
-  ui.section("5 · Events")
-  ui.code("on start ... end\non resume ... end\non pause ... end\non close ... end\non back ... end\non homeButton ... end\non recentsButton ... end\non click buttonId ... end\non click ... end\non input fieldId ... end\non input ... end\non change controlId ... end\non change ... end\non dataChange ... end\non settingsChange ... end")
-  ui.text("start runs when the app mounts. resume follows start when an app opens. pause runs before navigation leaves the app. close runs when its runtime is destroyed. back, homeButton, and recentsButton fire from the navigation bar; returning true from those navigation events consumes the default action. click, input, and change are generated by UI controls. ui.fileInput generates file id and generic file events; the selected file is preserved in /imports. event.value contains text or a data URL, while event.fileName, event.fileType, event.filePath, event.fileEncoding, event.size, and event.lastModified describe it. event.id, event.value, event.type, event.key, event.reason, and similar fields describe other events.", "small")
-  ui.code("timer.after(\"welcome\", 1000, \"welcomeTimer\")\nbackground.start(\"sync\", 5000, \"syncTick\")\nevents.emit(\"customEvent\", \"hello\")\n\non welcomeTimer\n  system.toast(event.name)\nend\n\non syncTick\n  system.log(\"Background tick\")\nend\n\non customEvent\n  system.toast(event.value)\nend")
-  ui.text("Timer, background, and custom event names are arbitrary. App Manager also emits permissionChange, appVisibility, and uninstallManagedApp to the app hosting ui.appManager(). Specialized widgets emit wallpaper, accent, key, openNote, fileNavigate, and fileAction. Successful file API modifications emit fileChange.", "small")
-
-  ui.section("6 · Permission model")
+  ui.section("Permissions")
   ui.code("permission.ask(\"settings\")\npermission.ask(\"notifications\")\npermission.ask(\"installApps\")\npermission.ask(\"modifyPermissions\")\npermission.ask(\"allFiles\")\npermission.ask(\"background\")\npermission.ask(\"superuser\")")
-  ui.text("User apps start without protected permissions. permission.ask displays a MellorsOS-native prompt and returns true or false. Put permission.ask before other side effects in the handler because the handler resumes after the user answers. Calling a protected command without its permission crashes and exits the user app with an MScript crash notification.", "small")
-  ui.code("if permission.ask(\"notifications\")\n  notify.send(\"Hello\", \"Allowed\")\nelse\n  system.toast(\"Using fallback UI\")\nend")
-  ui.text("settings protects settings.set, settings.toggle, and settings.reset. notifications protects notification modification. installApps protects app.install and app.remove. modifyPermissions protects permission.set and ui.appManager. allFiles protects absolute filesystem paths outside the app's own /apps/<id> folder. background protects background.start. Superuser bypasses protected permissions and adds kernel ownership powers.", "small")
+  ui.text("System apps have every permission. User apps begin with none. Calling a protected function without permission crashes the app. permission.ask returns true or false so an app can provide a fallback.", "small")
 
-  ui.section("7 · Superuser security")
-  ui.text("Only one user app can hold Superuser. It can only be granted when that app itself calls permission.ask(\"superuser\") and the user completes multiple warnings. Settings cannot grant, revoke, transfer, or directly uninstall the holder. No other MScript app, including a built-in or custom Settings app, can disable the holder. The holder relinquishes with permission.disableSuperuser(), or factory reset removes it.")
-  ui.text("Superuser can uninstall built-in system apps with app.remove(id), install replacements even using a built-in app id with app.install(source), and restore the original built-in with app.restoreSystem(id). Kernel-owned permissions, installed-app records, and disabled-system-app records cannot be overwritten through data.globalSet.", "small")
+  ui.section("Filesystem and file-opening apps")
+  ui.code("file.write(\"save.txt\", \"hello\")\nfile.rename(\"save.txt\", \"player.txt\")\nfile.changeExtension(\"player.txt\", \"json\")\nfile.copy(\"player.json\", \"backup.json\")\nfile.move(\"backup.json\", \"/documents/backup.json\")\nfile.export(\"/documents/backup.json\")\n\nmeta accepts \"txt|md|image/*\"\non openFile\n  system.log(event.path)\nend")
+  ui.text("Relative paths stay in /apps/<app-id>. Shared absolute paths require Access to all files. Apps declare supported extensions or MIME patterns with meta accepts. Files can then use app.openFile to deliver an on openFile event.", "small")
 
-  ui.section("8 · UI creation API")
-  ui.code("ui.clear()\nui.header(title, subtitle)\nui.section(title)\nui.text(text, style)\nui.rich(title, body, icon)\nui.card(title, body)\nui.menu(id, title, subtitle, icon, value)\nui.alert(title, body, kind)\nui.divider()\nui.spacer(px)\nui.badge(text, kind)\nui.stat(label, value)\nui.progress(title, value, max)\nui.label(id, text, style)\nui.infoRow(title, value, subtitle)")
-  ui.text("clear rebuilds the app page as a blank content surface. header explicitly creates or updates the sticky app header; custom apps do not receive an automatic header unless their MScript calls ui.header(). section creates a section heading. text and label render escaped text; label has an id for later mutation. rich/card/infoRow create information surfaces. menu creates a tappable Settings-style row and fires click id. alert kinds are info, warning, danger, or success. divider/spacer control layout. badge/stat/progress display compact status information.", "small")
+  ui.section("Native game example")
+  ui.code("app \"Ball Game\"\nmeta id \"ball.game\"\nmeta icon \"🎮\"\n\non start\n  let score = 0\n  game.create(360, 520, \"#08111f\")\n  game.entity(\"player\", 160, 420, 36, 36, \"#6d7cff\")\n  game.circleEntity(\"coin\", 170, 80, 24, \"#ffd24a\")\n  game.dpad(18, 390, 42, 5)\n  game.start(60, \"gameFrame\")\nend\n\non gameFrame\n  let speed = 180 * event.delta\n  if game.keyDown(\"ArrowLeft\") || game.controlDown(\"left\")\n    game.move(\"player\", 0 - speed, 0)\n  end\n  if game.keyDown(\"ArrowRight\") || game.controlDown(\"right\")\n    game.move(\"player\", speed, 0)\n  end\n  game.keepInside(\"player\", false)\n  if game.collides(\"player\", \"coin\")\n    set score = score + 1\n    game.setPosition(\"coin\", math.random(0, 330), math.random(30, 300))\n    sound.beep(700, 80, 0.2, \"square\")\n  end\n  game.draw(true)\n  game.text(\"Score: \" + score, 12, 12, 18, \"white\")\nend")
+  ui.text("The game API uses a native 2D canvas. It supports shapes, local images, entities, velocity, collisions, keyboard, pointer/touch input, on-screen controls, animation frames, and offline sound.", "small")
 
-  ui.section("9 · UI input API")
-  ui.code("ui.button(id, label, kind)\nui.input(id, label, value, type)\nui.numberInput(id, label, value, min, max, step)\nui.password(id, label, value)\nui.search(id, label, value)\nui.colorInput(id, label, value)\nui.dateInput(id, label, value)\nui.timeInput(id, label, value)\nui.textarea(id, label, value, placeholder)\nui.codeEditor(id, value)\nui.toggle(id, title, on, subtitle)\nui.slider(id, title, value, min, max, step)\nui.select(id, title, value, \"a:Label A|b:Label B\")\nui.segmented(id, title, value, options)\nui.chips(id, title, selected, options)")
-  ui.text("The id parameter names a control and connects it to events. You may write it as a quoted string, such as ui.button(\"save\", ...), or as a bare identifier, such as ui.button(save, ...); both connect to on click save. button kinds are primary, secondary, danger, or ghost. input type accepts normal HTML input types while the dedicated helpers cover common types. toggle, slider, select, segmented, and chips fire change id plus the generic change event. input and numberInput fire input id plus generic input. textarea fires input id. fileInput opens a user-controlled file chooser and fires file id after the selected text has been read; literal id, label, and accept values should be quoted, except control IDs may also use bare identifiers. Read current control contents with ui.value(id).", "small")
-
-  ui.section("10 · UI mutation API")
-  ui.code("ui.value(id)\nui.setValue(id, value)\nui.clearValue(id)\nui.setText(id, text)\nui.setVisible(id, visible)\nui.setEnabled(id, enabled)\nui.remove(id)\nui.exists(id)\nui.focus(id)\nui.scrollTop()")
-  ui.text("These functions inspect or modify controls already rendered on the current app page. setText is intended for elements created with ui.label or other id-bearing controls. setVisible hides without deleting. setEnabled disables interaction. remove deletes the element. focus moves keyboard focus. scrollTop returns to the top of the app page.", "small")
-
-  ui.section("11 · Specialized system UI helpers")
-  ui.code("ui.code(text)\nui.fileInput(id, label, accept)\nui.noteList(prefix)\nui.appList()\nui.storageView()\nui.notificationList()\nui.calculator()\nui.calcSet(value)\nui.wallpaperPicker()\nui.accentPicker()\nui.logView()\nui.appManager()\nui.refreshAppManager()\nui.html(htmlFile)\nui.web(url, mode=\"compatible\")\nui.htmlSafe(text)")
-  ui.text("code renders a formatted code block. fileInput opens a browser file chooser, preserves the selected file in /imports, and emits on file <id>; event.filePath identifies the stored import. fileBrowser renders folders and emits fileNavigate or fileAction. noteList lists storage records and emits openNote. appList opens installed apps. storageView, notificationList, calculator/calcSet, wallpaperPicker, accentPicker, and logView power built-in tools. appManager requires Modify permissions and renders app permissions, Home visibility, and uninstall controls while keeping Superuser kernel-controlled. refreshAppManager updates it in place. ui.html runs supplied HTML/CSS/JavaScript or WebAssembly in an opaque-origin sandbox and is best for bundled documents. ui.web loads a hosted HTTP/HTTPS page directly in one web frame. Compatible mode is the default and uses a normal iframe for genuinely cross-origin pages so Safari supplies normal WebGL, audio, and origin behavior; the browser same-origin policy still isolates the page from MellorsOS. Pass \"sandboxed\" for extra iframe restrictions, \"external\" to show a user-activated top-level launch button, or \"auto\" to use external launch on iPhone/iPad and an embedded compatible frame elsewhere. Same-origin destinations are always sandboxed when embedded. Embedded modes keep the MellorsOS status and navigation bars visible; external and iOS auto mode open a top-level browser page so WebGL games can use Safari directly. fetch/XHR requests remain subject to the destination server's CORS policy. htmlSafe displays text inside a card and always escapes markup.", "small")
-
-  ui.section("12 · Private and shared storage")
-  ui.code("data.get(key, fallback)\ndata.set(key, value)\ndata.delete(key)\ndata.keys(prefix)\ndata.has(key)\ndata.clear()\ndata.count(prefix)\ndata.append(key, value, separator)\ndata.increment(key, amount)\ndata.globalGet(key, fallback)\ndata.globalSet(key, value)\ndata.globalDelete(key)\ndata.globalKeys(prefix)\ndata.globalHas(key)")
-  ui.text("Private data functions automatically namespace records to the current app. keys returns | separated key names. clear only clears the current app's private data. append concatenates text and increment updates a numeric record. Ordinary user apps' global functions are sandboxed under shared.*. Built-in apps and Superuser can address broader OS storage, except kernel-owned trust records.", "small")
-
-  ui.section("13 · Filesystem API")
-  ui.code("file.root()\nfile.resolve(path)\nfile.read(path, fallback)\nfile.write(path, content, mime)\nfile.append(path, content)\nfile.delete(path)\nfile.exists(path)\nfile.mkdir(path)\nfile.list(path)\nfile.listPaths(path)\nfile.listFiles(path)\nfile.listFolders(path)\nfile.copy(fromPath, toPath)\nfile.move(fromPath, toPath)\nfile.name(path)\nfile.extension(path)\nfile.parent(path)\nfile.size(path)\nfile.mime(path)\nfile.modified(path)\nfile.isFile(path)\nfile.isFolder(path)")
-  ui.text("Every app has a private folder at /apps/<app-id>. Relative paths such as file.write(\"save.json\", data) resolve there and need no permission. Absolute paths such as /documents/report.txt, /studio/project.mscript, or another app folder require Access to all files for user apps. permission.ask(\"allFiles\") can be used with a fallback. Built-in apps and the Superuser holder can access all paths. Folder parents are created automatically. list functions return | separated names or paths. delete removes folder contents recursively but cannot remove core folders. fileChange fires after successful write, append, delete, mkdir, copy, or move operations.", "small")
-
-  ui.section("14 · Settings API")
-  ui.code("settings.get(key, fallback)\nsettings.has(key)\nsettings.set(key, value)\nsettings.toggle(key)\nsettings.keys()\nsettings.reset()")
-  ui.text("get, has, and keys are readable by apps. set, toggle, and reset require Modify system settings for user apps. Changes are immediately persisted and applied. settingsChange fires in the calling runtime when set, toggle, or reset succeeds.", "small")
-
-  ui.section("15 · App API")
-  ui.code("app.open(id)\napp.home()\napp.close(id)\napp.install(source)\napp.remove(id)\napp.restoreSystem(id)\napp.source(id)\napp.preview(source)\napp.exists(id)\napp.list()\napp.name(id)\napp.version(id)\napp.current()\napp.isSystem(id)\napp.isHidden(id)\napp.setHidden(id, hidden)\napp.disabledSystems()")
-  ui.text("open launches an app, home shows Home, and close removes a recent runtime. install and remove require Install apps for normal user apps. app.install validates the entire source before writing anything to storage: empty source, missing app/meta id declarations, malformed syntax, invalid ids, duplicate handlers/functions/parameters, unknown function calls, and invalid loop control are rejected. A failed install returns false and MellorsOS posts an MScript Installer notification with the error and line number when available. source returns MScript source for an active app. preview runs source without installing. list returns | separated ids. current returns this app id. setHidden needs system/Superuser authority for user apps. restoreSystem and system-app removal/replacement are restricted to the actual current Superuser holder, not merely a trusted Settings app.", "small")
-
-  ui.section("16 · Notification API")
-  ui.code("notify.send(title, body)\nnotify.clear()\nnotify.count()\nnotify.latestTitle()\nnotify.latestBody()\nnotify.remove(id)")
-  ui.text("send, clear, and remove modify notifications and require Notifications for user apps. count and latestTitle/latestBody are read-only. send returns the new notification id.", "small")
-
-  ui.section("17 · Permission API")
-  ui.code("permission.ask(permission)\npermission.has(permission)\npermission.set(appId, permission, enabled)\npermission.disableSuperuser()\npermission.name(permission)\npermission.list()\npermission.holder()\npermission.isSuperuser()")
-  ui.text("ask requests one of the seven permissions. has checks effective access, including inherited Superuser access. set requires Modify permissions and can change ordinary permissions but always refuses Superuser. disableSuperuser only works when called by the current holder itself. name returns a friendly label. list returns permission ids. holder returns the holder app id or empty text. isSuperuser tests actual ownership.", "small")
-
-  ui.section("18 · Foreground timers")
-  ui.code("timer.after(name, milliseconds, eventName)\ntimer.every(name, milliseconds, eventName)\ntimer.stop(name)\ntimer.isRunning(name)\ntimer.list()")
-  ui.text("Foreground timers require no permission and exist only while the current app runtime exists. after fires once; every repeats. Their events include event.type = timer, event.name, and event.time. Use background processes instead when work must survive leaving the app.", "small")
-
-  ui.section("19 · Background API")
-  ui.code("background.start(name, milliseconds, eventName)\nbackground.stop(name)\nbackground.isRunning(name)\nbackground.list()")
-  ui.text("start requires Run background processes and runs at a minimum interval enforced by the kernel. stop terminates one named process. isRunning checks one process. list returns the current app's background process names. Revoking Background stops that app's processes.", "small")
-
-  ui.section("20 · Native dialog API")
-  ui.code("dialog.alert(title, message, detail)\ndialog.confirm(title, message, detail)\ndialog.danger(title, message, detail)\ndialog.choose(title, message, yesLabel, noLabel, detail)")
-  ui.text("Dialogs are drawn by MellorsOS, never browser pop-ups. alert returns true after dismissal. confirm, danger, and choose return true or false. Put the dialog call before other side effects in its event handler because MScript resumes the handler after the user answers.", "small")
-
-  ui.section("21 · Custom events")
-  ui.code("events.emit(name, value)")
-  ui.text("emit queues a custom event in the same app. Handle it with on name. The event object contains type = custom, name, and value.", "small")
-
-  ui.section("22 · System API")
-  ui.code("system.toast(message)\nsystem.log(message)\nsystem.reset()\nsystem.reboot()\nsystem.setAppHidden(id, hidden)\nsystem.info(key)\nsystem.time()\nsystem.date()\nsystem.now()\nsystem.uptime()\nsystem.execute(expression)\nsystem.random(min, max)\nsystem.storageBytes()\nsystem.screenWidth()\nsystem.screenHeight()\nsystem.vibrate(milliseconds)\nsystem.clipboard(text)")
-  ui.text("toast shows a temporary OS message and log writes to System Monitor. reset starts the native factory-reset flow; reboot reloads MellorsOS; both require effective Superuser authority. setAppHidden is a privileged visibility control. info keys include name, version, engine, platform, language, online, apps, systemApps, userApps, storageKeys, files, userAgent, and superuser. time/date return formatted local values, now returns epoch milliseconds, uptime returns emulator seconds, execute evaluates one MScript expression directly for system/Superuser runtimes, system.random returns an inclusive random integer, storageBytes estimates MellorsOS storage, screenWidth/screenHeight report emulator dimensions, vibrate uses device vibration when available, and clipboard copies text when the browser permits it.", "small")
-
-  ui.section("23 · Math API")
-  ui.code("math.eval(expression)\nmath.round(value, decimals)\nmath.abs(value)\nmath.floor(value)\nmath.ceil(value)\nmath.min(a, b)\nmath.max(a, b)\nmath.clamp(value, min, max)\nmath.random(min, max)\nmath.sqrt(value)\nmath.pow(value, power)")
-  ui.text("math.eval evaluates arithmetic-only text. round supports decimal places. abs/floor/ceil perform standard numeric transforms. min/max compare values. clamp constrains a value. math.random returns a random floating-point number from min (inclusive) up to max (exclusive), swapping the bounds if they are reversed. sqrt and pow provide square-root and exponent operations.", "small")
-
-  ui.section("24 · Text API")
-  ui.code("text.length(value)\ntext.upper(value)\ntext.lower(value)\ntext.trim(value)\ntext.contains(value, query)\ntext.startsWith(value, query)\ntext.endsWith(value, query)\ntext.replace(value, old, new)\ntext.slice(value, start, end)\ntext.indexOf(value, query)\ntext.part(value, separator, index)\ntext.count(value, separator)\ntext.repeat(value, count)")
-  ui.text("All text functions convert their inputs to strings. part is useful with | separated lists returned by MScript APIs. count returns the number of separated parts. repeat is capped by the runtime to prevent extreme output.", "small")
-
-  ui.section("25 · JSON API")
-  ui.code("json.stringify(value)\njson.parse(text)\njson.get(jsonOrObject, key, fallback)\njson.set(jsonOrObject, key, value)")
-  ui.text("stringify serializes a value. parse creates a JavaScript-compatible MScript value. get safely reads one object key. set updates one key and returns JSON text, making it convenient to persist structured data without object-literal syntax.", "small")
-
-  ui.section("26 · Value conversion API")
-  ui.code("value.number(value)\nvalue.string(value)\nvalue.bool(value)\nvalue.type(value)")
-  ui.text("number converts to a number, string converts to text, bool applies truthiness, and type returns number, string, boolean, object, array, null, undefined, or function as appropriate.", "small")
-
-  ui.section("27 · Toast shorthand")
-  ui.code("toast(\"Saved\")")
-  ui.text("toast is a top-level shorthand for system.toast(message). It is retained for simple apps.", "small")
-
-  ui.section("28 · Complete API parameter reference")
-  ui.text("The reference below is generated from the actual running MScript API, so every exposed function is listed. Every parameter explicitly says whether literal values require quotes. General rule: literal text needs single or double quotes; numbers, true, false, and null do not. Variables and function results are never quoted. UI control IDs are the special case where a literal identifier may be either \"save\" or bare save; both match handlers such as on click save.", "small")
+  ui.section("Complete API parameter reference")
   ui.apiReference()
-
-  ui.section("29 · Full secure example")
-  ui.code("app \"Reminder\"\nmeta id \"example.reminder\"\nmeta icon \"✓\"\nmeta color \"#21b8a6\"\n\non start\n  ui.header(\"Reminder\", \"Permission-aware example\")\n  ui.input(\"message\", \"Message\", data.get(\"message\", \"Hello\"))\n  ui.button(\"save\", \"Save and notify\")\nend\n\non click save\n  let message = ui.value(\"message\")\n  data.set(\"message\", message)\n  if permission.has(\"notifications\") || permission.ask(\"notifications\")\n    notify.send(\"Reminder\", message)\n  else\n    dialog.alert(\"Saved locally\", \"Notification permission was declined.\")\n  end\nend")
-  ui.button("studio", "Open App Studio", "primary")
-end
-
-on click studio
-  app.open("studio")
 end`;
-
 const STARTER = String.raw`app "Counter"
 meta id "counter"
 meta icon "🔢"
@@ -1775,6 +1902,7 @@ meta id "studio"
 meta icon "🛠️"
 meta color "#9b62e8"
 meta version "1.0 Release"
+meta accepts "mscript|text/plain"
 
 function normalizeName(name)
   if name == ""
@@ -1819,6 +1947,11 @@ on start
   ui.button("save", "Save to /studio", "secondary")
   ui.button("files", "Open Files", "ghost")
   ui.button("guide", "Open language guide", "ghost")
+end
+
+on openFile
+  data.globalSet("studio.openPath", event.path)
+  app.open("studio")
 end
 
 on file importApp
@@ -2001,6 +2134,60 @@ on click clear
   ui.setText("output", "Ready.")
 end`;
 
+SYSTEM_SOURCES.gameDemo = String.raw`app "Game Demo"
+meta id "gameDemo"
+meta icon "🎮"
+meta color "#37a86b"
+meta version "1.0 Release"
+
+on start
+  let score = 0
+  ui.header("Game Demo", "Native offline MScript canvas")
+  game.create(360, 520, "#07111f")
+  game.entity("player", 160, 430, 34, 34, "#6d7cff")
+  game.circleEntity("coin", 170, 90, 24, "#ffd24a")
+  game.entity("enemy", 30, 220, 42, 42, "#ff5d78")
+  game.setVelocity("enemy", 105, 0)
+  game.dpad(12, 404, 38, 4)
+  game.start(60, "gameFrame")
+end
+
+on gameFrame
+  let speed = 190 * event.delta
+  if game.keyDown("ArrowLeft") || game.controlDown("left")
+    game.move("player", 0 - speed, 0)
+  end
+  if game.keyDown("ArrowRight") || game.controlDown("right")
+    game.move("player", speed, 0)
+  end
+  if game.keyDown("ArrowUp") || game.controlDown("up")
+    game.move("player", 0, 0 - speed)
+  end
+  if game.keyDown("ArrowDown") || game.controlDown("down")
+    game.move("player", 0, speed)
+  end
+  game.keepInside("player", false)
+  game.update(event.delta)
+  game.keepInside("enemy", true)
+  if game.collides("player", "coin")
+    set score = score + 1
+    game.setPosition("coin", math.random(20, 315), math.random(40, 340))
+    sound.beep(760, 75, 0.18, "square")
+  end
+  if game.collides("player", "enemy")
+    game.setPosition("player", 160, 430)
+    sound.beep(130, 180, 0.22, "sawtooth")
+  end
+  game.draw(true)
+  game.text("Score: " + score, 12, 12, 18, "white")
+  game.text("Keyboard or touch controls", 348, 12, 12, "#9ba8c9", "right")
+end
+
+on back
+  game.stop()
+  return false
+end`;
+
 SYSTEM_SOURCES.apps = String.raw`app "App Library"
 meta id "apps"
 meta icon "🧩"
@@ -2034,7 +2221,6 @@ function sanitizeInstalledApps(){
     store.rawSet('installedApps',valid);
     const all=permissionRecords();let permissionsChanged=false;
     for(const id of Object.keys(all)){
-      if(all[id]?.superuser===true)continue;
       if(!validIds.has(id)){delete all[id];permissionsChanged=true;}
     }
     if(permissionsChanged)store.rawSet('permissions',all);
@@ -2052,7 +2238,7 @@ function getHiddenApps(){return store.rawGet('hiddenApps',[])||[];}
 function setAppHidden(id,hidden){id=String(id);let list=getHiddenApps().filter(x=>x!==id);if(hidden)list.push(id);store.rawSet('hiddenApps',list);return true;}
 function installFailure(message,line=0){const detail=`${String(message)}${line?` (line ${line})`:''}`;log(`MScript install rejected: ${detail}`);notify('MScript Installer',`Installation failed: ${detail}`,'system');toast('App not installed — see Notifications');return false;}
 function installMScript(source,requesterId=''){try{const app=validateMScriptForInstall(source);const requester=String(requesterId);const holder=superuserHolder();const builtIn=systemApps.find(a=>a.meta.id===app.meta.id);if(builtIn&&holder!==requester)return installFailure('That app id belongs to a built-in system app');if(holder===app.meta.id&&requester!==app.meta.id)return installFailure('The Superuser app is protected from replacement');if(builtIn&&holder===requester)setSystemDisabled(app.meta.id,true);let srcs=store.rawGet('installedApps',[])||[];srcs=srcs.filter(s=>{try{return parseMScript(s).meta.id!==app.meta.id;}catch{return false;}});srcs.push(String(source));store.rawSet('installedApps',srcs);const all=permissionRecords();if(!Object.prototype.hasOwnProperty.call(all,app.meta.id)){all[app.meta.id]={};store.rawSet('permissions',all);}notify('App installed',app.meta.name,app.meta.id);showHome();return true;}catch(e){return installFailure(e?.message||'Unknown MScript installation error',e?.line||0);}}
-function uninstallApp(id,requesterId=''){id=String(id);const requester=String(requesterId),holder=superuserHolder(),app=getApp(id);if(!app){toast('App not found');return false;}if(holder===id){toast('Superuser app is protected. It must disable Superuser itself first.');return false;}if(app.system){if(holder!==requester){toast('Only the current Superuser app can remove a built-in system app');return false;}setSystemDisabled(id,true);for(const key of store.keys(`app.${id}.`))store.rawDelete(key);fsEraseAppFolder(id);setAppHidden(id,false);stopAppBackground(id);closeRecent(id);toast('System app removed by Superuser');return true;}let srcs=store.rawGet('installedApps',[])||[];srcs=srcs.filter(s=>{try{return parseMScript(s).meta.id!==id;}catch{return false;}});store.rawSet('installedApps',srcs);for(const key of store.keys(`app.${id}.`))store.rawDelete(key);fsEraseAppFolder(id);const all=permissionRecords();delete all[id];store.rawSet('permissions',all);setAppHidden(id,false);stopAppBackground(id);closeRecent(id);toast('App uninstalled and its data erased');return true;}
+function uninstallApp(id,requesterId=''){id=String(id);const requester=String(requesterId),holder=superuserHolder(),app=getApp(id);if(!app){toast('App not found');return false;}if(holder===id){toast('Superuser app is protected. It must disable Superuser itself first.');return false;}if(app.system){if(holder!==requester){toast('Only the current Superuser app can remove a built-in system app');return false;}setSystemDisabled(id,true);for(const key of store.keys(`app.${id}.`))store.rawDelete(key);fsEraseAppFolder(id);setAppHidden(id,false);stopAppBackground(id);state.fileGrants.delete(id);closeRecent(id);toast('System app removed by Superuser');return true;}let srcs=store.rawGet('installedApps',[])||[];srcs=srcs.filter(s=>{try{return parseMScript(s).meta.id!==id;}catch{return false;}});store.rawSet('installedApps',srcs);for(const key of store.keys(`app.${id}.`))store.rawDelete(key);fsEraseAppFolder(id);const all=permissionRecords();delete all[id];store.rawSet('permissions',all);setAppHidden(id,false);stopAppBackground(id);state.fileGrants.delete(id);closeRecent(id);toast('App uninstalled and its data erased');return true;}
 function restoreSystemApp(id){id=String(id);if(!systemApps.some(a=>a.meta.id===id))return false;let srcs=store.rawGet('installedApps',[])||[];srcs=srcs.filter(s=>{try{return parseMScript(s).meta.id!==id;}catch{return false;}});store.rawSet('installedApps',srcs);setSystemDisabled(id,false);setAppHidden(id,false);toast('Built-in system app restored');return true;}
 function previewMScript(source){try{const app=parseMScript(source);app.meta.id='preview_'+Date.now();openParsedApp(app,true);return true;}catch(e){showRuntimeError({meta:{name:'Preview',id:'preview',icon:'!',color:'#b03b55'},source},e);return false;}}
 
@@ -2069,6 +2255,7 @@ function openParsedApp(app,preview=false){
   const rt=new MRuntime(app);state.appInstances.set(app.meta.id,rt);state.current=app.meta.id;
   if(!preview){state.recents=state.recents.filter(id=>id!==app.meta.id);state.recents.unshift(app.meta.id);state.recents=state.recents.slice(0,12);}
   log(`Opened ${app.meta.name}`);rt.mount();
+  const pending=state.pendingFileOpens.get(app.meta.id);if(pending){state.pendingFileOpens.delete(app.meta.id);queueMicrotask(()=>{if(state.appInstances.get(app.meta.id)===rt)rt.trigger('openFile',pending);});}
 }
 function openApp(id){id=String(id);const app=getApp(id);if(!app){toast('App not found');return;}if(state.current&&state.current!==id){state.history.push(state.current);pauseCurrent('app-open');}openParsedApp(app);}
 function closeRecent(id){state.recents=state.recents.filter(x=>x!==id);const rt=state.appInstances.get(id);if(rt){rt.destroy('recent-close');state.appInstances.delete(id);}if(state.current===id)showHome();}
