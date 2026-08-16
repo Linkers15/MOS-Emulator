@@ -66,10 +66,10 @@ body{display:grid;place-items:center;background:radial-gradient(circle at 20% 0%
 #osModalHost{position:absolute;inset:0;z-index:140;display:none;align-items:flex-end;justify-content:center;background:rgba(2,4,10,.66);backdrop-filter:blur(10px);padding:14px}#osModalHost.open{display:flex}.os-modal{width:100%;max-height:86%;overflow:auto;background:linear-gradient(180deg,#171c31,#0d1121);border:1px solid rgba(255,255,255,.14);border-radius:26px;padding:18px;box-shadow:0 24px 70px rgba(0,0,0,.55);animation:modalIn .18s ease}.os-modal-icon{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;background:rgba(109,124,255,.18);font-size:1.65rem;margin-bottom:12px}.os-modal-title{font-size:1.28rem;font-weight:900;letter-spacing:-.02em}.os-modal-body{color:#e2e6f7;line-height:1.5;margin-top:8px}.os-modal-detail{color:var(--muted);font-size:.78rem;line-height:1.5;margin-top:10px}.os-modal-actions{display:grid;gap:8px;margin-top:16px}.os-modal-actions button{width:100%;margin:0;min-height:46px}.disabled-control{opacity:.42;pointer-events:none}.permission-inherited{opacity:.48;pointer-events:none}.app-manager-card .manager-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.status-pill{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.08);font-size:.7rem;color:var(--muted);font-weight:800}.status-pill.superuser{background:rgba(255,93,120,.16);color:#ffabb9}.status-pill.system{background:rgba(70,215,163,.13);color:#8eecc8}@keyframes modalIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
 
 .menu-entry{width:100%;border:0;background:var(--panel);color:var(--text);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:14px;margin:8px 0;display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer}.menu-entry:active{transform:scale(.985)}.menu-icon{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.09);display:grid;place-items:center;font-size:1.3rem;flex:0 0 auto}.menu-copy{min-width:0;flex:1}.menu-value{color:var(--muted);font-size:.78rem;max-width:34%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.menu-chevron{color:var(--muted);font-size:1.35rem}.alert{border-left:4px solid var(--accent)}.alert.warning{border-left-color:#f0a33b}.alert.danger{border-left-color:var(--danger)}.alert.success{border-left-color:var(--ok)}.ui-divider{height:1px;background:rgba(255,255,255,.09);margin:12px 2px}.segmented{display:flex;gap:5px;padding:4px;background:rgba(255,255,255,.06);border-radius:14px}.segment{flex:1;border:0;background:transparent;color:var(--muted);padding:9px 7px;border-radius:11px;font-size:.76rem;font-weight:800}.segment.selected{background:var(--accent);color:white}.chip-wrap{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:var(--text);border-radius:999px;padding:7px 11px;font-size:.76rem}.chip.selected{background:var(--accent);border-color:var(--accent)}.ui-stat{display:inline-flex;flex-direction:column;min-width:92px;padding:12px;border-radius:16px;background:rgba(255,255,255,.06);margin:4px}.ui-stat strong{font-size:1.2rem}.ui-hidden{display:none!important}.ui-disabled{opacity:.42!important;pointer-events:none!important}.file-import{display:inline-flex;align-items:center;gap:8px;cursor:pointer}.file-import input{display:none}.terminal-output{font-family:"SFMono-Regular",Consolas,monospace;white-space:pre-wrap;word-break:break-word;background:#080b16;border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:12px;min-height:90px;color:#d5dcff}
-.ms-game-wrap{position:relative;width:100%;max-width:100%;margin:8px auto 14px;background:#000;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 30px rgba(0,0,0,.25);touch-action:none;user-select:none}
-.ms-game-canvas{display:block;width:100%;height:100%;background:#000;touch-action:none;outline:none}
-.ms-game-controls{position:absolute;inset:0;pointer-events:none}
-.ms-game-control{position:absolute;pointer-events:auto;border:1px solid rgba(255,255,255,.2);background:rgba(20,25,45,.62);backdrop-filter:blur(8px);color:white;border-radius:14px;font-weight:850;display:grid;place-items:center;touch-action:none;user-select:none;margin:0;padding:0}
+.ms-game-wrap{position:relative;width:100%;max-width:100%;margin:8px auto 14px;background:#000;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 30px rgba(0,0,0,.25);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.ms-game-canvas{display:block;width:100%;height:100%;background:#000;touch-action:none;outline:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.ms-game-controls{position:absolute;inset:0;pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.ms-game-control{position:absolute;pointer-events:auto;border:1px solid rgba(255,255,255,.2);background:rgba(20,25,45,.62);backdrop-filter:blur(8px);color:white;border-radius:14px;font-weight:850;display:grid;place-items:center;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
 .ms-game-control.pressed{background:color-mix(in srgb,var(--accent) 72%,transparent);transform:scale(.96)}
 .file-preview-image{display:block;max-width:100%;max-height:520px;margin:10px auto;border-radius:16px;background:repeating-conic-gradient(#222 0 25%,#2b2b2b 0 50%) 0/20px 20px;object-fit:contain}
 .file-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.file-action-grid button{margin:0}
@@ -1031,6 +1031,8 @@ class MRuntime{
           for(const [target,type,handler,options] of game.listeners){try{target.removeEventListener(type,handler,options);}catch{}}game.listeners=[];
           game.wrap?.remove();game.width=Math.max(120,Math.min(1920,Math.floor(Number(width)||360)));game.height=Math.max(120,Math.min(1920,Math.floor(Number(height)||520)));game.background=String(background||'#000');
           const wrap=document.createElement('div');wrap.className='ms-game-wrap';wrap.style.aspectRatio=`${game.width}/${game.height}`;
+          const suppressGameGesture=e=>e.preventDefault();
+          gameListen(wrap,'contextmenu',suppressGameGesture);gameListen(wrap,'selectstart',suppressGameGesture);gameListen(wrap,'dragstart',suppressGameGesture);
           const canvas=document.createElement('canvas');canvas.className='ms-game-canvas';canvas.width=game.width;canvas.height=game.height;canvas.tabIndex=0;canvas.setAttribute('aria-label',`${rt.app.meta.name} game canvas`);
           const controls=document.createElement('div');controls.className='ms-game-controls';wrap.append(canvas,controls);page.appendChild(wrap);
           game.wrap=wrap;game.canvas=canvas;game.controlsLayer=controls;game.ctx=canvas.getContext('2d',{alpha:false});if(!game.ctx)throw new MScriptError('Could not create the native game canvas');
@@ -1063,11 +1065,12 @@ class MRuntime{
         keyDown(key){return game.keys.has(String(key));},pointerX(){return game.pointer.x;},pointerY(){return game.pointer.y;},pointerDown(){return game.pointer.down;},
         control(id,label,x,y,width,height){
           if(!game.controlsLayer)throw new MScriptError('Call game.create before adding controls');const key=String(id);rt.api.game.removeControl(key);
-          const button=document.createElement('button');button.className='ms-game-control';button.textContent=String(label);button.style.left=`${Number(x)/game.width*100}%`;button.style.top=`${Number(y)/game.height*100}%`;button.style.width=`${Number(width)/game.width*100}%`;button.style.height=`${Number(height)/game.height*100}%`;
+          const button=document.createElement('button');button.type='button';button.className='ms-game-control';button.textContent=String(label);button.draggable=false;button.setAttribute('aria-label',String(label));button.style.left=`${Number(x)/game.width*100}%`;button.style.top=`${Number(y)/game.height*100}%`;button.style.width=`${Number(width)/game.width*100}%`;button.style.height=`${Number(height)/game.height*100}%`;
           const stateObj={down:false,element:button};game.controls.set(key,stateObj);
           const down=e=>{e.preventDefault();stateObj.down=true;button.classList.add('pressed');try{button.setPointerCapture(e.pointerId);}catch{}rt.trigger('gameControlDown',{type:'gameControlDown',id:key});};
           const up=e=>{e.preventDefault();if(!stateObj.down)return;stateObj.down=false;button.classList.remove('pressed');rt.trigger('gameControlUp',{type:'gameControlUp',id:key});};
-          gameListen(button,'pointerdown',down);gameListen(button,'pointerup',up);gameListen(button,'pointercancel',up);game.controlsLayer.appendChild(button);return true;
+          const suppress=e=>e.preventDefault();
+          gameListen(button,'pointerdown',down);gameListen(button,'pointerup',up);gameListen(button,'pointercancel',up);gameListen(button,'lostpointercapture',up);gameListen(button,'contextmenu',suppress);gameListen(button,'selectstart',suppress);gameListen(button,'dragstart',suppress);game.controlsLayer.appendChild(button);return true;
         },
         dpad(x,y,size=54,gap=6){const s=Number(size)||54,g=Number(gap)||6;rt.api.game.control('up','▲',Number(x)+s+g,Number(y),s,s);rt.api.game.control('left','◀',Number(x),Number(y)+s+g,s,s);rt.api.game.control('down','▼',Number(x)+s+g,Number(y)+s+g,s,s);rt.api.game.control('right','▶',Number(x)+(s+g)*2,Number(y)+s+g,s,s);return true;},
         controlDown(id){return !!game.controls.get(String(id))?.down;},removeControl(id){const c=game.controls.get(String(id));if(!c)return false;c.element.remove();game.controls.delete(String(id));return true;},clearControls(){for(const c of game.controls.values())c.element.remove();game.controls.clear();return true;},
@@ -1925,6 +1928,22 @@ function saveStudioFile()
   return path
 end
 
+function installedAppOptions()
+  let ids = app.list()
+  let options = ""
+  let total = text.count(ids, "|")
+  for index from 0 to total - 1
+    let id = text.part(ids, "|", index)
+    if id != ""
+      if options != ""
+        set options = options + "|"
+      end
+      set options = options + id + ":" + app.name(id)
+    end
+  end
+  return options
+end
+
 on start
   let requestedPath = data.globalGet("studio.openPath", "")
   if requestedPath != ""
@@ -1939,6 +1958,8 @@ on start
   end
   ui.header("App Studio", "MScript projects are stored in /studio")
   ui.rich("MScript workspace", "Save projects as .mscript files, reopen them from Files, preview them, or install them to Home.", "</>")
+  ui.select("installedApp", "Installed app", "", installedAppOptions())
+  ui.button("loadInstalled", "Load installed app source", "secondary")
   ui.fileInput("importApp", "Import & install .mscript", ".mscript,text/plain")
   ui.input("fileName", "Studio file name", file.name(currentPath))
   ui.codeEditor("source", source)
@@ -1963,6 +1984,22 @@ on file importApp
   data.set("currentPath", path)
   data.set("draft", event.value)
   app.install(event.value)
+end
+
+on click loadInstalled
+  let id = ui.value("installedApp")
+  let source = app.source(id)
+  if source == ""
+    dialog.alert("Source unavailable", "Choose an installed app whose source can be loaded.")
+  else
+    let name = normalizeName(id)
+    let path = "/studio/" + name
+    ui.setValue("fileName", name)
+    ui.setValue("source", source)
+    data.set("currentPath", path)
+    data.set("draft", source)
+    notify.send("App Studio", "Loaded exact source for " + app.name(id))
+  end
 end
 
 on click preview
